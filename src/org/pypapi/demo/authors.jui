@@ -70,7 +70,7 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTableView" name="tableView">
+      <widget class="org.pypapi.ui.widgets.PyPaPiTableView" name="tableView">
        <property name="entity" stdset="0">
         <string>.books</string>
        </property>
@@ -83,6 +83,13 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>org.pypapi.ui.widgets.PyPaPiTableView</class>
+   <extends>QTableView</extends>
+   <header>pypapitableview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
