@@ -31,8 +31,8 @@ public class Context extends QObject {
     public String name;
     public Object currentEntity;
 
-    private Boolean atBof;
-    private Boolean atEof;
+    public Boolean atBof;
+    public Boolean atEof;
     private Context primaryDc;
 
     public Context(QObject parent, Class rootClass, String name, List columns){

@@ -42,13 +42,36 @@ public class NavigationToolBar extends QToolBar {
 
     private void insertButton(String actionName, String text, String iconName,
             String toolTip, QObject agent){
-        QAction action = new QAction(actionName, this.parentForm);
+        QAction action = new QAction(this.parentForm);
         QIcon icon = new QIcon(iconName);
+        action.setObjectName(actionName);
         action.setText(text);
         action.setToolTip(toolTip);
         action.setIcon(icon);
         action.triggered.connect(agent, actionName+"()");
+        action.triggered.connect(this, "refresh()");
         this.addAction(action);
+    }
+
+    private void refresh(){
+        /*
+         * Refresh enabled status of the buttons
+         */
+        Boolean atBof = this.parentForm.context.atBof;
+        Boolean atEof = this.parentForm.context.atEof;
+
+        for(QAction action:this.actions()){
+            String objName = action.objectName();
+            if ("firstElement".equals(objName)){
+                action.setEnabled(!atBof);
+            } else if("previousElement".equals(objName)){
+                action.setEnabled(!atBof);
+            } else if("nextElement".equals(objName)){
+                action.setEnabled(!atEof);
+            } else if("lastElement".equals(objName)){
+                action.setEnabled(!atEof);
+            }
+        }
     }
 
 }
