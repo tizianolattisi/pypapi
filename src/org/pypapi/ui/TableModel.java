@@ -5,6 +5,7 @@
 
 package org.pypapi.ui;
 
+import com.trolltech.qt.core.Qt.ItemFlags;
 import java.util.*;
 
 import com.trolltech.qt.QVariant;
@@ -81,6 +82,7 @@ public class TableModel extends QAbstractTableModel {
 
         Object value = new QVariant();
         Item item = null;
+        if(qmi == null) return value;
         try {
             item = (Item) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
         } catch (Exception ex) {
@@ -93,6 +95,30 @@ public class TableModel extends QAbstractTableModel {
         }
         return value;
 
+    }
+
+    @Override
+    public boolean setData(QModelIndex qmi, Object obj, int role){
+        Item item = null;
+        if(qmi == null) return false;
+        try {
+            item = (Item) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
+        } catch (Exception ex) {
+            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // XXX: setData
+        dataChanged.emit(qmi, qmi);
+        return true;
+    }
+
+    @Override
+    public Qt.ItemFlags flags(QModelIndex qmi){
+        // XXX: flags coming out from Item
+        ItemFlags flags = Qt.ItemFlag.createQFlags();
+        flags.set(Qt.ItemFlag.ItemIsSelectable);
+        flags.set(Qt.ItemFlag.ItemIsEnabled);
+        flags.set(Qt.ItemFlag.ItemIsEditable);
+        return flags;
     }
 
     private Object get(int row, Column column) throws Exception{
