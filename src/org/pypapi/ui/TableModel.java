@@ -98,7 +98,7 @@ public class TableModel extends QAbstractTableModel {
     }
 
     @Override
-    public boolean setData(QModelIndex qmi, Object obj, int role){
+    public boolean setData(QModelIndex qmi, Object value, int role){
         Item item = null;
         if(qmi == null) return false;
         try {
@@ -106,7 +106,15 @@ public class TableModel extends QAbstractTableModel {
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // XXX: setData
+        try {
+            Object oldValue = item.getRoleValue(role);
+            if (oldValue.equals(value)){ // XXX: how to check?
+                System.out.println("aggiorno");
+                //boolean res = item.setRoleValue(role, value);
+            } else return true;
+        } catch (Exception ex) {
+            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dataChanged.emit(qmi, qmi);
         return true;
     }

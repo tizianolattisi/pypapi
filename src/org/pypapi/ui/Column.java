@@ -4,6 +4,8 @@
  */
 package org.pypapi.ui;
 
+import java.lang.reflect.Method;
+
 
 /**
  *
@@ -29,8 +31,9 @@ public class Column {
     public Item bind(Object entity) throws Exception {
         String getterName = "get" + this.name;
         Object result=null;
-        result = entity.getClass().getMethod(getterName).invoke(entity);
-        Item item = new Item(this, result);
+        Method m = entity.getClass().getMethod(getterName);
+        result = m.invoke(entity);
+        ItemEditable item = new ItemEditable(this, result);
         return item;
     }
 

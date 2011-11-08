@@ -42,6 +42,7 @@ public class Context extends QObject {
 
         this.model = this.createModel();
         this.mapper = new QDataWidgetMapper(this);
+        this.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit);
         this.mapper.setModel(this.model);
         this.model.setColumns(columns);
         this.initializeContext();
@@ -55,7 +56,7 @@ public class Context extends QObject {
             this.primaryDc = (Context) GlobalManager.queryUtility(IContext.class, ".");
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
-        //this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
+        this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
         //this.model.rowsRemoved.connect(primaryDc, "modelDataChanged()");
         //this.model.rowsInserted.connect(primaryDc, "modelDataChanged()");
     }
@@ -109,12 +110,12 @@ public class Context extends QObject {
         this.firstElement();
     }
 
-    /*
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
+        // XXX: modelDataChanged
         System.out.println("modelDataChanged");
-        System.out.println(topLeft);
-        System.out.println(bottomRight);
-    }*/
+        //System.out.println(topLeft);
+        //System.out.println(bottomRight);
+    }
 
     public void firstElement(){
         this.mapper.toFirst();

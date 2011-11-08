@@ -4,6 +4,7 @@
  */
 package org.pypapi.ui;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 import com.trolltech.qt.core.*;
@@ -16,7 +17,7 @@ public class Item {
     private final Column column;
     private final Object value;
 
-    private static Map itemRolesNameMap = new HashMap();
+    protected static Map itemRolesNameMap = new HashMap();
 
     public Item(Column column, Object value){
         this.column = column;
@@ -30,6 +31,10 @@ public class Item {
     }
 
     public Object getRoleValue(int role) throws Exception {
+        /*
+         * Get to the value corresponding to the requested role
+         * (like DisplayRole, EditRole, etc) thru the correct getter method.
+         */
 
         Object result;
 
@@ -40,7 +45,8 @@ public class Item {
         String name = (String) nameObject;
         String getterName = "get" + name.substring(0,1).toUpperCase() +
                 name.substring(1);
-        result = this.getClass().getMethod(getterName).invoke(this);
+        Method m = this.getClass().getMethod(getterName);
+        result = m.invoke(this);
         return result;
     }
 
