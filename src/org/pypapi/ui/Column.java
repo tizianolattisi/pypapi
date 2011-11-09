@@ -30,10 +30,12 @@ public class Column {
 
     public Item bind(Object entity) throws Exception {
         String getterName = "get" + this.name;
+        Method getter = entity.getClass().getMethod(getterName);
+        String setterName = "set" + this.name;
+        Method setter = entity.getClass().getMethod(setterName, String.class);
         Object result=null;
-        Method m = entity.getClass().getMethod(getterName);
-        result = m.invoke(entity);
-        ItemEditable item = new ItemEditable(this, result);
+        result = getter.invoke(entity);
+        ItemEditable item = new ItemEditable(this, result, setter, entity);
         return item;
     }
 

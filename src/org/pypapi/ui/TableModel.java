@@ -99,18 +99,17 @@ public class TableModel extends QAbstractTableModel {
 
     @Override
     public boolean setData(QModelIndex qmi, Object value, int role){
-        Item item = null;
+        ItemEditable item = null;
         if(qmi == null) return false;
         try {
-            item = (Item) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
+            item = (ItemEditable) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             Object oldValue = item.getRoleValue(role);
-            if (oldValue.equals(value)){ // XXX: how to check?
-                System.out.println("aggiorno");
-                //boolean res = item.setRoleValue(role, value);
+            if (!oldValue.equals(value)){
+                boolean res = item.setRoleValue(role, value);
             } else return true;
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
