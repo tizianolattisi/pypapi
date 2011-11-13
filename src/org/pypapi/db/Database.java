@@ -4,12 +4,15 @@
  */
 package org.pypapi.db;
 
+import java.util.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hibernate.cfg.Configuration;
-import org.hibernate.SessionFactory;
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.pypapi.GlobalManager;
 
@@ -20,26 +23,29 @@ import org.pypapi.GlobalManager;
  */
 public class Database implements IDatabase {
 
-    private SessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     @Override
     public void open() {
         GlobalManager.registerUtility(this, IDatabase.class);
         try {
-            this.sessionFactory = new Configuration().configure().buildSessionFactory();
+            this.entityManagerFactory = Persistence.createEntityManagerFactory("DemoPU");
         } catch (Exception ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    // XXX: I need a sesione provider with criteria support
     @Override
-    public Session createNewSession() {
-        Session session=null;
-        try {
-            session = sessionFactory.openSession();
-        } catch (Exception ex) {
-            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return session;
+    public Store createStore(Class klass) {
+        String[] temp;
+        EntityManager entityManager =  this.entityManagerFactory.createEntityManager();
+        temp = klass.getName().split("\\.");
+        String name = temp[temp.length-1];
+        Query q = entityManager.createQuery("select object(o) from "+name+" as o");
+        List entities = q.getResultList();
+        Store store = new Store(entities);
+        return store;
     }
+
 }

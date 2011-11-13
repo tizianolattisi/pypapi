@@ -9,9 +9,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hibernate.Session;
-import org.hibernate.Criteria;
-
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
@@ -57,6 +54,7 @@ public class Context extends QObject {
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
+        // XXX: implements inserting and removing rows 
         //this.model.rowsRemoved.connect(primaryDc, "modelDataChanged()");
         //this.model.rowsInserted.connect(primaryDc, "modelDataChanged()");
     }
@@ -67,12 +65,9 @@ public class Context extends QObject {
 
         /* resolve entity class */
         if(".".equals(this.name)){
-            /* in futuro dovrò risolvere uno store registrato */
             Database db = (Database) GlobalManager.queryUtility(IDatabase.class);
-            Session session = db.createNewSession();
-            Criteria crit = session.createCriteria(this.rootClass);
-            List entities = crit.list();
-            Store store = new Store(entities);
+            // XXX: Database is not the right place fot a store factory...
+            Store store = db.createStore(this.rootClass);
             tableModel = new TableModel(store, null);
         } else {
             tableModel = new TableModel(null, null);
@@ -113,8 +108,6 @@ public class Context extends QObject {
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
         // XXX: modelDataChanged
         System.out.println("modelDataChanged");
-        //System.out.println(topLeft);
-        //System.out.println(bottomRight);
     }
 
     public void firstElement(){

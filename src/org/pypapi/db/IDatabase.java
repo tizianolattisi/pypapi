@@ -4,7 +4,6 @@
  */
 package org.pypapi.db;
 
-import org.hibernate.Session;
 
 /**
  *
@@ -12,5 +11,5 @@ import org.hibernate.Session;
  */
 public interface IDatabase {
     void open();
-    Session createNewSession();
+    Store createStore(Class klass);
 }
