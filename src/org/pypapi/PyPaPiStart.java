@@ -26,7 +26,7 @@ import org.pypapi.demo.Book;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class PyPaPiStart {
 

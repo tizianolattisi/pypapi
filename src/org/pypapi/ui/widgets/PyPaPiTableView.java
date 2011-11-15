@@ -21,7 +21,7 @@ import com.trolltech.qt.gui.*;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  *
  * PyPaPiTableView is a custom widget implementing info, open, add and delete
  * of rows in the bag list.

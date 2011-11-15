@@ -19,7 +19,7 @@ package org.pypapi.db;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public interface IDatabase {
     void open();

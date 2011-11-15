@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class GlobalManager {
     private static HashMap utilities = new HashMap();

@@ -30,7 +30,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 @Entity
 @Table(name="books")

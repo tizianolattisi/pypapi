@@ -30,7 +30,7 @@ import org.pypapi.GlobalManager;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class Context extends QObject {
 

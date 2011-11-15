@@ -25,7 +25,7 @@ import org.pypapi.ui.Form;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class NavigationToolBar extends QToolBar {
 

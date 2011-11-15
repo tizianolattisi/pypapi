@@ -30,7 +30,7 @@ import javax.persistence.OneToMany;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 @Entity
 @Table(name="authors")

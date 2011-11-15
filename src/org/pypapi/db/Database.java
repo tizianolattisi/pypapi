@@ -31,7 +31,7 @@ import org.pypapi.GlobalManager;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class Database implements IDatabase {
 

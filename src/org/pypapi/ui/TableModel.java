@@ -29,7 +29,7 @@ import org.pypapi.db.Store;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class TableModel extends QAbstractTableModel {
 

@@ -18,7 +18,7 @@ package org.pypapi.ui;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public interface IContext {
 

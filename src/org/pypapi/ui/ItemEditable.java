@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class ItemEditable extends Item {
     
