@@ -24,7 +24,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import org.pypapi.db.*;
-import org.pypapi.ui.Controller;
+import org.pypapi.db.Controller;
 import org.pypapi.GlobalManager;
 
 

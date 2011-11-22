@@ -16,6 +16,7 @@
  */
 package org.pypapi;
 
+import org.pypapi.db.Controller;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
