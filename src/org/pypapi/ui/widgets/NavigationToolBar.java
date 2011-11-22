@@ -72,7 +72,7 @@ public class NavigationToolBar extends QToolBar {
         this.addAction(action);
     }
 
-    private void refresh(){
+    public void refresh(){
         /*
          * Refresh enabled status of the buttons
          */

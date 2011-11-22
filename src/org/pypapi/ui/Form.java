@@ -54,6 +54,7 @@ public class Form extends QMainWindow {
         bar.setMovable(false);
         this.addToolBar(bar);
         this.context.mapper.toFirst();
+        bar.refresh();
     }
 
     private void loadUi(QFile uiFile){
