@@ -50,7 +50,7 @@ public class NavigationToolBar extends QToolBar {
         this.insertButton("lastElement", "Last element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_last.png",
                 "Press to show the last element", this.parentForm.context);
-        this.insertButton("editElement", "Save",
+        this.insertButton("commitChanges", "Save",
                 "classpath:org/pypapi/ui/resources/toolbar/disk.png",
                 "Save current element", this.parentForm.context);
     }

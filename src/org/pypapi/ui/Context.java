@@ -140,7 +140,7 @@ public class Context extends QObject {
         this.mapper.toLast();
     }
     
-    public void editElement(){
+    public void commitChanges(){
         Controller c = (Controller) GlobalManager.queryUtility(this.primaryDc.currentEntity.getClass());
         c.edit(this.primaryDc.currentEntity);
         this.isDirty = false;
