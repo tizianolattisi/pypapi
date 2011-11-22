@@ -126,8 +126,7 @@ public class TableModel extends QAbstractTableModel {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         // clean cache
-        HashMap entityHM = (HashMap) this.cache.get(this.store.get(qmi.row()));
-        entityHM.remove(this.columns.get(qmi.column()));
+        this.purgeItemCache(this.store.get(qmi.row()), (Column) this.columns.get(qmi.column()));
         dataChanged.emit(qmi, qmi);
         return true;
     }
@@ -171,6 +170,15 @@ public class TableModel extends QAbstractTableModel {
 
     public Object getEntityByRow(int row){
         return this.store.get(row);
+    }
+    
+    public void purgeItemCache(Object entity){
+        this.cache.put(entity, new HashMap());
+    }
+
+    public void purgeItemCache(Object entity, Column column){
+        HashMap entityHM = (HashMap) this.cache.get(entity);
+        entityHM.remove(column);
     }
 
 }

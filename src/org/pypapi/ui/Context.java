@@ -146,4 +146,11 @@ public class Context extends QObject {
         this.isDirty = false;
     }
 
+    public void cancelChanges(){
+        Controller controller = (Controller) GlobalManager.queryUtility(this.primaryDc.currentEntity.getClass());
+        controller.refresh(this.primaryDc.currentEntity);
+        this.model.purgeItemCache(this.primaryDc.currentEntity);
+        this.isDirty = false;
+    }
+
 }
