@@ -19,10 +19,13 @@ package org.pypapi;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
+import javax.persistence.Persistence;
+import javax.persistence.EntityManagerFactory;
+
 import org.pypapi.ui.*;
 import org.pypapi.db.Database;
 import org.pypapi.demo.Author;
-import org.pypapi.demo.Book;
+import org.pypapi.demo.AuthorJpaController;
 
 /**
  *
@@ -36,21 +39,24 @@ public class PyPaPiStart {
     public static void main(String[] args) {
         System.out.println("PyPaPi demo");
 
-        // inizializzazione Qt
+        // Qt init
         QApplication.initialize(args);
 
-        // inizializazione database
+        // db init
         Database db = new Database();
         db.open();
-
-        // creo e mostro la form
-        //QFile booksUiFile = new QFile("classpath:org/pypapi/demo/books.jui");
-        //Form booksForm = new Form(booksUiFile, Book.class);
-        //booksForm.show();
+        
+        // create and register controller
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DemoPU");
+        AuthorJpaController jpaController = new AuthorJpaController(emf);
+        Controller controller = new Controller(jpaController, "Author");
+        GlobalManager.registerUtility(controller, Author.class);
+        
+        // create and show form
         QFile authorsUiFile = new QFile("classpath:org/pypapi/demo/authors.jui");
         Form authorsForm = new Form(authorsUiFile, Author.class);
         authorsForm.show();
-
+        
         QApplication.exec();
 
     }

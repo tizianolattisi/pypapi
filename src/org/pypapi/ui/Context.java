@@ -17,7 +17,6 @@
 package org.pypapi.ui;
 
 import java.util.*;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +24,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import org.pypapi.db.*;
+import org.pypapi.ui.Controller;
 import org.pypapi.GlobalManager;
 
 
@@ -78,8 +78,8 @@ public class Context extends QObject {
         /* resolve entity class */
         if(".".equals(this.name)){
             Database db = (Database) GlobalManager.queryUtility(IDatabase.class);
-            // XXX: Database is not the right place fot a store factory...
-            Store store = db.createStore(this.rootClass);
+            Controller controller = (Controller) GlobalManager.queryUtility(this.rootClass);
+            Store store = controller.createFullStore();
             tableModel = new TableModel(store, null);
         } else {
             tableModel = new TableModel(null, null);

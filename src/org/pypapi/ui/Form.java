@@ -16,6 +16,7 @@
  */
 package org.pypapi.ui;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;

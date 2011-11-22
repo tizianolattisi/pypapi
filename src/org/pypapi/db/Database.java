@@ -16,6 +16,7 @@
  */
 package org.pypapi.db;
 
+import java.io.Serializable;
 import java.util.*;
 
 import java.util.logging.Level;
@@ -47,7 +48,7 @@ public class Database implements IDatabase {
         }
     }
 
-    // XXX: I need a sesione provider with criteria support
+    // XXX: I need a session provider with criteria support
     @Override
     public Store createStore(Class klass) {
         String[] temp;
@@ -59,5 +60,5 @@ public class Database implements IDatabase {
         Store store = new Store(entities);
         return store;
     }
-
+    
 }
