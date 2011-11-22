@@ -125,6 +125,9 @@ public class TableModel extends QAbstractTableModel {
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // clean cache
+        HashMap entityHM = (HashMap) this.cache.get(this.store.get(qmi.row()));
+        entityHM.remove(this.columns.get(qmi.column()));
         dataChanged.emit(qmi, qmi);
         return true;
     }

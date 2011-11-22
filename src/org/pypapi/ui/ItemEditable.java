@@ -58,8 +58,6 @@ public class ItemEditable extends Item {
     }
 
     public boolean set(Object objValue){
-        // XXX: ItemEditable.set
-        System.out.println("set "+objValue);
         try {
             Object res = this.setter.invoke(entity, objValue);
         } catch (IllegalAccessException ex) {

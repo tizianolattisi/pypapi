@@ -39,7 +39,7 @@ public class Context extends QObject {
     public Class rootClass;
     public String name;
     public Object currentEntity;
-
+    public Boolean isDirty;
     public Boolean atBof;
     public Boolean atEof;
     private Context primaryDc;
@@ -55,6 +55,7 @@ public class Context extends QObject {
         this.mapper.setModel(this.model);
         this.model.setColumns(columns);
         this.initializeContext();
+        this.isDirty = false;
     }
 
     private void initializeContext(){
@@ -120,6 +121,7 @@ public class Context extends QObject {
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
         // XXX: modelDataChanged
         System.out.println("modelDataChanged");
+        this.isDirty = true;
     }
 
     public void firstElement(){
@@ -136,6 +138,12 @@ public class Context extends QObject {
 
     public void lastElement(){
         this.mapper.toLast();
+    }
+    
+    public void editElement(){
+        Controller c = (Controller) GlobalManager.queryUtility(this.primaryDc.currentEntity.getClass());
+        c.edit(this.primaryDc.currentEntity);
+        this.isDirty = false;
     }
 
 }

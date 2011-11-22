@@ -50,6 +50,9 @@ public class NavigationToolBar extends QToolBar {
         this.insertButton("lastElement", "Last element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_last.png",
                 "Press to show the last element", this.parentForm.context);
+        this.insertButton("editElement", "Save",
+                "classpath:org/pypapi/ui/resources/toolbar/disk.png",
+                "Save current element", this.parentForm.context);
     }
 
     private void insertButton(String actionName, String text, String iconName,
@@ -62,6 +65,7 @@ public class NavigationToolBar extends QToolBar {
         action.setIcon(icon);
         action.triggered.connect(agent, actionName+"()");
         action.triggered.connect(this, "refresh()");
+        this.parentForm.context.model.dataChanged.connect(this, "refresh()");
         this.addAction(action);
     }
 
@@ -71,17 +75,20 @@ public class NavigationToolBar extends QToolBar {
          */
         Boolean atBof = this.parentForm.context.atBof;
         Boolean atEof = this.parentForm.context.atEof;
+        Boolean isDirty = this.parentForm.context.isDirty;
 
         for(QAction action:this.actions()){
             String objName = action.objectName();
             if ("firstElement".equals(objName)){
-                action.setEnabled(!atBof);
+                action.setEnabled(!isDirty && !atBof);
             } else if("previousElement".equals(objName)){
-                action.setEnabled(!atBof);
+                action.setEnabled(!isDirty && !atBof);
             } else if("nextElement".equals(objName)){
-                action.setEnabled(!atEof);
+                action.setEnabled(!isDirty && !atEof);
             } else if("lastElement".equals(objName)){
-                action.setEnabled(!atEof);
+                action.setEnabled(!isDirty && !atEof);
+            } else if("editElement".equals(objName)){
+                action.setEnabled(isDirty);
             }
         }
     }
