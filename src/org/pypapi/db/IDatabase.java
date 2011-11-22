@@ -22,6 +22,5 @@ package org.pypapi.db;
  * @author AXIA Studio (http://www.axiastudio.it)
  */
 public interface IDatabase {
-    void open();
-    Store createStore(Class klass);
+    void open(String persistenceUnit);
 }

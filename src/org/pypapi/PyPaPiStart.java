@@ -19,9 +19,6 @@ package org.pypapi;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
-import javax.persistence.Persistence;
-import javax.persistence.EntityManagerFactory;
-
 import org.pypapi.ui.*;
 import org.pypapi.db.Database;
 import org.pypapi.demo.Author;
@@ -44,11 +41,10 @@ public class PyPaPiStart {
 
         // db init
         Database db = new Database();
-        db.open();
+        db.open("DemoPU");
         
         // create and register controller
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("DemoPU");
-        AuthorJpaController jpaController = new AuthorJpaController(emf);
+        AuthorJpaController jpaController = new AuthorJpaController(db.entityManagerFactory);
         Controller controller = new Controller(jpaController, "Author");
         GlobalManager.registerUtility(controller, Author.class);
         
