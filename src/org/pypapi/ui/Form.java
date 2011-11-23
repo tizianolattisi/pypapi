@@ -35,16 +35,22 @@ import org.pypapi.ui.widgets.NavigationToolBar;
  */
 public class Form extends QMainWindow {
 
-    public Context context;
     public Class entityClass;
-
+    public String uiFile;
+    public Context context;
     public HashMap widgets;
+    
     private List columns;
     private List entities;
 
-    public Form(QFile uiFile, Class entityClass) {
+    public Form(Form other) {
+        this(other.uiFile, other.entityClass);
+    }
+        
+    public Form(String uiFile, Class entityClass) {
         this.entityClass = entityClass;
-        this.loadUi(uiFile);
+        this.uiFile = uiFile;
+        this.loadUi(new QFile(uiFile));
     }
     
     public void init(){

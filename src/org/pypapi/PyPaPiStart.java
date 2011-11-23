@@ -17,7 +17,6 @@
 package org.pypapi;
 
 import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
 
 import org.pypapi.ui.*;
 import org.pypapi.db.*;
@@ -50,8 +49,7 @@ public class PyPaPiStart {
         Controller bookController = new Controller(jpaController, "Book");
         GlobalManager.registerUtility(bookController, IController.class, "org.pypapi.demo.Book");
         // create and register Book form
-        QFile booksUiFile = new QFile("classpath:org/pypapi/demo/books.jui");
-        Form booksForm = new Form(booksUiFile, Book.class);
+        Form booksForm = new Form("classpath:org/pypapi/demo/books.jui", Book.class);
         GlobalManager.registerUtility(booksForm, Form.class, "org.pypapi.demo.Book");
 
         // create and register Author controller
@@ -59,8 +57,7 @@ public class PyPaPiStart {
         Controller authorController = new Controller(authorJpaController, "Author");
         GlobalManager.registerUtility(authorController, IController.class, "org.pypapi.demo.Author");
         // create and register Author form
-        QFile authorsUiFile = new QFile("classpath:org/pypapi/demo/authors.jui");
-        Form authorsForm = new Form(authorsUiFile, Author.class);
+        Form authorsForm = new Form("classpath:org/pypapi/demo/authors.jui", Author.class);
         GlobalManager.registerUtility(authorsForm, Form.class, "org.pypapi.demo.Author");
 
         // init and show Author form

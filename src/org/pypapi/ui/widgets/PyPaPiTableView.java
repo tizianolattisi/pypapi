@@ -84,9 +84,9 @@ public class PyPaPiTableView extends QTableView{
                 entities.add(entity);
                 Store store = new Store(entities);
                 Form form = (Form) GlobalManager.queryUtility(Form.class, entity.getClass().getName());
-                Controller c = (Controller) GlobalManager.queryUtility(IController.class);
-                form.init(store);
-                form.show();
+                Form newForm = new Form(form);
+                newForm.init(store);
+                newForm.show();
             }
         }
     }
