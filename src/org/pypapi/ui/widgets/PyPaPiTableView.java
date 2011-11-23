@@ -18,6 +18,8 @@ package org.pypapi.ui.widgets;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import java.util.List;
+import org.pypapi.ui.TableModel;
 
 /**
  *
@@ -38,7 +40,7 @@ public class PyPaPiTableView extends QTableView{
          */
         this.initializeContextMenu();
     }
-
+    
     private void initializeContextMenu(){
         this.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
@@ -71,6 +73,14 @@ public class PyPaPiTableView extends QTableView{
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         System.out.println(action);
+        if (this.actionOpen.equals(action)){
+            List<QModelIndex> rows = this.selectionModel().selectedRows();
+            for (QModelIndex idx: rows){
+                TableModel model = (TableModel) this.model();
+                Object entity = model.getEntityByRow(idx.row());
+                // TODO: create a store from the entity, and open in a form
+            }
+        }
     }
 
 }

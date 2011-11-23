@@ -29,7 +29,7 @@ import javax.persistence.EntityManager;
  *
  * @author AXIA Studio (http://www.axiastudio.it)
  */
-public class Controller {
+public class Controller implements IController {
     
     private Serializable jpaController;
     private String entityName;
@@ -39,6 +39,7 @@ public class Controller {
         this.entityName = entityName;
     }
     
+    @Override
     public Store createFullStore(){
         try {
             Method m;
@@ -61,6 +62,7 @@ public class Controller {
         return null;
     }
     
+    @Override
     public void edit(Object entity){
         try {
             Method m = this.jpaController.getClass().getMethod("edit", entity.getClass());
@@ -78,6 +80,7 @@ public class Controller {
         }
     }
     
+    @Override
     public Object refresh(Object entity){
         try {
             Method m = this.jpaController.getClass().getMethod("getEntityManager");

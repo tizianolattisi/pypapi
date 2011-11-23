@@ -24,7 +24,6 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import org.pypapi.db.*;
-import org.pypapi.db.Controller;
 import org.pypapi.GlobalManager;
 
 
@@ -67,7 +66,7 @@ public class Context extends QObject {
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
-        // XXX: implements inserting and removing rows 
+        // TODO: implements inserting and removing rows 
         //this.model.rowsRemoved.connect(primaryDc, "modelDataChanged()");
         //this.model.rowsInserted.connect(primaryDc, "modelDataChanged()");
     }
@@ -79,7 +78,7 @@ public class Context extends QObject {
         /* resolve entity class */
         if(".".equals(this.name)){
             Database db = (Database) GlobalManager.queryUtility(IDatabase.class);
-            Controller controller = (Controller) GlobalManager.queryUtility(this.rootClass);
+            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
             Store store = controller.createFullStore();
             tableModel = new TableModel(store, null);
         } else {
@@ -119,8 +118,6 @@ public class Context extends QObject {
     }
 
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
-        // XXX: modelDataChanged
-        System.out.println("modelDataChanged");
         this.isDirty = true;
     }
 
@@ -141,14 +138,14 @@ public class Context extends QObject {
     }
     
     public void commitChanges(){
-        Controller c = (Controller) GlobalManager.queryUtility(this.primaryDc.currentEntity.getClass());
+        Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         c.edit(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
 
     public void cancelChanges(){
-        Controller controller = (Controller) GlobalManager.queryUtility(this.primaryDc.currentEntity.getClass());
-        controller.refresh(this.primaryDc.currentEntity);
+        Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        c.refresh(this.primaryDc.currentEntity);
         this.model.purgeItemCache(this.primaryDc.currentEntity);
         this.isDirty = false;
     }

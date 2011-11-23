@@ -16,12 +16,11 @@
  */
 package org.pypapi;
 
-import org.pypapi.db.Controller;
 import com.trolltech.qt.gui.*;
 import com.trolltech.qt.core.*;
 
 import org.pypapi.ui.*;
-import org.pypapi.db.Database;
+import org.pypapi.db.*;
 import org.pypapi.demo.Author;
 import org.pypapi.demo.AuthorJpaController;
 
@@ -47,7 +46,7 @@ public class PyPaPiStart {
         // create and register controller
         AuthorJpaController jpaController = new AuthorJpaController(db.entityManagerFactory);
         Controller controller = new Controller(jpaController, "Author");
-        GlobalManager.registerUtility(controller, Author.class);
+        GlobalManager.registerUtility(controller, IController.class, "org.pypapi.demo.Author");
         
         // create and show form
         QFile authorsUiFile = new QFile("classpath:org/pypapi/demo/authors.jui");
