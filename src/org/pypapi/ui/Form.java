@@ -26,6 +26,7 @@ import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 
 import org.pypapi.GlobalManager;
+import org.pypapi.db.Store;
 import org.pypapi.ui.widgets.NavigationToolBar;
 
 /**
@@ -44,9 +45,16 @@ public class Form extends QMainWindow {
     public Form(QFile uiFile, Class entityClass) {
         this.entityClass = entityClass;
         this.loadUi(uiFile);
+    }
+    
+    public void init(){
+        this.init(null);
+    }
+        
+    public void init(Store store){
         this.resolveColumns();
         /* root context */
-        this.context = this.createContext(".");
+        this.context = this.createContext(".", store);
         this.addMappers();
         /* context's children */
         this.initModels();
@@ -76,19 +84,27 @@ public class Form extends QMainWindow {
     }
 
     private Context createContext(String path){
+        return this.createContext(path, null);
+    }
+
+    private Context createContext(String path, Store store){
         List contextColumns = null;
+        Context dataContext = null;
         if(".".equals(path)){
             contextColumns = this.columns;
         } else {
-            // per ora un set predefinito di colonne per le List
+            // TODO: columns from dynamic property
             contextColumns = new ArrayList();
             Column c = new Column("Description", "Description", "Description");
             contextColumns.add(c);
         }
-        Context dataContext = new Context(this, this.entityClass, path, contextColumns);
+        if( store == null){
+            dataContext = new Context(this, this.entityClass, path, contextColumns);
+        } else {
+            dataContext = new Context(this, this.entityClass, path, contextColumns, store);
+        }
         GlobalManager.registerUtility(dataContext, IContext.class, path);
         if(! ".".equals(path)){
-            /* */
             ((QTableView) this.widgets.get(path)).setModel(dataContext.model);
         }
         return dataContext;

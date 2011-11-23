@@ -38,7 +38,7 @@ public class Controller implements IController {
         this.jpaController = jpaController;
         this.entityName = entityName;
     }
-    
+        
     @Override
     public Store createFullStore(){
         try {

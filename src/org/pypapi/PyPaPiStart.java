@@ -63,7 +63,8 @@ public class PyPaPiStart {
         Form authorsForm = new Form(authorsUiFile, Author.class);
         GlobalManager.registerUtility(authorsForm, Form.class, "org.pypapi.demo.Author");
 
-        // show Author form
+        // init and show Author form
+        authorsForm.init();
         authorsForm.show();
         
         QApplication.exec();

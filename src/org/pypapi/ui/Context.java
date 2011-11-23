@@ -44,11 +44,15 @@ public class Context extends QObject {
     private Context primaryDc;
 
     public Context(QObject parent, Class rootClass, String name, List columns){
+        this(parent, rootClass, name, columns, null);
+    }
+
+    public Context(QObject parent, Class rootClass, String name, List columns, Store store){
         Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", name);
         this.rootClass = rootClass;
         this.name = name;
 
-        this.model = this.createModel();
+        this.model = this.createModel(store);
         this.mapper = new QDataWidgetMapper(this);
         this.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit);
         this.mapper.setModel(this.model);
@@ -72,14 +76,16 @@ public class Context extends QObject {
     }
 
 
-    private TableModel createModel(){
+    private TableModel createModel(Store store){
         TableModel tableModel;
 
         /* resolve entity class */
         if(".".equals(this.name)){
             Database db = (Database) GlobalManager.queryUtility(IDatabase.class);
             Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
-            Store store = controller.createFullStore();
+            if( store == null ){
+                store = controller.createFullStore();
+            }
             tableModel = new TableModel(store, null);
         } else {
             tableModel = new TableModel(null, null);
