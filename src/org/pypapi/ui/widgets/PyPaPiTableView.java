@@ -19,7 +19,8 @@ package org.pypapi.ui.widgets;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.util.List;
-import org.pypapi.ui.TableModel;
+import org.pypapi.GlobalManager;
+import org.pypapi.ui.*;
 
 /**
  *
@@ -79,6 +80,8 @@ public class PyPaPiTableView extends QTableView{
                 TableModel model = (TableModel) this.model();
                 Object entity = model.getEntityByRow(idx.row());
                 // TODO: create a store from the entity, and open in a form
+                Form form = (Form) GlobalManager.queryUtility(Form.class, entity.getClass().getName());
+                form.show();
             }
         }
     }

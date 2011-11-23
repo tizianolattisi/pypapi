@@ -23,6 +23,8 @@ import org.pypapi.ui.*;
 import org.pypapi.db.*;
 import org.pypapi.demo.Author;
 import org.pypapi.demo.AuthorJpaController;
+import org.pypapi.demo.Book;
+import org.pypapi.demo.BookJpaController;
 
 /**
  *
@@ -43,14 +45,25 @@ public class PyPaPiStart {
         Database db = new Database();
         db.open("DemoPU");
         
-        // create and register controller
-        AuthorJpaController jpaController = new AuthorJpaController(db.entityManagerFactory);
-        Controller controller = new Controller(jpaController, "Author");
-        GlobalManager.registerUtility(controller, IController.class, "org.pypapi.demo.Author");
-        
-        // create and show form
+        // create and register Book controller
+        BookJpaController jpaController = new BookJpaController(db.entityManagerFactory);
+        Controller bookController = new Controller(jpaController, "Book");
+        GlobalManager.registerUtility(bookController, IController.class, "org.pypapi.demo.Book");
+        // create and register Book form
+        QFile booksUiFile = new QFile("classpath:org/pypapi/demo/books.jui");
+        Form booksForm = new Form(booksUiFile, Book.class);
+        GlobalManager.registerUtility(booksForm, Form.class, "org.pypapi.demo.Book");
+
+        // create and register Author controller
+        AuthorJpaController authorJpaController = new AuthorJpaController(db.entityManagerFactory);
+        Controller authorController = new Controller(authorJpaController, "Author");
+        GlobalManager.registerUtility(authorController, IController.class, "org.pypapi.demo.Author");
+        // create and register Author form
         QFile authorsUiFile = new QFile("classpath:org/pypapi/demo/authors.jui");
         Form authorsForm = new Form(authorsUiFile, Author.class);
+        GlobalManager.registerUtility(authorsForm, Form.class, "org.pypapi.demo.Author");
+
+        // show Author form
         authorsForm.show();
         
         QApplication.exec();
