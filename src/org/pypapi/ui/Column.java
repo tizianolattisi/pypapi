@@ -50,7 +50,6 @@ public class Column {
         
         /* setter */
         String setterName = "set" + this.name;
-        System.out.println(result);
         Method setter = entity.getClass().getMethod(setterName, result.getClass());
 
         ItemEditable item = new ItemEditable(this, result, setter, entity);
