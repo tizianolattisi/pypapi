@@ -118,9 +118,11 @@ public class Form extends QMainWindow {
 
     private void resolveColumns(){
 
-        String propertyName = null;
         QObject child = null;
         Object property = null;
+        String propertyName = null;
+        Object lookupProperty = null;
+        String lookupPropertyName = null;
         Column column = null;
         List children = this.findChildren();
 
@@ -133,7 +135,14 @@ public class Form extends QMainWindow {
             property = child.property("column");
             if (property != null){
                 propertyName = (String) property;
-                column = new Column(propertyName, propertyName, propertyName);
+                lookupProperty = child.property("lookup");
+                if ( lookupProperty != null){
+                    lookupPropertyName = (String) lookupProperty;                    
+                    lookupPropertyName = lookupPropertyName.substring(0,1).toUpperCase()
+                            + lookupPropertyName.substring(1);
+                }
+                column = new Column(propertyName, propertyName, propertyName,
+                        lookupPropertyName);
                 boolean add = this.columns.add(column);
                 Object put = this.widgets.put(propertyName, child);
             } else {

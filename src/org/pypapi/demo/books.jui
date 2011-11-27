@@ -66,6 +66,9 @@
        <property name="column" stdset="0">
         <string>Author</string>
        </property>
+       <property name="lookup" stdset="0">
+        <string>surname</string>
+       </property>
       </widget>
      </item>
      <item row="3" column="0">

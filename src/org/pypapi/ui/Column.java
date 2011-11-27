@@ -28,12 +28,19 @@ public class Column {
     public String name;
     public String label;
     public String description;
+    public String lookup;
+    
     private TableModel model;
 
-    public Column(String name, String label, String description){
+    public Column(String name, String label, String description, String lookup){
         this.name = name;
         this.label = label;
         this.description = description;
+        this.lookup = lookup;
+    }
+
+    public Column(String name, String label, String description){
+        this(name, label, description, null);
     }
 
     public void bindModel(TableModel model){
@@ -52,8 +59,13 @@ public class Column {
         String setterName = "set" + this.name;
         Method setter = entity.getClass().getMethod(setterName, result.getClass());
 
-        ItemEditable item = new ItemEditable(this, result, setter, entity);
-        return item;
+        if( result.getClass() == String.class ){
+            ItemEditable item = new ItemEditable(this, result, setter, entity);
+            return item;
+        } else {
+            ItemLookup item = new ItemLookup(this, result, setter, entity, this.lookup);
+            return item;
+        }
     }
 
 }
