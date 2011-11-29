@@ -63,7 +63,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="org.pypapi.ui.widgets.PyPaPiEntityPicker" name="lineEdit">
        <property name="column" stdset="0">
         <string>Author</string>
        </property>
@@ -113,6 +113,13 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>org.pypapi.ui.widgets.PyPaPiEntityPicker</class>
+   <extends>QLineEdit</extends>
+   <header>pypapientitypicker.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

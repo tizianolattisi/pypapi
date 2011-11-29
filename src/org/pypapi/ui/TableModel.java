@@ -148,7 +148,7 @@ public class TableModel extends QAbstractTableModel {
         return result;
     }
 
-    private Object getByEntity(Object entity, Column column) throws Exception {
+    public Object getByEntity(Object entity, Column column) throws Exception {
         Item result=null;
         HashMap hm=null;
         if (this.cache.containsKey(entity)) {

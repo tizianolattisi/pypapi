@@ -28,6 +28,7 @@ import com.trolltech.qt.designer.QUiLoaderException;
 import org.pypapi.GlobalManager;
 import org.pypapi.db.Store;
 import org.pypapi.ui.widgets.NavigationToolBar;
+import org.pypapi.ui.widgets.PyPaPiEntityPicker;
 
 /**
  *
@@ -154,8 +155,13 @@ public class Form extends QMainWindow {
                     Object put = this.widgets.put(propertyName, child);
                 }
             }
-        }
+            // XXX: implements ILookable?
+            GlobalManager.registerUtility(column, Column.class, uiFile);
+            if (child.getClass().equals(PyPaPiEntityPicker.class)){
+                ((PyPaPiEntityPicker) child).column = column;
+          }
 
+        }
     }
 
     private void addMappers() {

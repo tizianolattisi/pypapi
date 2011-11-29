@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2011 AXIA Studio (http://www.axiastudio.it)
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,56 +18,47 @@ package org.pypapi.ui.widgets;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
-import java.util.List;
-import org.pypapi.ui.Form;
-import org.pypapi.ui.TableModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.pypapi.GlobalManager;
 import org.pypapi.ui.Util;
+import org.pypapi.ui.Column;
+import org.pypapi.ui.Context;
+import org.pypapi.ui.Form;
+import org.pypapi.ui.IContext;
+import org.pypapi.ui.ItemLookup;
 
 /**
  *
  * @author AXIA Studio (http://www.axiastudio.it)
- *
- * PyPaPiTableView is a custom widget implementing info, open, add and delete
- * of rows in the bag list.
- *
  */
-public class PyPaPiTableView extends QTableView{
-
-    private QAction actionAdd, actionDel, actionOpen, actionInfo;
+public class PyPaPiEntityPicker extends QLineEdit{
+    
+    public Column column;
+    private QAction actionOpen, actionSelect;
     private QMenu menuPopup;
 
-    public PyPaPiTableView(){
+    public PyPaPiEntityPicker(){
         /*
          *  init
          */
         this.initializeContextMenu();
     }
-    
-    private void initializeContextMenu(){
+
+        private void initializeContextMenu(){
         this.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
         this.menuPopup = new QMenu(this);
 
-        this.actionInfo = new QAction("Info", this);
-        QIcon iconInfo = new QIcon("classpath:org/pypapi/ui/resources/toolbar/information.png");
-        this.actionInfo.setIcon(iconInfo);
-        this.menuPopup.addAction(actionInfo);
+        this.actionSelect = new QAction("Select", this);
+        QIcon iconSelect = new QIcon("classpath:org/pypapi/ui/resources/link.png");
+        this.actionSelect.setIcon(iconSelect);
+        this.menuPopup.addAction(actionSelect);
 
         this.actionOpen = new QAction("Open", this);
         QIcon iconOpen = new QIcon("classpath:org/pypapi/ui/resources/open.png");
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);
-
-        this.actionAdd = new QAction("Add", this);
-        QIcon iconAdd = new QIcon("classpath:org/pypapi/ui/resources/toolbar/add.png");
-        this.actionAdd.setIcon(iconAdd);
-        this.menuPopup.addAction(actionAdd);
-
-        this.actionDel = new QAction("Delete", this);
-        QIcon iconDel = new QIcon("classpath:org/pypapi/ui/resources/toolbar/delete.png");
-        this.actionDel.setIcon(iconDel);
-        this.menuPopup.addAction(actionDel);
-
 
     }
 
@@ -75,14 +66,15 @@ public class PyPaPiTableView extends QTableView{
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if (this.actionOpen.equals(action)){
-            List<QModelIndex> rows = this.selectionModel().selectedRows();
-            for (QModelIndex idx: rows){
-                TableModel model = (TableModel) this.model();
-                Object entity = model.getEntityByRow(idx.row());
+            Context context = (Context) GlobalManager.queryUtility(IContext.class, ".");
+            try {
+                ItemLookup item = (ItemLookup) context.model.getByEntity(context.currentEntity, column);
+                Object entity = item.get();
                 Form form = Util.formFromEntity(entity);
                 form.show();
+            } catch (Exception ex) {
+                Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-
 }
