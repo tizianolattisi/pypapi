@@ -16,6 +16,8 @@
  */
 package org.pypapi.ui;
 
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.pypapi.GlobalManager;
@@ -35,6 +37,30 @@ public class Util {
         Form newForm = new Form(form);
         newForm.init(store);
         return newForm;
+    }
+    
+    public static QFile ui2juiQFile(String ui){
+        /*
+         * Convert a ui in a QFile jui.
+         * The jui file is a ui file without the <?xml?> tag, and with the language
+         * property set to jambi.
+         */
+        String output=null;
+        String uiTag = "<ui version=\"4.0\" language=\"jambi\">";
+        QFile file = new QFile(ui);
+        file.open(QFile.OpenModeFlag.ReadOnly);
+        file.readLine();
+        file.readLine();
+        output = file.read(file.size()).toString();
+        file.close();
+        String juiFileName = ui.substring(0, ui.length()-2)+"jui";
+        QFile out = new QFile(juiFileName);
+        out.open(QFile.OpenModeFlag.WriteOnly);
+        out.write(new QByteArray(uiTag+"\n"));
+        out.write(new QByteArray(output));
+        out.close();        
+        QFile res = new QFile(juiFileName);
+        return res;
     }
 
 }
