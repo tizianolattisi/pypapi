@@ -45,6 +45,8 @@ public class Util {
          * Convert a ui QFile in a QFile jui.
          * The jui file is a ui file without the <?xml?> tag, and with the language
          * property set to jambi.
+         * Something like:
+         * sed 's/<ui version="4.0">/<ui version="4.0" language="jambi">/g' $1 | tail -n +2
          */
         String content;
         QTemporaryFile jui;
