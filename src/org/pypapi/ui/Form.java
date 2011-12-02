@@ -26,7 +26,6 @@ import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 
 import org.pypapi.GlobalManager;
-import org.pypapi.ui.Util;
 import org.pypapi.db.Store;
 import org.pypapi.ui.widgets.NavigationToolBar;
 import org.pypapi.ui.widgets.PyPaPiEntityPicker;
@@ -52,7 +51,8 @@ public class Form extends QMainWindow {
     public Form(String uiFile, Class entityClass) {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
-        QFile file = Util.ui2juiQFile(uiFile);
+        QFile file = Util.ui2jui(new QFile(uiFile));
+        //QFile file = new QFile(uiFile);
         this.loadUi(file);
     }
     

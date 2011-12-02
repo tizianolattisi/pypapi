@@ -18,6 +18,7 @@ package org.pypapi.ui;
 
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QTemporaryFile;
 import java.util.ArrayList;
 import java.util.List;
 import org.pypapi.GlobalManager;
@@ -39,28 +40,27 @@ public class Util {
         return newForm;
     }
     
-    public static QFile ui2juiQFile(String ui){
+    public static QFile ui2jui(QFile ui){
         /*
-         * Convert a ui in a QFile jui.
+         * Convert a ui QFile in a QFile jui.
          * The jui file is a ui file without the <?xml?> tag, and with the language
          * property set to jambi.
          */
-        String output=null;
+        String content;
+        QTemporaryFile jui;
+        long toRead=ui.size();
         String uiTag = "<ui version=\"4.0\" language=\"jambi\">";
-        QFile file = new QFile(ui);
-        file.open(QFile.OpenModeFlag.ReadOnly);
-        file.readLine();
-        file.readLine();
-        output = file.read(file.size()).toString();
-        file.close();
-        String juiFileName = ui.substring(0, ui.length()-2)+"jui";
-        QFile out = new QFile(juiFileName);
-        out.open(QFile.OpenModeFlag.WriteOnly);
-        out.write(new QByteArray(uiTag+"\n"));
-        out.write(new QByteArray(output));
-        out.close();        
-        QFile res = new QFile(juiFileName);
-        return res;
+        ui.open(new QFile.OpenMode(QFile.OpenModeFlag.ReadOnly,
+                                   QFile.OpenModeFlag.Unbuffered));
+        toRead -= ui.readLine().size();
+        toRead -= ui.readLine().size();
+        content = uiTag + "\n" + ui.read(toRead).toString();
+        jui = new QTemporaryFile();
+        jui.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly,
+                                    QFile.OpenModeFlag.Unbuffered));
+        jui.write(new QByteArray(content));
+        jui.close();
+        return jui;
     }
 
 }
