@@ -56,6 +56,9 @@ public class NavigationToolBar extends QToolBar {
         this.insertButton("cancelChanges", "Cancel",
                 "classpath:org/pypapi/ui/resources/toolbar/cancel.png",
                 "Discard currente changes", this.parentForm.context);
+        this.insertButton("search", "Search",
+                "classpath:org/pypapi/ui/resources/toolbar/find.png",
+                "Search elements", this.parentForm.context);
     }
 
     private void insertButton(String actionName, String text, String iconName,
@@ -94,6 +97,8 @@ public class NavigationToolBar extends QToolBar {
                 action.setEnabled(isDirty);
             } else if("cancelChanges".equals(objName)){
                 action.setEnabled(isDirty);
+            } else if("search".equals(objName)){
+                action.setEnabled(!isDirty);
             }
         }
     }

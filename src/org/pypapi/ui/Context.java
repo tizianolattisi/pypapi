@@ -155,5 +155,16 @@ public class Context extends QObject {
         this.model.purgeItemCache(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
+    
+    public void search(){
+        Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
+        PickerDialog pd = new PickerDialog(controller);
+        pd.executeSearch();
+        int res = pd.exec();
+        if ( res == 1 ){
+            this.model.replaceRows(pd.selection);
+            this.firstElement();
+        }
+    }
 
 }

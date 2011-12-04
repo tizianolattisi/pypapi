@@ -59,7 +59,9 @@ public class PyPaPiEntityPicker extends QLineEdit{
         QIcon iconOpen = new QIcon("classpath:org/pypapi/ui/resources/open.png");
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);
-
+        
+        this.installEventFilter(this);
+        
     }
 
 
@@ -76,5 +78,11 @@ public class PyPaPiEntityPicker extends QLineEdit{
                 Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    @Override
+    public boolean eventFilter(QObject dist, QEvent event){
+        // TODO: fast selector from id?
+        return false;
     }
 }

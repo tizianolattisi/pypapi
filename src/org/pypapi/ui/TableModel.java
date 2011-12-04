@@ -181,6 +181,38 @@ public class TableModel extends QAbstractTableModel {
         entityHM.remove(column);
     }
 
+    /*
+     * replace the store with a store based on the passed entity list
+     */
+    public void replaceRows(List entities){
+        this.setStore(new Store(entities));
+    }
+
+    /*
+     * insert rows at the current position
+     */
+    public Boolean insertRows(int row, int count, QModelIndex parent, List entities){
+        /*
+        def insertRows(self, position, count, parent=QtCore.QModelIndex(), entities=None):
+
+            if not self.resizable and not self._canCreate():
+                return False
+            if position <= -1:
+                position = len(self.store)
+            rows_indexes = range(position, position+count)
+            self.beginInsertRows(parent, rows_indexes[0], rows_indexes[-1])
+            self._purgeIndexCache()
+            for idx,rown in enumerate(rows_indexes):
+                if entities is not None:
+                    new_item = entities[idx]
+                else:
+                    new_item = self.create()
+                self.store.insert(position, new_item)
+            self.endInsertRows()
+            return True
+         */
+        return true;
+    }
 }
 
 
