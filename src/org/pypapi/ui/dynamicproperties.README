@@ -1,0 +1,84 @@
+Introduction
+============
+
+The PyPaPi Framework uses a combination of dynamic properties stored in the ui
+(QtDesigner) files.
+Thru these properties the framework knows some storage and layout aspect of the
+form, like the list of the columns, the lookup captions, the search fields, and
+so on.
+
+
+Single value widget, and list value widget
+==========================================
+
+The framework considers "single value widget" a widget binded to a single value,
+either a scalar property, like a field on a database table, or a lookup, like a
+1-1 relation thru a a foreign key.
+The widgets able to contain a list of related object is otherwise considered
+"list value widget", used for example in a db relation 1-n.
+QLineEdit, QTextEdit, QCheckBox, QComboBox, and the special PyPaPiPickerEntity
+are "single value widget".
+QTableView and PyPaPiTableView are "list value widget".
+
+
+Column (String) dynamic property
+================================
+
+The "column" dynamic property defines wich attribute of the object pointed by
+the form should be binded to the widget.
+
+
+Entity (String) dynamic property
+================================
+
+If the widget takes a look at the properties of related sub-objects (ex. details
+rows), the "entity" dynamic property should be set.
+The entity property references the sub-object using a "dotted relation" syntax.
+every entity linked to tha main object can be referred like ".entityname".
+
+
+Lookup (String) dynamic property
+================================
+
+The special widget PyPaPiPickerEntity acts like a single value widget, in
+conjunction with the property "lookup", wich defines the foreign property to
+use as lookup. For example the lookup relation "book's genre" can set
+column="genre" and lookup="description"; in this case the single value genre has
+uses the lookup description (of the genre) to show itself.
+
+
+Note
+====
+
+For the single value widgets is implicit defined a entity="." property, beacuse
+the attribute defined in column property should be considered attached to the
+"root" of the main object.
+
+
+Search (Boolean) dynamic property
+=================================
+TODO
+...
+
+
+SearchColumns (StringList) dynamic property
+===========================================
+TODO
+...
+
+
+SearchOrder (Int) dynamic property
+==================================
+TODO
+...
+
+
+Columns (String) dynamic property
+=================================
+TODO
+QTableView and PyPaPiTableView can display a list of objects rappresenting a
+detail of the parent object. With the property "columns" we can select the
+columns to show in the detail table. These columns should be comma separated
+value, without double quotes.
+
+
