@@ -38,6 +38,7 @@ public class Form extends QMainWindow {
 
     public Class entityClass;
     public String uiFile;
+    public String title;
     public Context context;
     public HashMap widgets;
     
@@ -47,10 +48,15 @@ public class Form extends QMainWindow {
     public Form(Form other) {
         this(other.uiFile, other.entityClass);
     }
-        
+
     public Form(String uiFile, Class entityClass) {
+        this(uiFile, entityClass, "");
+    }
+
+    public Form(String uiFile, Class entityClass, String title) {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
+        this.title = title;
         QFile file = Util.ui2jui(new QFile(uiFile));
         //QFile file = new QFile(uiFile);
         this.loadUi(file);
@@ -70,6 +76,7 @@ public class Form extends QMainWindow {
         NavigationToolBar bar = new NavigationToolBar("Navigation", this);
         bar.setMovable(false);
         this.addToolBar(bar);
+        this.context.mapper.currentIndexChanged.connect(this, "indexChanged(int)");
         this.context.mapper.toFirst();
         bar.refresh();
     }
@@ -172,6 +179,12 @@ public class Form extends QMainWindow {
             QObject widget = (QObject) this.widgets.get(column.name);
             this.context.mapper.addMapping((QWidget) widget, i);
         }
+    }
+    
+    private void indexChanged(int row){
+        int idx = this.context.mapper.currentIndex() + 1;
+        int tot = this.context.model.rowCount();
+        this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
     }
 
 }
