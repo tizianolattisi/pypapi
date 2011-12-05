@@ -25,7 +25,6 @@ import org.pypapi.ui.Util;
 import org.pypapi.ui.Column;
 import org.pypapi.ui.Context;
 import org.pypapi.ui.Form;
-import org.pypapi.ui.IContext;
 import org.pypapi.ui.ItemLookup;
 
 /**
@@ -45,7 +44,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
         this.initializeContextMenu();
     }
 
-        private void initializeContextMenu(){
+    private void initializeContextMenu(){
         this.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
         this.menuPopup = new QMenu(this);
@@ -68,12 +67,12 @@ public class PyPaPiEntityPicker extends QLineEdit{
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if (this.actionOpen.equals(action)){
-            Context context = (Context) GlobalManager.queryUtility(IContext.class, ".");
+            Context context = (Context) GlobalManager.queryRelation(this.property("parentForm"), ".");
             try {
                 ItemLookup item = (ItemLookup) context.model.getByEntity(context.currentEntity, column);
                 Object entity = item.get();
-                Form form = Util.formFromEntity(entity);
-                form.show();
+                Form newForm = Util.formFromEntity(entity);
+                newForm.show();
             } catch (Exception ex) {
                 Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             }
