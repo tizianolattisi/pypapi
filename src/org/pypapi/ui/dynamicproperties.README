@@ -8,8 +8,8 @@ form, like the list of the columns, the lookup captions, the search fields, and
 so on.
 
 
-Single value widget, and list value widget
-==========================================
+Single value widget (SVW), and list value widget (LVW)
+======================================================
 
 The framework considers "single value widget" a widget binded to a single value,
 either a scalar property, like a field on a database table, or a lookup, like a
@@ -24,6 +24,7 @@ QTableView and PyPaPiTableView are "list value widget".
 Column (String) dynamic property
 ================================
 
+Apply to: SVW (mandatory)
 The "column" dynamic property defines wich attribute of the object pointed by
 the form should be binded to the widget.
 
@@ -31,6 +32,7 @@ the form should be binded to the widget.
 Entity (String) dynamic property
 ================================
 
+Apply to: LVW (mandatory)
 If the widget takes a look at the properties of related sub-objects (ex. details
 rows), the "entity" dynamic property should be set.
 The entity property references the sub-object using a "dotted relation" syntax.
@@ -40,6 +42,7 @@ every entity linked to tha main object can be referred like ".entityname".
 Lookup (String) dynamic property
 ================================
 
+Apply to: SVW (when the widget is a lookup)
 The special widget PyPaPiPickerEntity acts like a single value widget, in
 conjunction with the property "lookup", wich defines the foreign property to
 use as lookup. For example the lookup relation "book's genre" can set
@@ -75,10 +78,17 @@ TODO
 
 Columns (String) dynamic property
 =================================
-TODO
+Apply to: LVW (optional)
 QTableView and PyPaPiTableView can display a list of objects rappresenting a
 detail of the parent object. With the property "columns" we can select the
 columns to show in the detail table. These columns should be comma separated
 value, without double quotes.
 
 
+Reference (String) dynamic property
+===================================
+
+Apply to: LVW (n-n relations)
+I the entity refers to a n-n relation, the reference dynamic property show how
+to catch the foreign object from the relation object. The reference property
+should be a valid property of the relation object.

@@ -16,20 +16,44 @@
  */
 package org.pypapi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
  * @author AXIA Studio (http://www.axiastudio.it)
+ * 
+ * The GlobalManager class provides method for register and query utility and
+ * adapters.
+ * 
  */
 public class GlobalManager {
+    
     private static HashMap utilities = new HashMap();
+    private static HashMap adapters = new HashMap();
+    private static HashMap relations = new HashMap();
 
+    /**
+     * Registers the unnamed utility for the given interface.
+     * 
+     * @param utility The utility object to register
+     * @param iface The interface implemented by the utility
+     * 
+     */
     public static void registerUtility(Object utility, Class iface){
         GlobalManager.registerUtility(utility, iface, ".");
 
     }
 
+    /**
+     * Registers the named utility for the given interface.
+     * 
+     * @param utility The utility object to register
+     * @param iface The interface implemented by the utility
+     * @param name The string name
+     * 
+     */
     public static void registerUtility(Object utility, Class iface, String name){
         HashMap hm = null;
         Object hmObject = GlobalManager.utilities.get(iface);
@@ -42,10 +66,23 @@ public class GlobalManager {
         GlobalManager.utilities.put(iface, hm);
     }
 
+    /**
+     * Query the unnamed utility with the given interface.
+     * 
+     * @param iface The interface implemented by the utility
+     * 
+     */
     public static Object queryUtility(Class iface){
         return GlobalManager.queryUtility(iface, ".");
     }
 
+    /**
+     * Query the named utility with the given interface.
+     * 
+     * @param iface The interface implemented by the utility
+     * @param name The string name
+     * 
+     */
     public static Object queryUtility(Class iface, String name){
         HashMap hm = null;
         Object utility = null;
@@ -53,9 +90,108 @@ public class GlobalManager {
         if( hmObject != null ){
             hm = (HashMap) hmObject;
             utility = hm.get(name);
-        } else {
-            utility = null;
         }
         return utility;
+    }
+    
+    /**
+     * Registers an adapter.
+     * 
+     * @param adapter The adapter object
+     * @param adapts The list of interfaces that the adapter adapts
+     * @param provides The interface that the adapter implements
+     */
+    public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
+        HashMap hm = null;
+        for (Class c: adapts ){
+            Object hmObject = GlobalManager.adapters.get(c);
+            if( hmObject != null ){
+                hm = (HashMap) hmObject;
+            } else {
+                hm = new HashMap();
+            }
+            hm.put(provides, adatper);
+            GlobalManager.adapters.put(c, hm);
+        }
+    }
+
+    /**
+     * Registers an adapter for a list of interfaces.
+     * 
+     * @param adapter The adapter object
+     * @param adapts The list of interfaces that the adapter adapts
+     * @param provides The interface that the adapter implements
+     */
+    public static void registerAdapter(Object adatper, List<Class> adapts, Class provides){
+        GlobalManager.registerAdapter(adatper, adapts, provides, null);
+    }
+
+
+    /**
+     * Registers an adapter for a single interface.
+     * 
+     * @param adapter The adapter object
+     * @param adapts The interface that the adapter adapts
+     * @param provides The interface that the adapter implements
+     */
+    public static void registerAdapter(Object adapter, Class adapts, Class provides){
+        List adaptsList = new ArrayList();
+        adaptsList.add(adapts);
+        GlobalManager.registerAdapter(adapter, adaptsList, provides);
+    }
+
+    /**
+     * Query an adapter.
+     * 
+     * @param adapts The interface of the adapted object
+     * @param provides The interface that the adapter should implement
+     */
+    public static Object queryAdapter(Class adapts, Class provides){
+        HashMap hm = null;
+        Object adapter = null;
+        Object hmObject = GlobalManager.adapters.get(adapts);
+        if( hmObject != null ){
+            hm = (HashMap) hmObject;
+            adapter = hm.get(provides);
+        }
+        return adapter;
+    }
+
+    /**
+     * Registers a named relation.
+     * 
+     * @param related The related object
+     * @param object The object to which connect the related object
+     * @param name The string name
+     * 
+     */
+    public static void registerRelation(Object related, Object object, String name){
+        HashMap hm = null;
+        Object hmObject = GlobalManager.relations.get(object);
+        if( hmObject != null ){
+            hm = (HashMap) hmObject;
+        } else {
+            hm = new HashMap();
+        }
+        hm.put(name, related);
+        GlobalManager.relations.put(object, hm);
+    }
+
+    /**
+     * Query a related object.
+     * 
+     * @param iface The interface implemented by the utility
+     * @param name The string name
+     * 
+     */
+    public static Object queryRelation(Object object, String name){
+        HashMap hm = null;
+        Object related = null;
+        Object hmObject = GlobalManager.relations.get(object);
+        if( hmObject != null ){
+            hm = (HashMap) hmObject;
+            related = hm.get(name);
+        }
+        return related;
     }
 }

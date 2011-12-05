@@ -34,7 +34,7 @@ import org.pypapi.ui.widgets.PyPaPiEntityPicker;
  *
  * @author AXIA Studio (http://www.axiastudio.it)
  */
-public class Form extends QMainWindow {
+public class Form extends QMainWindow implements IForm {
 
     public Class entityClass;
     public String uiFile;
@@ -62,10 +62,12 @@ public class Form extends QMainWindow {
         this.loadUi(file);
     }
     
+    @Override
     public void init(){
         this.init(null);
     }
         
+    @Override
     public void init(Store store){
         this.resolveColumns();
         /* root context */
@@ -119,9 +121,10 @@ public class Form extends QMainWindow {
         } else {
             dataContext = new Context(this, this.entityClass, path, contextColumns, store);
         }
-        GlobalManager.registerUtility(dataContext, IContext.class, path);
+        GlobalManager.registerRelation(dataContext, this, path);
         if(! ".".equals(path)){
             ((QTableView) this.widgets.get(path)).setModel(dataContext.model);
+            
         }
         return dataContext;
     }
@@ -142,6 +145,7 @@ public class Form extends QMainWindow {
 
         for (int i=0; i<children.size(); i++){
             child = (QObject) children.get(i);
+            child.setProperty("parentForm", this);
             property = child.property("column");
             if (property != null){
                 propertyName = (String) property;
@@ -165,7 +169,6 @@ public class Form extends QMainWindow {
                 }
             }
             // XXX: implements ILookable?
-            GlobalManager.registerUtility(column, Column.class, uiFile);
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
                 ((PyPaPiEntityPicker) child).column = column;
           }

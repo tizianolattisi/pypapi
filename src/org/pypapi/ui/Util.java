@@ -34,7 +34,7 @@ public class Util {
         List entities = new ArrayList();
         entities.add(entity);
         Store store = new Store(entities);
-        Form form = (Form) GlobalManager.queryUtility(Form.class, entity.getClass().getName());
+        Form form = (Form) GlobalManager.queryUtility(IForm.class, entity.getClass().getName());
         Form newForm = new Form(form);
         newForm.init(store);
         return newForm;
@@ -65,4 +65,4 @@ public class Util {
         return jui;
     }
 
-}
+} 

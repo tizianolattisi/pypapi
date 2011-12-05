@@ -41,7 +41,9 @@ public class Context extends QObject {
     public Boolean isDirty;
     public Boolean atBof;
     public Boolean atEof;
+    
     private Context primaryDc;
+    private QObject parent;
 
     public Context(QObject parent, Class rootClass, String name, List columns){
         this(parent, rootClass, name, columns, null);
@@ -49,6 +51,7 @@ public class Context extends QObject {
 
     public Context(QObject parent, Class rootClass, String name, List columns, Store store){
         Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", name);
+        this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
 
@@ -66,7 +69,7 @@ public class Context extends QObject {
         if(".".equals(this.name)){
             this.primaryDc = this;
         } else {
-            this.primaryDc = (Context) GlobalManager.queryUtility(IContext.class, ".");
+            this.primaryDc = (Context) GlobalManager.queryRelation(this.parent, ".");
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
