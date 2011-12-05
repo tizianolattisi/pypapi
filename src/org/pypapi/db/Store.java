@@ -37,5 +37,9 @@ public class Store {
     public Object get(int r){
         return this.list.get(r);
     }
+    
+    public void insert(int r, Object obj){
+        this.list.add(r, obj);
+    }
 
 }
