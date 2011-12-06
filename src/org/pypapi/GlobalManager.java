@@ -70,6 +70,7 @@ public class GlobalManager {
      * Query the unnamed utility with the given interface.
      * 
      * @param iface The interface implemented by the utility
+     * @return  The utility
      * 
      */
     public static Object queryUtility(Class iface){
@@ -81,6 +82,7 @@ public class GlobalManager {
      * 
      * @param iface The interface implemented by the utility
      * @param name The string name
+     * @return  The utility
      * 
      */
     public static Object queryUtility(Class iface, String name){
@@ -97,9 +99,10 @@ public class GlobalManager {
     /**
      * Registers an adapter.
      * 
-     * @param adapter The adapter object
+     * @param adatper 
      * @param adapts The list of interfaces that the adapter adapts
      * @param provides The interface that the adapter implements
+     * @param name  
      */
     public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
         HashMap hm = null;
@@ -118,7 +121,7 @@ public class GlobalManager {
     /**
      * Registers an adapter for a list of interfaces.
      * 
-     * @param adapter The adapter object
+     * @param adatper 
      * @param adapts The list of interfaces that the adapter adapts
      * @param provides The interface that the adapter implements
      */
@@ -145,6 +148,7 @@ public class GlobalManager {
      * 
      * @param adapts The interface of the adapted object
      * @param provides The interface that the adapter should implement
+     * @return  The adapter
      */
     public static Object queryAdapter(Class adapts, Class provides){
         HashMap hm = null;
@@ -180,8 +184,9 @@ public class GlobalManager {
     /**
      * Query a related object.
      * 
-     * @param iface The interface implemented by the utility
+     * @param object 
      * @param name The string name
+     * @return The object relation
      * 
      */
     public static Object queryRelation(Object object, String name){
