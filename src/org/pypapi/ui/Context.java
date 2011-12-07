@@ -43,13 +43,13 @@ public class Context extends QObject {
     public Boolean atEof;
     
     private Context primaryDc;
-    private QObject parent;
+    private QWidget parent;
 
-    public Context(QObject parent, Class rootClass, String name, List columns){
+    public Context(QWidget parent, Class rootClass, String name, List columns){
         this(parent, rootClass, name, columns, null);
     }
 
-    public Context(QObject parent, Class rootClass, String name, List columns, Store store){
+    public Context(QWidget parent, Class rootClass, String name, List columns, Store store){
         Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", name);
         this.parent = parent;
         this.rootClass = rootClass;
@@ -161,8 +161,7 @@ public class Context extends QObject {
     
     public void search(){
         Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
-        PickerDialog pd = new PickerDialog(controller);
-        pd.executeSearch();
+        PickerDialog pd = new PickerDialog(this.parent, controller);
         int res = pd.exec();
         if ( res == 1 ){
             this.model.replaceRows(pd.selection);

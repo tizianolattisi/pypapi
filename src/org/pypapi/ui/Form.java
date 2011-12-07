@@ -41,9 +41,10 @@ public class Form extends QMainWindow implements IForm {
     public String title;
     public Context context;
     public HashMap widgets;
+    public List<Column> criteria;
     
-    private List columns;
-    private List entities;
+    private List<Column> columns;
+    private List<Column> entities;
 
     public Form(Form other) {
         this(other.uiFile, other.entityClass);
@@ -141,6 +142,7 @@ public class Form extends QMainWindow implements IForm {
 
         this.columns = new ArrayList();
         this.entities = new ArrayList();
+        this.criteria = new ArrayList();
         this.widgets = new HashMap();
 
         for (int i=0; i<children.size(); i++){
@@ -171,7 +173,14 @@ public class Form extends QMainWindow implements IForm {
             // XXX: implements ILookable?
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
                 ((PyPaPiEntityPicker) child).column = column;
-          }
+            }
+            // search dynamic property
+            property = child.property("search");
+            if (property != null){
+                if ((Boolean) property){
+                    this.criteria.add(column);
+                }
+            }
 
         }
     }

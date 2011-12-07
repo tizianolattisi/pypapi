@@ -82,6 +82,8 @@ public class PyPaPiTableView extends QTableView{
                 Form form = Util.formFromEntity(entity);
                 form.show();
             }
+        } else if (this.actionAdd.equals(action)){
+            // TODO: 
         }
     }
 

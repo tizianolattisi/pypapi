@@ -21,9 +21,17 @@ import java.util.List;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import org.pypapi.ui.Column;
+
 
 /**
  *
@@ -38,7 +46,58 @@ public class Controller implements IController {
         this.jpaController = jpaController;
         this.entityName = entityName;
     }
-        
+
+    public EntityManager getEntityManager() {
+        EntityManager em=null;
+        try {
+            Method m;
+            m = this.jpaController.getClass().getMethod("getEntityManager");
+            em = (EntityManager) m.invoke(this.jpaController);
+            return em;
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return em;
+    }
+    
+    public Store createCriteriaStore(HashMap criteria){
+        Store store=null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Object> cq = cb.createQuery();
+
+        Method m = null;
+        try {
+            m = this.jpaController.getClass().getMethod("find"+this.entityName, Long.class);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Class<?> returnType = m.getReturnType();
+        Root from = cq.from(returnType);
+        CriteriaQuery<Object> select = cq.select(from);
+        for( Object k: criteria.keySet() ){
+            Column column = (Column) k;
+            String value = (String) criteria.get(column);
+            // TODO: % and * should be are whildchars
+            Predicate predicate = cb.like(from.get(column.name.toLowerCase()), value);
+            cq = cq.where(predicate);
+        }
+        TypedQuery<Object> tq = em.createQuery(cq);
+        List<Object> result = tq.getResultList();
+        store = new Store(result);
+        return store;
+    }
+    
     @Override
     public Store createFullStore(){
         try {
