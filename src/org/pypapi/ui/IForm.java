@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2011 tiziano
- * * Copyright (C) 2011 tiziano
+ * Copyright (C) 2011 AXIA Studio (http://www.axiastudio.it)
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +20,7 @@ import org.pypapi.db.Store;
 
 /**
  *
- * @author tiziano
+ * @author AXIA Studio (http://www.axiastudio.it)
  */
 public interface IForm {
 
