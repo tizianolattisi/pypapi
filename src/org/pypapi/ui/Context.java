@@ -145,9 +145,33 @@ public class Context extends QObject {
     public void lastElement(){
         this.mapper.toLast();
     }
-    
+
+    public void insertElement(){
+        Object entity = null;
+        QModelIndex idx=null;
+        // XXX: test with Book (does not work)
+        Class cls = (Class) GlobalManager.queryUtility(IFactory.class, "Book");
+        try {
+            entity = cls.newInstance();
+        } catch (InstantiationException ex) {
+            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        List entities = new ArrayList();
+        boolean add = entities.add(entity);
+        this.model.insertRows(this.model.rowCount(), 1, idx, entities);
+        this.mapper.toLast();
+        this.isDirty = true;
+    }
+
+    public void deleteElement(){
+
+    }
+
     public void commitChanges(){
         Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        // TODO: create element from factory anche controller
         c.edit(this.primaryDc.currentEntity);
         this.isDirty = false;
     }

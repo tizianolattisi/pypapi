@@ -23,8 +23,11 @@ import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.pypapi.GlobalManager;
+import org.pypapi.db.IFactory;
 import org.pypapi.db.Store;
 
 /**
@@ -189,14 +192,14 @@ public class TableModel extends QAbstractTableModel {
     }
 
     /*
-     * insert rows at the current position
+     * insert entities at the row position
      */
     public boolean insertRows(int row, int count, QModelIndex parent, List entities){
         this.beginInsertRows(parent, row, row+count);
         for (int i=row; i<=row+count; i++){
-            Object entity = entities.add(i);
-            this.store.insert(row, entity);
-        }
+            Object entity = entities.get(i-row);
+                this.store.insert(row, entity);
+            }
         this.endInsertRows();
         return true;
     }
