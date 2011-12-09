@@ -30,8 +30,7 @@ import org.pypapi.db.Store;
  */
 public class PickerDialog extends QDialog {
 
-    public List selection;
-    
+    private List selection;
     private QTableView tableView;
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
@@ -55,7 +54,7 @@ public class PickerDialog extends QDialog {
         this.selection = new ArrayList();
         this.criteriaWidgets = new HashMap();
         this.init();
-        List<Column> criteria = ((Form) this.parent()).criteria;
+        List<Column> criteria = ((Form) this.parent()).getCriteria();
         if (criteria.size()>0){
             this.addCriteria(criteria);
             this.buttonAccept.setEnabled(false);
@@ -112,7 +111,7 @@ public class PickerDialog extends QDialog {
         QGridLayout grid = new QGridLayout();
         for (int i=0; i<criteria.size(); i++){
             Column c = criteria.get(i);
-            QLabel criteriaLabel = new QLabel(c.label);
+            QLabel criteriaLabel = new QLabel(c.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
             // TODO: different types of search widget depending on the data type
@@ -136,7 +135,7 @@ public class PickerDialog extends QDialog {
         } else {
             HashMap criteria = new HashMap();
             Form parentForm = (Form) this.parent();
-            for (Column criteriaColumn: parentForm.criteria){
+            for (Column criteriaColumn: parentForm.getCriteria()){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(criteriaColumn);
                 // TODO: criteria with widgets other than QLIneEdit
                 if (widget.getClass() == QLineEdit.class){
@@ -169,4 +168,9 @@ public class PickerDialog extends QDialog {
 
     }
     
+    public List getSelection() {
+        return selection;
+    }
+    
+
 }

@@ -33,15 +33,14 @@ import org.pypapi.GlobalManager;
  */
 public class Context extends QObject {
 
-    public TableModel model;
-    public QDataWidgetMapper mapper;
-    public Class rootClass;
-    public String name;
-    public Object currentEntity;
-    public Boolean isDirty;
-    public Boolean atBof;
-    public Boolean atEof;
-    
+    private TableModel model;
+    private QDataWidgetMapper mapper;
+    private Class rootClass;
+    private String name;
+    private Object currentEntity;
+    private Boolean isDirty;
+    private Boolean atBof;
+    private Boolean atEof;
     private Context primaryDc;
     private QWidget parent;
 
@@ -188,9 +187,33 @@ public class Context extends QObject {
         PickerDialog pd = new PickerDialog(this.parent, controller);
         int res = pd.exec();
         if ( res == 1 ){
-            this.model.replaceRows(pd.selection);
+            this.model.replaceRows(pd.getSelection());
             this.firstElement();
         }
+    }
+
+    public TableModel getModel() {
+        return model;
+    }
+
+    public QDataWidgetMapper getMapper() {
+        return mapper;
+    }
+
+    public Object getCurrentEntity() {
+        return currentEntity;
+    }
+
+    public Boolean getAtBof() {
+        return atBof;
+    }
+
+    public Boolean getAtEof() {
+        return atEof;
+    }
+
+    public Boolean getIsDirty() {
+        return isDirty;
     }
 
 }

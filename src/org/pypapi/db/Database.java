@@ -31,7 +31,11 @@ import org.pypapi.GlobalManager;
  */
 public class Database implements IDatabase {
 
-    public EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
+    }
 
     @Override
     public void open(String persistenceUnit) {

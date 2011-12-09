@@ -40,31 +40,31 @@ public class NavigationToolBar extends QToolBar {
     private void configButtons(){
         this.insertButton("firstElement", "First element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_first.png",
-                "Press to show the first element", this.parentForm.context);
+                "Press to show the first element", this.parentForm.getContext());
         this.insertButton("previousElement", "Previous element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_previous.png",
-                "Press to show the previous element", this.parentForm.context);
+                "Press to show the previous element", this.parentForm.getContext());
         this.insertButton("nextElement", "Next element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_next.png",
-                "Press to show the next element", this.parentForm.context);
+                "Press to show the next element", this.parentForm.getContext());
         this.insertButton("lastElement", "Last element",
                 "classpath:org/pypapi/ui/resources/toolbar/resultset_last.png",
-                "Press to show the last element", this.parentForm.context);
+                "Press to show the last element", this.parentForm.getContext());
         this.insertButton("insertElement", "Insert",
                 "classpath:org/pypapi/ui/resources/toolbar/add.png",
-                "Discard currente changes", this.parentForm.context);
+                "Discard currente changes", this.parentForm.getContext());
         this.insertButton("deleteElement", "Delete",
                 "classpath:org/pypapi/ui/resources/toolbar/delete.png",
-                "Discard currente changes", this.parentForm.context);
+                "Discard currente changes", this.parentForm.getContext());
         this.insertButton("cancelChanges", "Cancel",
                 "classpath:org/pypapi/ui/resources/toolbar/cancel.png",
-                "Discard currente changes", this.parentForm.context);
+                "Discard currente changes", this.parentForm.getContext());
         this.insertButton("commitChanges", "Save",
                 "classpath:org/pypapi/ui/resources/toolbar/disk.png",
-                "Save current element", this.parentForm.context);
+                "Save current element", this.parentForm.getContext());
         this.insertButton("search", "Search",
                 "classpath:org/pypapi/ui/resources/toolbar/find.png",
-                "Search elements", this.parentForm.context);
+                "Search elements", this.parentForm.getContext());
     }
 
     private void insertButton(String actionName, String text, String iconName,
@@ -77,7 +77,7 @@ public class NavigationToolBar extends QToolBar {
         action.setIcon(icon);
         action.triggered.connect(agent, actionName+"()");
         action.triggered.connect(this, "refresh()");
-        this.parentForm.context.model.dataChanged.connect(this, "refresh()");
+        this.parentForm.getContext().getModel().dataChanged.connect(this, "refresh()");
         this.addAction(action);
     }
 
@@ -85,9 +85,9 @@ public class NavigationToolBar extends QToolBar {
         /*
          * Refresh enabled status of the buttons
          */
-        Boolean atBof = this.parentForm.context.atBof;
-        Boolean atEof = this.parentForm.context.atEof;
-        Boolean isDirty = this.parentForm.context.isDirty;
+        Boolean atBof = this.parentForm.getContext().getAtBof();
+        Boolean atEof = this.parentForm.getContext().getAtEof();
+        Boolean isDirty = this.parentForm.getContext().getIsDirty();
 
         for(QAction action:this.actions()){
             String objName = action.objectName();

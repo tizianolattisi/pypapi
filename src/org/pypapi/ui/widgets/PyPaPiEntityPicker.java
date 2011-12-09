@@ -69,7 +69,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
         if (this.actionOpen.equals(action)){
             Context context = (Context) GlobalManager.queryRelation(this.property("parentForm"), ".");
             try {
-                ItemLookup item = (ItemLookup) context.model.getByEntity(context.currentEntity, column);
+                ItemLookup item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), column);
                 Object entity = item.get();
                 Form newForm = Util.formFromEntity(entity);
                 newForm.show();

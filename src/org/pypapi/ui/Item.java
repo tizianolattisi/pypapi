@@ -18,7 +18,6 @@ package org.pypapi.ui;
 
 import java.lang.reflect.Method;
 import java.util.*;
-
 import com.trolltech.qt.core.*;
 
 /**
@@ -26,6 +25,7 @@ import com.trolltech.qt.core.*;
  * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class Item {
+    
     private final Column column;
     private final Object value;
 

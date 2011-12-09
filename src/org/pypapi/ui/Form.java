@@ -36,13 +36,12 @@ import org.pypapi.ui.widgets.PyPaPiEntityPicker;
  */
 public class Form extends QMainWindow implements IForm {
 
-    public Class entityClass;
-    public String uiFile;
-    public String title;
-    public Context context;
-    public HashMap widgets;
-    public List<Column> criteria;
-    
+    private Class entityClass;
+    private String uiFile;
+    private String title;
+    private Context context;
+    private HashMap widgets;
+    private List<Column> criteria;
     private List<Column> columns;
     private List<Column> entities;
 
@@ -79,8 +78,8 @@ public class Form extends QMainWindow implements IForm {
         NavigationToolBar bar = new NavigationToolBar("Navigation", this);
         bar.setMovable(false);
         this.addToolBar(bar);
-        this.context.mapper.currentIndexChanged.connect(this, "indexChanged(int)");
-        this.context.mapper.toFirst();
+        this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
+        this.context.getMapper().toFirst();
         bar.refresh();
     }
 
@@ -97,7 +96,7 @@ public class Form extends QMainWindow implements IForm {
     private void initModels(){
         for (Object objColumn:this.entities){
             Column column = (Column) objColumn;
-            this.createContext(column.name);
+            this.createContext(column.getName());
         }
 
     }
@@ -124,7 +123,7 @@ public class Form extends QMainWindow implements IForm {
         }
         GlobalManager.registerRelation(dataContext, this, path);
         if(! ".".equals(path)){
-            ((QTableView) this.widgets.get(path)).setModel(dataContext.model);
+            ((QTableView) this.widgets.get(path)).setModel(dataContext.getModel());
             
         }
         return dataContext;
@@ -188,15 +187,23 @@ public class Form extends QMainWindow implements IForm {
     private void addMappers() {
         for (int i=0; i<this.columns.size(); i++){
             Column column = (Column) this.columns.get(i);
-            QObject widget = (QObject) this.widgets.get(column.name);
-            this.context.mapper.addMapping((QWidget) widget, i);
+            QObject widget = (QObject) this.widgets.get(column.getName());
+            this.context.getMapper().addMapping((QWidget) widget, i);
         }
     }
     
     private void indexChanged(int row){
-        int idx = this.context.mapper.currentIndex() + 1;
-        int tot = this.context.model.rowCount();
+        int idx = this.context.getMapper().currentIndex() + 1;
+        int tot = this.context.getModel().rowCount();
         this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
+    }
+
+    public List<Column> getCriteria() {
+        return criteria;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  */
 public class ItemLookup extends ItemEditable {
 
-    String lookup;
+    private String lookup;
     
     public ItemLookup(Column column, Object value, Method setterMethod,
             Object entity, String lookup){

@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class Store {
 
-    public List list;
+    private List list;
 
     public Store(List list){
         this.list = list;

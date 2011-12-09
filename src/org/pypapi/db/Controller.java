@@ -89,7 +89,7 @@ public class Controller implements IController {
             Column column = (Column) k;
             String value = (String) criteria.get(column);
             // TODO: % and * should be are whildchars
-            Predicate predicate = cb.like(from.get(column.name.toLowerCase()), value);
+            Predicate predicate = cb.like(from.get(column.getName().toLowerCase()), value);
             cq = cq.where(predicate);
         }
         TypedQuery<Object> tq = em.createQuery(cq);

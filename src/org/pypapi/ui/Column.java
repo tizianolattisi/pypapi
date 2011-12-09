@@ -25,11 +25,10 @@ import java.lang.reflect.Method;
  */
 public class Column {
 
-    public String name;
-    public String label;
-    public String description;
-    public String lookup;
-    
+    private String name;
+    private String label;
+    private String description;
+    private String lookup;    
     private TableModel model;
 
     public Column(String name, String label, String description, String lookup){
@@ -67,5 +66,22 @@ public class Column {
             return item;
         }
     }
+    
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getLookup() {
+        return lookup;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 
 }

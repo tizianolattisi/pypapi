@@ -36,8 +36,7 @@ import org.pypapi.db.Store;
  */
 public class TableModel extends QAbstractTableModel {
 
-    public List columns;
-
+    private List columns;
     private Store store;
     private HashMap cache;
 
