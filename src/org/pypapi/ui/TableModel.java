@@ -194,10 +194,12 @@ public class TableModel extends QAbstractTableModel {
      * insert entities at the row position
      */
     public boolean insertRows(int row, int count, QModelIndex parent, List entities){
-        this.beginInsertRows(parent, row, row+count);
-        for (int i=row; i<=row+count; i++){
-            Object entity = entities.get(i-row);
-                this.store.insert(row, entity);
+        int first = row;
+        int last = row + count - 1;
+        this.beginInsertRows(parent, first, last);
+        for (int i=0; i<entities.size(); i++){
+            Object entity = entities.get(i);
+                this.store.insert(first+i, entity);
             }
         this.endInsertRows();
         return true;

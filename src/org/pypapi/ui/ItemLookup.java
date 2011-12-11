@@ -44,7 +44,7 @@ public class ItemLookup extends ItemEditable {
         Method m = null;
         Object result = this.get();
         if( result == null ){
-            result = "n.d.";
+            return null;
         }
         try {
             m = result.getClass().getMethod("get" + this.lookup);

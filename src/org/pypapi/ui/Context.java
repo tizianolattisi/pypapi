@@ -148,8 +148,8 @@ public class Context extends QObject {
     public void insertElement(){
         Object entity = null;
         QModelIndex idx=null;
-        // XXX: test with Book (does not work)
-        Class cls = (Class) GlobalManager.queryUtility(IFactory.class, "Book");
+        String entityName = this.rootClass.getSimpleName();
+        Class cls = (Class) GlobalManager.queryUtility(IFactory.class, entityName);
         try {
             entity = cls.newInstance();
         } catch (InstantiationException ex) {

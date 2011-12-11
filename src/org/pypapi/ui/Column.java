@@ -16,7 +16,10 @@
  */
 package org.pypapi.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -46,19 +49,43 @@ public class Column {
         this.model = model;
     }
 
-    public Item bind(Object entity) throws Exception {
+    public Item bind(Object entity) {
         
         /* getter */
         String getterName = "get" + this.name;
-        Method getter = entity.getClass().getMethod(getterName);
+        Method getter=null;
+        Class<?> returnType = null;
+        try {
+            getter = entity.getClass().getMethod(getterName);
+            returnType = getter.getReturnType();
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Object result=null;
-        result = getter.invoke(entity);
+        try {
+            result = getter.invoke(entity);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         /* setter */
         String setterName = "set" + this.name;
-        Method setter = entity.getClass().getMethod(setterName, result.getClass());
+        Method setter = null;
+        try {
+            setter = entity.getClass().getMethod(setterName, returnType);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        if( result.getClass() == String.class ){
+        if( returnType == String.class ){
             ItemEditable item = new ItemEditable(this, result, setter, entity);
             return item;
         } else {
