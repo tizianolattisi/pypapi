@@ -83,7 +83,7 @@ public class PyPaPiTableView extends QTableView{
                 form.show();
             }
         } else if (this.actionAdd.equals(action)){
-            // TODO: 
+            // TODO: select and insert new row
         }
     }
 

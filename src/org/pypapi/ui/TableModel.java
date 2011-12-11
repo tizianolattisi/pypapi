@@ -23,11 +23,8 @@ import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.pypapi.GlobalManager;
-import org.pypapi.db.IFactory;
 import org.pypapi.db.Store;
 
 /**
