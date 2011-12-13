@@ -40,11 +40,14 @@ import org.pypapi.ui.Column;
 public class Controller implements IController {
     
     private Serializable jpaController;
+    private String className;
     private String entityName;
-    
-    public Controller(Serializable jpaController, String entityName){
+
+    public Controller(Serializable jpaController, String className){
         this.jpaController = jpaController;
-        this.entityName = entityName;
+        this.className = className;
+        String[] split = className.split("\\.");
+        this.entityName = split[split.length-1];
     }
 
     public EntityManager getEntityManager() {
@@ -177,4 +180,13 @@ public class Controller implements IController {
         return entity;
     }
     
+    public String getEntityName() {
+        return entityName;
+    }
+    
+
+    public String getClassName() {
+        return className;
+    }
+
 }

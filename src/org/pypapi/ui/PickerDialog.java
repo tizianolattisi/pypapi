@@ -21,6 +21,7 @@ import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.pypapi.GlobalManager;
 import org.pypapi.db.Controller;
 import org.pypapi.db.Store;
 
@@ -54,15 +55,18 @@ public class PickerDialog extends QDialog {
         this.selection = new ArrayList();
         this.criteriaWidgets = new HashMap();
         this.init();
-        List<Column> criteria = ((Form) this.parent()).getCriteria();
-        if (criteria.size()>0){
-            this.addCriteria(criteria);
-            this.buttonAccept.setEnabled(false);
-            this.isCriteria = true;
+        EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+        List<Column> criteria = behavior.getCriteria();
+        this.isCriteria = false;
+        if (criteria != null){
+            if (criteria.size()>0){
+                this.addCriteria(criteria);
+                this.buttonAccept.setEnabled(false);
+                this.isCriteria = true;
+            }
         } else {
             this.executeSearch();
             this.buttonSearch.setEnabled(false);
-            this.isCriteria = false;
         }
     }
     
@@ -133,19 +137,22 @@ public class PickerDialog extends QDialog {
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();
         } else {
-            HashMap criteria = new HashMap();
+            EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+            List<Column> criteria = behavior.getCriteria();
+
+            HashMap criteriaMap = new HashMap();
             Form parentForm = (Form) this.parent();
-            for (Column criteriaColumn: parentForm.getCriteria()){
+            for (Column criteriaColumn: criteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(criteriaColumn);
                 // TODO: criteria with widgets other than QLIneEdit
                 if (widget.getClass() == QLineEdit.class){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
-                        criteria.put(criteriaColumn, value);
+                        criteriaMap.put(criteriaColumn, value);
                     }
                 }
             }
-            supersetStore = this.controller.createCriteriaStore(criteria);
+            supersetStore = this.controller.createCriteriaStore(criteriaMap);
         }
         TableModel model = new TableModel(supersetStore, columns);
         this.tableView.setModel(model);

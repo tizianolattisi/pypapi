@@ -41,7 +41,6 @@ public class Form extends QMainWindow implements IForm {
     private String title;
     private Context context;
     private HashMap widgets;
-    private List<Column> criteria;
     private List<Column> columns;
     private List<Column> entities;
 
@@ -138,17 +137,31 @@ public class Form extends QMainWindow implements IForm {
         String lookupPropertyName = null;
         Column column = null;
         List children = this.findChildren();
+        Boolean isColumn;
+        Boolean isEntity;
+        List<Column> criteria;
 
+        criteria = new ArrayList();
         this.columns = new ArrayList();
         this.entities = new ArrayList();
-        this.criteria = new ArrayList();
         this.widgets = new HashMap();
 
         for (int i=0; i<children.size(); i++){
+            isColumn = false;
+            isEntity = false;
             child = (QObject) children.get(i);
             child.setProperty("parentForm", this);
             property = child.property("column");
             if (property != null){
+                isColumn = true;
+            } else {
+                property = child.property("entity");
+                if (property != null){
+                    isEntity = true;
+                }
+            }
+            
+            if (isColumn){
                 propertyName = (String) property;
                 lookupProperty = child.property("lookup");
                 if ( lookupProperty != null){
@@ -160,15 +173,14 @@ public class Form extends QMainWindow implements IForm {
                         lookupPropertyName);
                 boolean add = this.columns.add(column);
                 Object put = this.widgets.put(propertyName, child);
-            } else {
-                property = child.property("entity");
-                if (property != null){
-                    propertyName = (String) property;
-                    column = new Column(propertyName, propertyName, propertyName);
-                    boolean add = this.entities.add(column);
-                    Object put = this.widgets.put(propertyName, child);
-                }
             }
+            if (isEntity){
+                propertyName = (String) property;
+                column = new Column(propertyName, propertyName, propertyName);
+                boolean add = this.entities.add(column);
+                Object put = this.widgets.put(propertyName, child);
+            }
+
             // XXX: implements ILookable?
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
                 ((PyPaPiEntityPicker) child).setColumn(column);
@@ -177,11 +189,13 @@ public class Form extends QMainWindow implements IForm {
             property = child.property("search");
             if (property != null){
                 if ((Boolean) property){
-                    this.criteria.add(column);
+                    criteria.add(column);
                 }
             }
-
         }
+        EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
+        behavior.setCriteria(criteria);
+        GlobalManager.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
     }
 
     private void addMappers() {
@@ -196,10 +210,6 @@ public class Form extends QMainWindow implements IForm {
         int idx = this.context.getMapper().currentIndex() + 1;
         int tot = this.context.getModel().rowCount();
         this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
-    }
-
-    public List<Column> getCriteria() {
-        return criteria;
     }
 
     public Context getContext() {
