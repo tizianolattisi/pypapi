@@ -171,7 +171,7 @@ public class Form extends QMainWindow implements IForm {
             }
             // XXX: implements ILookable?
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
-                ((PyPaPiEntityPicker) child).column = column;
+                ((PyPaPiEntityPicker) child).setColumn(column);
             }
             // search dynamic property
             property = child.property("search");

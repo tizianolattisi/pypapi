@@ -33,7 +33,7 @@ import org.pypapi.ui.ItemLookup;
  */
 public class PyPaPiEntityPicker extends QLineEdit{
     
-    public Column column;
+    private Column column;
     private QAction actionOpen, actionSelect;
     private QMenu menuPopup;
 
@@ -76,6 +76,8 @@ public class PyPaPiEntityPicker extends QLineEdit{
             } catch (Exception ex) {
                 Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if (this.actionSelect.equals(action)){
+            
         }
     }
     
@@ -84,4 +86,14 @@ public class PyPaPiEntityPicker extends QLineEdit{
         // TODO: fast selector from id?
         return false;
     }
+
+    
+    public Column getColumn() {
+        return column;
+    }
+
+    public void setColumn(Column column) {
+        this.column = column;
+    }
+
 }
