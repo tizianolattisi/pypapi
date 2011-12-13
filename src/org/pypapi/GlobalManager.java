@@ -97,12 +97,12 @@ public class GlobalManager {
     }
     
     /**
-     * Registers an adapter.
+     * Registers a named adapter for a list of interfaces.
      * 
-     * @param adatper 
+     * @param adatper  The adapter itself
      * @param adapts The list of interfaces that the adapter adapts
      * @param provides The interface that the adapter implements
-     * @param name  
+     * @param name The string name 
      */
     public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
         HashMap hm = null;
@@ -121,7 +121,7 @@ public class GlobalManager {
     /**
      * Registers an adapter for a list of interfaces.
      * 
-     * @param adatper 
+     * @param adatper The adapter itself
      * @param adapts The list of interfaces that the adapter adapts
      * @param provides The interface that the adapter implements
      */
