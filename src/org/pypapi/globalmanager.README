@@ -41,7 +41,7 @@ Refer to Netbeans IDE and JPA2 documentation.
 The code below creates and registers the controller:
 
 BookJpaController jpaCtrl= new BookJpaController(db.getEntityManagerFactory());
-Controller bookController = new Controller(jpaCtrl, "Book");
+Controller bookController = new Controller(jpaCtrl, "org.pypapi.demo.entities.Book");
 GlobalManager.registerUtility(bookController, IController.class,
                 "org.pypapi.demo.entities.Book");
 
@@ -54,7 +54,7 @@ The factory
 The factory for the object managed by the form could be, in the easist way, the
 class itself.
 
-GlobalManager.registerUtility(Book.class, IFactory.class, "Book");
+GlobalManager.registerUtility(Book.class, IFactory.class, "org.pypapi.demo.entities.Book");
 
 The code above registers the Book class as factory.
 
@@ -66,6 +66,30 @@ The form object accomplish other globals registration in the framework.
 Inspects the widgets thru its dynamic properties (see dynamicproperties.README),
 and registers these objects:
 
-1. a data context on the form, for every path dynamic property "entity"
-2. to be continued...
+1. a data context relation on the form, for every path dynamic property "entity"
+
+2. the behavior object utility for the entity
+
+
+The behavior object
+===================
+
+The EntityBehavior class holds the dynamic properties values, retrieved from the
+form's design. Thru these properties the framework can determine the
+behaviors of the object, such the selection's path, the lookup's column, and
+the search criteria.
+
+List<Column> criteria = behavior.getCriteria;
+// omissam...
+EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
+behavior.setCriteria(criteria);
+GlobalManager.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
+
+You can override the behavior of a entity querying and re-registering the
+utility:
+
+EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, "org.pypapi.demo.entities.Book");
+List<Column> criteria = behavior.getCriteria();
+criteria.add(newSearchColumn);
+GlobalManager.registerUtility(behavior, IEntityBehavior.class, "org.pypapi.demo.entities.Book");
 
