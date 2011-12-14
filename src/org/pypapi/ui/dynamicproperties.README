@@ -60,14 +60,16 @@ the attribute defined in column property should be considered attached to the
 
 Search (Boolean) dynamic property
 =================================
-TODO
-...
+Apply to: SVW and LVW
+Determine if a field should be used as criteria field in the search form.
 
 
-SearchColumns (StringList) dynamic property
+SearchColumns (String) dynamic property
 ===========================================
-TODO
-...
+Apply to: QMainWindow
+This property holds the list of columns to display as result of a query in the
+search form.
+The values should be inserted comma separated.
 
 
 SearchOrder (Int) dynamic property

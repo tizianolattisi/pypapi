@@ -21,11 +21,14 @@ import com.trolltech.qt.gui.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pypapi.GlobalManager;
+import org.pypapi.db.Controller;
+import org.pypapi.db.IController;
 import org.pypapi.ui.Util;
 import org.pypapi.ui.Column;
 import org.pypapi.ui.Context;
 import org.pypapi.ui.Form;
 import org.pypapi.ui.ItemLookup;
+import org.pypapi.ui.PickerDialog;
 
 /**
  *
@@ -67,7 +70,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if (this.actionOpen.equals(action)){
-            Context context = (Context) GlobalManager.queryRelation(this.property("parentForm"), ".");
+            Context context = (Context) GlobalManager.queryRelation(this.window(), ".");
             try {
                 ItemLookup item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), column);
                 Object entity = item.get();
@@ -77,7 +80,14 @@ public class PyPaPiEntityPicker extends QLineEdit{
                 Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (this.actionSelect.equals(action)){
-            
+            // XXX: demo Author selection
+            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, "org.pypapi.demo.entities.Author");
+            PickerDialog pd = new PickerDialog(this, controller);
+        int res = pd.exec();
+        if ( res == 1 ){
+            System.out.println(pd.getSelection());
+        }
+
         }
     }
     

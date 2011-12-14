@@ -29,6 +29,7 @@ import org.pypapi.GlobalManager;
 import org.pypapi.db.Store;
 import org.pypapi.ui.widgets.NavigationToolBar;
 import org.pypapi.ui.widgets.PyPaPiEntityPicker;
+import org.pypapi.ui.widgets.PyPaPiTableView;
 
 /**
  *
@@ -113,10 +114,7 @@ public class Form extends QMainWindow implements IForm {
         if(".".equals(path)){
             contextColumns = this.columns;
         } else {
-            // TODO: columns from dynamic property
-            contextColumns = new ArrayList();
-            Column c = new Column("Description", "Description", "Description");
-            contextColumns.add(c);
+            contextColumns = (List) GlobalManager.queryRelation(this.widgets.get(path), "columns");
         }
         if( store == null){
             dataContext = new Context(this, this.entityClass, path, contextColumns);
@@ -155,7 +153,6 @@ public class Form extends QMainWindow implements IForm {
             isColumn = false;
             isEntity = false;
             child = (QObject) children.get(i);
-            child.setProperty("parentForm", this);
             property = child.property("column");
             if (property != null){
                 isColumn = true;
@@ -165,7 +162,6 @@ public class Form extends QMainWindow implements IForm {
                     isEntity = true;
                 }
             }
-            
             if (isColumn){
                 propertyName = (String) property;
                 lookupProperty = child.property("lookup");
@@ -197,16 +193,28 @@ public class Form extends QMainWindow implements IForm {
                     criteria.add(column);
                 }
             }
+            // columns for list value widget
+            if (child.getClass().equals(PyPaPiTableView.class)){
+                property = child.property("columns");
+                if (property != null){
+                    String[] columnNames = ((String) property).split(",");
+                    List<Column> tableColumns = new ArrayList();
+                    for(String name: columnNames){
+                        Column tableColumn = new Column(name, name, name);
+                        tableColumns.add(tableColumn);
+                    }
+                    GlobalManager.registerRelation(tableColumns, child, "columns");
+                }
+            }
         }
         // search columns
-        // XXX: why does not read the property from the QMainWindow?
         property = this.property("searchcolumns");
         if (property != null){
             String[] columnNames = ((String) property).split(",");
             for(String name: columnNames){
                 Column searchColumn = new Column(name, name, name);
                 searchColumns.add(searchColumn);
-            }        
+            }
         }
         EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
         behavior.setCriteria(criteria);

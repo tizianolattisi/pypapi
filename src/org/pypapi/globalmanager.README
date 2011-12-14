@@ -66,9 +66,25 @@ The form object accomplish other globals registration in the framework.
 Inspects the widgets thru its dynamic properties (see dynamicproperties.README),
 and registers these objects:
 
-1. a data context relation on the form, for every path dynamic property "entity"
+1. a "data context" relation on the form, for every path dynamic property "entity"
 
-2. the behavior object utility for the entity
+2. a "list of columns to display" relation on every table view widget, with name
+"columns".
+
+3. the behavior object utility for the entity
+
+
+The context
+===========
+...
+
+
+TableView widgets and columns to display
+========================================
+
+The framework uses a relation to determine witch columns to display in a
+TableView widget.
+This relation is registred on the widget with the GlobalManager.
 
 
 The behavior object
