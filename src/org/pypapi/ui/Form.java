@@ -83,13 +83,16 @@ public class Form extends QMainWindow implements IForm {
     }
 
     private void loadUi(QFile uiFile){
-        QWidget widget = null;
+        QWidget window = null;
         try {
-            widget = (QMainWindow) QUiLoader.load(uiFile);
+            window = (QMainWindow) QUiLoader.load(uiFile);
         } catch (QUiLoaderException ex) {
             Logger.getLogger(Form.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.layout().addWidget(widget);
+        for( QByteArray name: window.dynamicPropertyNames()){
+            this.setProperty(name.toString(), window.property(name.toString()));
+        }
+        this.layout().addWidget(window);
     }
 
     private void initModels(){
@@ -140,8 +143,10 @@ public class Form extends QMainWindow implements IForm {
         Boolean isColumn;
         Boolean isEntity;
         List<Column> criteria;
+        List<Column> searchColumns;
 
         criteria = new ArrayList();
+        searchColumns = new ArrayList();
         this.columns = new ArrayList();
         this.entities = new ArrayList();
         this.widgets = new HashMap();
@@ -193,8 +198,19 @@ public class Form extends QMainWindow implements IForm {
                 }
             }
         }
+        // search columns
+        // XXX: why does not read the property from the QMainWindow?
+        property = this.property("searchcolumns");
+        if (property != null){
+            String[] columnNames = ((String) property).split(",");
+            for(String name: columnNames){
+                Column searchColumn = new Column(name, name, name);
+                searchColumns.add(searchColumn);
+            }        
+        }
         EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
         behavior.setCriteria(criteria);
+        behavior.setSearchColumns(searchColumns);
         GlobalManager.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
     }
 

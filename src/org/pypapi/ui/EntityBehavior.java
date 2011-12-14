@@ -16,6 +16,7 @@
  */
 package org.pypapi.ui;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -31,6 +32,7 @@ public class EntityBehavior implements IEntityBehavior {
     
     private String className;
     private List<Column> criteria;
+    private List<Column> searchColumns;
     
     public EntityBehavior(String className){
         this.className = className;
@@ -58,6 +60,22 @@ public class EntityBehavior implements IEntityBehavior {
     @Override
     public void setCriteria(List<Column> criteria) {
         this.criteria = criteria;
+    }
+
+    /**
+     * @return the searchColumns
+     */
+    @Override
+    public List<Column> getSearchColumns() {
+        return searchColumns;
+    }
+
+    /**
+     * @param searchColumns the searchColumns to set
+     */
+    @Override
+    public void setSearchColumns(List<Column> searchColumns) {
+        this.searchColumns = searchColumns;
     }
     
 }

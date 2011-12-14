@@ -129,19 +129,14 @@ public class PickerDialog extends QDialog {
     }        
     
     public final void executeSearch(){
-        List<Column> columns = new ArrayList();
         Store supersetStore=null;
-        /// XXX: demo with description column
-        Column c = new Column("Description", "Description", "Description");
-        columns.add(c);
+        EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+        List<Column> columns = behavior.getSearchColumns();
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();
         } else {
-            EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
             List<Column> criteria = behavior.getCriteria();
-
             HashMap criteriaMap = new HashMap();
-            Form parentForm = (Form) this.parent();
             for (Column criteriaColumn: criteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(criteriaColumn);
                 // TODO: criteria with widgets other than QLIneEdit

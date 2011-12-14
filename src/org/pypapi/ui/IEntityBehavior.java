@@ -39,5 +39,15 @@ public interface IEntityBehavior {
      * @param criteria the criteria to set
      */
     void setCriteria(List<Column> criteria);
-    
+
+    /**
+     * @return the search columns list
+     */
+    List<Column> getSearchColumns();
+
+    /**
+     * @param criteria the search columns to set
+     */
+    void setSearchColumns(List<Column> searchColumns);
+
 }
