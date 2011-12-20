@@ -132,11 +132,6 @@ public class Form extends QMainWindow implements IForm {
     private void resolveColumns(){
 
         QObject child = null;
-        Object property = null;
-        String propertyName = null;
-        Object lookupProperty = null;
-        String lookupPropertyName = null;
-        Column column = null;
         List children = this.findChildren();
         Boolean isColumn;
         Boolean isEntity;
@@ -150,54 +145,57 @@ public class Form extends QMainWindow implements IForm {
         this.widgets = new HashMap();
 
         for (int i=0; i<children.size(); i++){
+            Object entityProperty=null;
+            Column column=null;
             isColumn = false;
             isEntity = false;
             child = (QObject) children.get(i);
-            property = child.property("column");
-            if (property != null){
+            Object columnProperty = child.property("column");
+            if (columnProperty != null){
                 isColumn = true;
             } else {
-                property = child.property("entity");
-                if (property != null){
+                entityProperty = child.property("entity");
+                if (entityProperty != null){
                     isEntity = true;
                 }
             }
             if (isColumn){
-                propertyName = (String) property;
-                lookupProperty = child.property("lookup");
+                String lookupPropertyName=null;
+                String columnPropertyName = (String) columnProperty;
+                Object lookupProperty = child.property("lookup");
                 if ( lookupProperty != null){
                     lookupPropertyName = (String) lookupProperty;                    
                     lookupPropertyName = lookupPropertyName.substring(0,1).toUpperCase()
                             + lookupPropertyName.substring(1);
                 }
-                column = new Column(propertyName, propertyName, propertyName,
+                column = new Column(columnPropertyName, columnPropertyName, columnPropertyName,
                         lookupPropertyName);
                 boolean add = this.columns.add(column);
-                Object put = this.widgets.put(propertyName, child);
+                Object put = this.widgets.put(columnPropertyName, child);
             }
             if (isEntity){
-                propertyName = (String) property;
-                column = new Column(propertyName, propertyName, propertyName);
+                String entityPropertyName = (String) entityProperty;
+                column = new Column(entityPropertyName, entityPropertyName, entityPropertyName);
                 boolean add = this.entities.add(column);
-                Object put = this.widgets.put(propertyName, child);
+                Object put = this.widgets.put(entityPropertyName, child);
             }
 
             // XXX: implements ILookable?
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
-                ((PyPaPiEntityPicker) child).setColumn(column);
+                ((PyPaPiEntityPicker) child).setBindColumn(column);
             }
             // search dynamic property
-            property = child.property("search");
-            if (property != null){
-                if ((Boolean) property){
+            Object searchProperty = child.property("search");
+            if (searchProperty != null){
+                if ((Boolean) searchProperty){
                     criteria.add(column);
                 }
             }
             // columns for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
-                property = child.property("columns");
-                if (property != null){
-                    String[] columnNames = ((String) property).split(",");
+                Object columnsProperty = child.property("columns");
+                if (columnsProperty != null){
+                    String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
                     for(String name: columnNames){
                         Column tableColumn = new Column(name, name, name);
@@ -208,9 +206,9 @@ public class Form extends QMainWindow implements IForm {
             }
         }
         // search columns
-        property = this.property("searchcolumns");
-        if (property != null){
-            String[] columnNames = ((String) property).split(",");
+        Object searchColumnsProperty = this.property("searchcolumns");
+        if (searchColumnsProperty != null){
+            String[] columnNames = ((String) searchColumnsProperty).split(",");
             for(String name: columnNames){
                 Column searchColumn = new Column(name, name, name);
                 searchColumns.add(searchColumn);

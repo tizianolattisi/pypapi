@@ -36,7 +36,7 @@ import org.pypapi.ui.PickerDialog;
  */
 public class PyPaPiEntityPicker extends QLineEdit{
     
-    private Column column;
+    private Column bindColumn;
     private QAction actionOpen, actionSelect;
     private QMenu menuPopup;
 
@@ -72,7 +72,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
         if (this.actionOpen.equals(action)){
             Context context = (Context) GlobalManager.queryRelation(this.window(), ".");
             try {
-                ItemLookup item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), column);
+                ItemLookup item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
                 Object entity = item.get();
                 Form newForm = Util.formFromEntity(entity);
                 newForm.show();
@@ -98,12 +98,12 @@ public class PyPaPiEntityPicker extends QLineEdit{
     }
 
     
-    public Column getColumn() {
-        return column;
+    public Column getBindColumn() {
+        return bindColumn;
     }
 
-    public void setColumn(Column column) {
-        this.column = column;
+    public void setBindColumn(Column column) {
+        this.bindColumn = column;
     }
 
 }
