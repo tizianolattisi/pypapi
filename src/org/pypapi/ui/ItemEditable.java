@@ -45,7 +45,7 @@ public class ItemEditable extends Item {
 
         Object result;
 
-        Object nameObject = ItemEditable.itemRolesNameMap.get(role);
+        Object nameObject = ItemEditable.ITEM_ROLES.get(role);
         if( nameObject == null){
             return false;
         }
@@ -70,6 +70,14 @@ public class ItemEditable extends Item {
         return true;
     }
 
+    public Object getEdit(){
+        Object result = this.value;
+        if( result == null ){
+            result = "n.d.";
+        }
+        return result;
+    }
+    
     public boolean setEdit(Object objValue){
         boolean res = this.set(objValue);
         return res;

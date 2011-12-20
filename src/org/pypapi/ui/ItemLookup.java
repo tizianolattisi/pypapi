@@ -28,11 +28,13 @@ import java.util.logging.Logger;
 public class ItemLookup extends ItemEditable {
 
     private String lookup;
-    
+    private String name;
+
     public ItemLookup(Column column, Object value, Method setterMethod,
-            Object entity, String lookup){
+            Object entity, String lookup, String name){
         super(column, value, setterMethod, entity);
         this.lookup = lookup;
+        this.name = name;
     }
         
     @Override
@@ -42,7 +44,7 @@ public class ItemLookup extends ItemEditable {
          */
         Object lookupped = null;
         Method m = null;
-        Object result = this.get();
+        Object result = super.get();
         if( result == null ){
             return null;
         }
@@ -65,4 +67,8 @@ public class ItemLookup extends ItemEditable {
         return lookupped;
     }
 
+    public String getName() {
+        return name;
+    }
+    
 }

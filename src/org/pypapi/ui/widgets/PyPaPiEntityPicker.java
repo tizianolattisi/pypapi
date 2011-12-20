@@ -69,19 +69,20 @@ public class PyPaPiEntityPicker extends QLineEdit{
 
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
+        Context context = (Context) GlobalManager.queryRelation(this.window(), ".");
+        ItemLookup item;
+        try {
+            item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
+        } catch (Exception ex) {
+            Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         if (this.actionOpen.equals(action)){
-            Context context = (Context) GlobalManager.queryRelation(this.window(), ".");
-            try {
-                ItemLookup item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
-                Object entity = item.get();
-                Form newForm = Util.formFromEntity(entity);
-                newForm.show();
-            } catch (Exception ex) {
-                Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Object entity = item.get();
+            Form newForm = Util.formFromEntity(entity);
+            newForm.show();
         } else if (this.actionSelect.equals(action)){
-            // XXX: demo Author selection
-            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, "org.pypapi.demo.entities.Author");
+            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, item.getName());
             PickerDialog pd = new PickerDialog(this, controller);
         int res = pd.exec();
         if ( res == 1 ){

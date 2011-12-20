@@ -26,23 +26,31 @@ import com.trolltech.qt.core.*;
  */
 public class Item {
     
-    private final Column column;
-    private final Object value;
+    public static final Map<Integer, String> ITEM_ROLES;
+    static {
+        ITEM_ROLES = new HashMap<Integer, String>();
+        ITEM_ROLES.put(Qt.ItemDataRole.DisplayRole, "Display");
+        ITEM_ROLES.put(Qt.ItemDataRole.EditRole, "Edit");
+        ITEM_ROLES.put(Qt.ItemDataRole.CheckStateRole, "Checkstate");
+    }
 
-    protected static Map itemRolesNameMap = new HashMap();
+    private final Column column;
+    protected final Object value;
+
+    //protected static Map itemRolesNameMap = new HashMap();
 
     public Item(Column column, Object value){
         this.column = column;
         this.value = value;
 
         /* roles map */
-        Item.itemRolesNameMap.put(Qt.ItemDataRole.DisplayRole, "display");
-        Item.itemRolesNameMap.put(Qt.ItemDataRole.EditRole, "edit");
-        Item.itemRolesNameMap.put(Qt.ItemDataRole.CheckStateRole, "checkstate");
+        //Item.itemRolesNameMap.put(Qt.ItemDataRole.DisplayRole, "display");
+        //Item.itemRolesNameMap.put(Qt.ItemDataRole.EditRole, "edit");
+        //Item.itemRolesNameMap.put(Qt.ItemDataRole.CheckStateRole, "checkstate");
 
     }
 
-    public Object getRoleValue(int role) throws Exception {
+    public Object get(int role) throws Exception {
         /*
          * Get to the value corresponding to the requested role
          * (like DisplayRole, EditRole, etc) thru the correct getter method.
@@ -50,7 +58,7 @@ public class Item {
 
         Object result;
 
-        Object nameObject = Item.itemRolesNameMap.get(role);
+        Object nameObject = ITEM_ROLES.get(role);// Item.itemRolesNameMap.get(role);
         if( nameObject == null){
             return null;
         }
@@ -69,20 +77,21 @@ public class Item {
 
 
     public Object getDisplay(){
-        Object result = this.get();
+        Object result = this.value;
         if( result == null ){
             result = "n.d.";
         }
         return result;
     }
 
+    /*
     public Object getEdit(){
-        Object result = this.get();
+        Object result = this.value;
         if( result == null ){
             result = "n.d.";
         }
         return result;
-    }
+    }*/
 
     public Object getCheckstate(){
         return null;

@@ -89,7 +89,8 @@ public class Column {
             ItemEditable item = new ItemEditable(this, result, setter, entity);
             return item;
         } else {
-            ItemLookup item = new ItemLookup(this, result, setter, entity, this.lookup);
+            ItemLookup item = new ItemLookup(this, result, setter, entity,
+                    this.lookup, returnType.getName());
             return item;
         }
     }

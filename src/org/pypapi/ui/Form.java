@@ -237,5 +237,5 @@ public class Form extends QMainWindow implements IForm {
     public Context getContext() {
         return context;
     }
-
-}
+    
+    }

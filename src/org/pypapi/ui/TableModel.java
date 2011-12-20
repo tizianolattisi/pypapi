@@ -32,7 +32,7 @@ import org.pypapi.db.Store;
  * @author AXIA Studio (http://www.axiastudio.it)
  */
 public class TableModel extends QAbstractTableModel {
-
+    
     private List columns;
     private Store store;
     private HashMap cache;
@@ -99,7 +99,7 @@ public class TableModel extends QAbstractTableModel {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            value = item.getRoleValue(role);
+            value = item.get(role);
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,7 +117,7 @@ public class TableModel extends QAbstractTableModel {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            Object oldValue = item.getRoleValue(role);
+            Object oldValue = item.get(role);
             if (!oldValue.equals(value)){
                 boolean res = item.setRoleValue(role, value);
             } else return true;
