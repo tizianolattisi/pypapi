@@ -160,11 +160,23 @@ public class PickerDialog extends QDialog {
     
     private void selectRows(QItemSelection selected, QItemSelection deselected){
         TableModel model = (TableModel) this.tableView.model();
+        List<Integer> selectedIndexes = new ArrayList();
+        List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){
-            boolean res = this.selection.add(model.getEntityByRow(i.row()));
+            if(!selectedIndexes.contains(i.row())){
+                selectedIndexes.add(i.row());
+            }
         }
         for (QModelIndex i: deselected.indexes()){
-            boolean res = this.selection.remove(model.getEntityByRow(i.row()));
+            if(!deselectedIndexes.contains(i.row())){
+                deselectedIndexes.add(i.row());
+            }
+        }
+        for (Integer idx: selectedIndexes){
+            boolean res = this.selection.add(model.getEntityByRow(idx));
+        }
+        for (Integer idx: deselectedIndexes){
+            boolean res = this.selection.remove(model.getEntityByRow(idx));
         }
         this.buttonAccept.setEnabled(this.selection.size()>0);
 
