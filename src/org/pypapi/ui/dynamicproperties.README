@@ -13,7 +13,7 @@ Single value widget (SVW), and list value widget (LVW)
 
 The framework considers "single value widget" a widget binded to a single value,
 either a scalar property, like a field on a database table, or a lookup, like a
-1-1 relation thru a a foreign key.
+1-1 relation thru a foreign key.
 The widgets able to contain a list of related object is otherwise considered
 "list value widget", used for example in a db relation 1-n.
 QLineEdit, QTextEdit, QCheckBox, QComboBox, and the special PyPaPiPickerEntity
