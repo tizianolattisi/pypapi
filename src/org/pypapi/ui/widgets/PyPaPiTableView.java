@@ -37,6 +37,10 @@ public class PyPaPiTableView extends QTableView{
     private QMenu menuPopup;
 
     public PyPaPiTableView(){
+        this(null);
+    }
+
+    public PyPaPiTableView(QWidget parent){
         /*
          *  init
          */
