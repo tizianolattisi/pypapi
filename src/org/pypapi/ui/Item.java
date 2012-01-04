@@ -42,12 +42,6 @@ public class Item {
     public Item(Column column, Object value){
         this.column = column;
         this.value = value;
-
-        /* roles map */
-        //Item.itemRolesNameMap.put(Qt.ItemDataRole.DisplayRole, "display");
-        //Item.itemRolesNameMap.put(Qt.ItemDataRole.EditRole, "edit");
-        //Item.itemRolesNameMap.put(Qt.ItemDataRole.CheckStateRole, "checkstate");
-
     }
 
     public Object get(int role) throws Exception {
@@ -58,7 +52,7 @@ public class Item {
 
         Object result;
 
-        Object nameObject = ITEM_ROLES.get(role);// Item.itemRolesNameMap.get(role);
+        Object nameObject = ITEM_ROLES.get(role);
         if( nameObject == null){
             return null;
         }
@@ -83,20 +77,5 @@ public class Item {
         }
         return result;
     }
-
-    /*
-    public Object getEdit(){
-        Object result = this.value;
-        if( result == null ){
-            result = "n.d.";
-        }
-        return result;
-    }*/
-
-    public Object getCheckstate(){
-        return null;
-        //return Qt.CheckState.Unchecked;
-    }
-
 
 }
