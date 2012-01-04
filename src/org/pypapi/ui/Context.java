@@ -170,7 +170,6 @@ public class Context extends QObject {
 
     public void commitChanges(){
         Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        // TODO: create element from factory anche controller
         c.edit(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
