@@ -86,7 +86,10 @@ public class Column {
         }
 
         if( returnType == String.class ){
-            ItemEditable item = new ItemEditable(this, result, setter, entity);
+            ItemField item = new ItemField(this, result, setter, entity);
+            return item;
+        } else if( returnType == Boolean.class ){
+            BooleanItemField item = new BooleanItemField(this, result, setter, entity);
             return item;
         } else {
             ItemLookup item = new ItemLookup(this, result, setter, entity,
