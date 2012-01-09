@@ -77,5 +77,9 @@ public class Item {
         }
         return result;
     }
+    
+    public Qt.CheckState getCheckstate(){
+        return null;
+    }
 
 }
