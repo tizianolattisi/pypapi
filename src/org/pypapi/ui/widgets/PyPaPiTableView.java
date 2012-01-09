@@ -18,7 +18,10 @@ package org.pypapi.ui.widgets;
 
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+import org.pypapi.GlobalManager;
 import org.pypapi.ui.Form;
 import org.pypapi.ui.TableModel;
 import org.pypapi.ui.Util;
@@ -77,13 +80,21 @@ public class PyPaPiTableView extends QTableView{
     }
 
 
-    private void contextMenu(QPoint point){
+    private void contextMenu(QPoint point) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if (this.actionOpen.equals(action)){
             List<QModelIndex> rows = this.selectionModel().selectedRows();
             for (QModelIndex idx: rows){
                 TableModel model = (TableModel) this.model();
                 Object entity = model.getEntityByRow(idx.row());
+                Object relation = GlobalManager.queryRelation(this, "reference");
+                if ( relation != null ){
+                    String name = (String) relation;
+                    String getterName = "get" + name.substring(0,1).toUpperCase() +
+                    name.substring(1);
+                    Method m = entity.getClass().getMethod(getterName);
+                    entity = m.invoke(entity);
+                }
                 Form form = Util.formFromEntity(entity);
                 form.show();
             }

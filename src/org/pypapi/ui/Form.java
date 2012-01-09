@@ -191,7 +191,7 @@ public class Form extends QMainWindow implements IForm {
                     criteria.add(column);
                 }
             }
-            // columns for list value widget
+            // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
                 Object columnsProperty = child.property("columns");
                 if (columnsProperty != null){
@@ -202,6 +202,10 @@ public class Form extends QMainWindow implements IForm {
                         tableColumns.add(tableColumn);
                     }
                     GlobalManager.registerRelation(tableColumns, child, "columns");
+                }
+                Object referenceProperty = child.property("reference");
+                if (referenceProperty != null){
+                    GlobalManager.registerRelation((String) referenceProperty, child, "reference");
                 }
             }
         }

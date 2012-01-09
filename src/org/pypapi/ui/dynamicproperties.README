@@ -91,6 +91,6 @@ Reference (String) dynamic property
 ===================================
 
 Apply to: LVW (n-n relations)
-I the entity refers to a n-n relation, the reference dynamic property show how
+If the entity refers to a n-n relation, the reference dynamic property show how
 to catch the foreign object from the relation object. The reference property
 should be a valid property of the relation object.
