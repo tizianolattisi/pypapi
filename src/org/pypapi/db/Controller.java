@@ -81,7 +81,13 @@ public class Controller implements IController {
         try {
             m = this.jpaController.getClass().getMethod("find"+this.entityName, Long.class);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                m = this.jpaController.getClass().getMethod("find"+this.entityName, Integer.class);
+            } catch (NoSuchMethodException ex2) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex2) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (SecurityException ex) {
             Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
