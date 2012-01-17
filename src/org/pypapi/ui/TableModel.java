@@ -205,7 +205,7 @@ public class TableModel extends QAbstractTableModel {
         this.beginInsertRows(parent, first, last);
         for (int i=0; i<entities.size(); i++){
             Object entity = entities.get(i);
-                this.store.insert(first+i, entity);
+                this.store.add(first+i, entity);
             }
         this.endInsertRows();
         return true;
