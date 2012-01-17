@@ -151,16 +151,24 @@ public class Context extends QObject {
     }
 
     public void insertElement(){
+        this.insertElement(null);
+    }
+    
+    public void insertElement(Object newEntity){
         Object entity = null;
         QModelIndex idx=null;
-        String entityName = this.rootClass.getName();
-        Class cls = (Class) GlobalManager.queryUtility(IFactory.class, entityName);
-        try {
-            entity = cls.newInstance();
-        } catch (InstantiationException ex) {
-            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        if ( newEntity == null ){
+            String entityName = this.rootClass.getName();
+            Class cls = (Class) GlobalManager.queryUtility(IFactory.class, entityName);
+            try {
+                entity = cls.newInstance();
+            } catch (InstantiationException ex) {
+                Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            entity = newEntity;
         }
         List entities = new ArrayList();
         boolean add = entities.add(entity);

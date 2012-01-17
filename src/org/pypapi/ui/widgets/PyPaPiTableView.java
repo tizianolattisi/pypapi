@@ -139,7 +139,8 @@ public class PyPaPiTableView extends QTableView{
                             ifaceFrom = iface;
                         }
                         Class entityClass = null;
-                        Class rootClass = ((TableModel) this.model()).getContextHandle().getRootClass();
+                        TableModel model = (TableModel) this.model();
+                        Class rootClass = model.getContextHandle().getRootClass();
                         String entityName = (String) this.property("entity");
                         String entityMethodName = "get"+entityName.substring(1,2).toUpperCase()+entityName.substring(2);
                         try {
@@ -163,7 +164,7 @@ public class PyPaPiTableView extends QTableView{
                             try {
                                 Object adapted = adapter.invoke(null, entity);
                                 System.out.println("adapted > "+adapted);
-                                // TODO: append to the collection
+                                model.getContextHandle().insertElement(adapted);
                             } catch (IllegalAccessException ex) {
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IllegalArgumentException ex) {
