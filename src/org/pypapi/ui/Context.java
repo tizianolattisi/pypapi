@@ -63,6 +63,10 @@ public class Context extends QObject {
         this.isDirty = false;
     }
 
+    public Class getRootClass() {
+        return rootClass;
+    }
+
     private void initializeContext(){
         this.mapper.currentIndexChanged.connect(this, "indexChanged(int)");
         if(".".equals(this.name)){
@@ -92,6 +96,7 @@ public class Context extends QObject {
         } else {
             tableModel = new TableModel(null, null);
         }
+        tableModel.setContextHandle(this);
 
         return tableModel;
     }

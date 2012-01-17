@@ -82,20 +82,42 @@ public class GlobalManager {
      * 
      * @param iface The interface implemented by the utility
      * @param name The string name
+     * @param noPrefix The string name has no prefix (aka. "name" instead of "pre.name")
      * @return  The utility
      * 
      */
-    public static Object queryUtility(Class iface, String name){
+    public static Object queryUtility(Class iface, String name, Boolean noPrefix){
         HashMap hm = null;
         Object utility = null;
         Object hmObject = GlobalManager.utilities.get(iface);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
-            utility = hm.get(name);
+            if (noPrefix == false){
+                utility = hm.get(name);
+            } else {
+                for (Object o: hm.keySet()){
+                    String key = (String) o;
+                    if( key.endsWith(name) ){
+                        utility = hm.get(key);
+                    }
+                }
+            }
         }
         return utility;
     }
-    
+
+    /**
+     * Query the named utility with the given interface (default with prefix)
+     * 
+     * @param iface The interface implemented by the utility
+     * @param name The string name
+     * @return  The utility
+     * 
+     */
+    public static Object queryUtility(Class iface, String name){
+        return GlobalManager.queryUtility(iface, name, Boolean.FALSE);
+    }
+
     /**
      * Registers a named adapter for a list of interfaces.
      * 

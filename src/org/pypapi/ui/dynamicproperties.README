@@ -94,3 +94,7 @@ Apply to: LVW (n-n relations)
 If the entity refers to a n-n relation, the reference dynamic property show how
 to catch the foreign object from the relation object. The reference property
 should be a valid property of the relation object.
+The action info will open a form for the selected row object, while the 
+action open will open a form for the related object.
+The action add will open a PickerDialog for the selection of a object of the
+related type. This object will be adapted to the row type in the collection.

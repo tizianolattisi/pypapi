@@ -36,6 +36,15 @@ public class TableModel extends QAbstractTableModel {
     private List columns;
     private Store store;
     private HashMap cache;
+    private Context contextHandle;
+
+    public Context getContextHandle() {
+        return contextHandle;
+    }
+
+    public void setContextHandle(Context context) {
+        this.contextHandle = context;
+    }
 
     public TableModel(Store store, List columns){
         if( store == null ) store = new Store(new ArrayList());
