@@ -163,7 +163,6 @@ public class PyPaPiTableView extends QTableView{
                             Method adapter = (Method) GlobalManager.queryAdapter(ifaceFrom, ifaceTo);
                             try {
                                 Object adapted = adapter.invoke(null, entity);
-                                System.out.println("adapted > "+adapted);
                                 model.getContextHandle().insertElement(adapted);
                             } catch (IllegalAccessException ex) {
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
