@@ -29,7 +29,7 @@ public class Application {
     }
     
     public static int exec(){
-        int res = QApplication.exec();
+        int res = QApplication.execStatic();
         return res;
     }
     
