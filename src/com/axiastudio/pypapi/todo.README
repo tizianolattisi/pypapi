@@ -1,0 +1,115 @@
+To do list
+==========
+
+
+
+Resize form
+-----------
+
+The Form sould be able to resize itself
+
+
+
+New Store
+---------
+
+Replace Store object with a new one implementing Comparable interface, with
+compareTo based on *order* field.
+The new object should support "add at index" reordering the *order* field.
+
+
+Example:
+
+initial racordset:
+
+    name   |order
+    --------------
+    mario  |  1
+    luigi  |  2
+
+
+list = [<mario>, <luigi>]
+
+list.add(1, <luca>)
+
+list = [<mario>, <luca>, <luigi>]
+
+final recordset:
+
+    name   |order
+    --------------
+    mario  |  1
+    luca   |  2
+    luigi  |  3
+
+
+Another pretty function could be a *move* method: move(x, y) -> move the item
+from x position to y position.
+
+
+Example:
+
+initial recordset:
+
+    name   |order
+    --------------
+    mario  |  1
+    luca   |  2
+    luigi  |  3
+
+
+list = [<mario>, <luca>, <luigi>]
+
+list.move(2, 1)
+
+list = [<mario>, <luigi>, <luca>]
+
+final recordset:
+
+    name   |order
+    --------------
+    mario  |  1
+    luigi  |  2
+    luca   |  3
+
+
+
+GlobalManager registration by interfaces and by classes
+-------------------------------------------------------
+
+The actual adaption mechanism supports the registration with the interfaces of
+the objects "to adapt" and "adapted".
+This is a *generic* way to define an adapter, beacuse it's valid for all the
+objects implementing these interfaces.
+
+We can define a "most specific" way, based directly on the object classes.
+With the same syntax, but with object classes instead of their interfaces, we
+declare that is an adapter is specific for these classes.
+
+The query of the adapter should search first the most specific declaration (if
+present), and then the lesser specific one.
+
+
+
+Adapter thru annotation
+-----------------------
+
+The way to define an adapter is to register it in GlobalManager.
+
+An adapter could be often a method of the class to adapt, so we can provide
+an annotation designed for an *automatic registration" of the adapter.
+
+example:
+
+    @entityadapter
+    public static Adapted adaptToAdapted(ToAdapt ta){
+        Adapted a = new Adapted();
+        a.setToAdapt(ta);
+        return a;
+    }
+
+will implicit execute:
+
+adapter = ToAdapt.class.getMethod("adaptToAdapted", ToAdapt.class);
+GlobalManager.registerAdapter(adapter, ToAdapt.class, Adapted.class);
+
