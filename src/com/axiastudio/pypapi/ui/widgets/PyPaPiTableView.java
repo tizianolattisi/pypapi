@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 AXIA Studio (http://www.axiastudio.it)
+ * Copyright (C) 2011 AXIA Studio (http://www.axiastudio.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ import com.axiastudio.pypapi.ui.Util;
 
 /**
  *
- * @author AXIA Studio (http://www.axiastudio.it)
+ * @author tiziano
  *
  * PyPaPiTableView is a custom widget implementing info, open, add and delete
  * of rows in the bag list.
