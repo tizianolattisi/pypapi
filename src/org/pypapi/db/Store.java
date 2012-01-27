@@ -22,11 +22,11 @@ import java.util.*;
  *
  * @author AXIA Studio (http://www.axiastudio.it)
  */
-public class Store implements List {
+public class Store<T> implements List {
 
-    private List list;
+    private List<T> list;
 
-    public Store(List list){
+    public Store(List<T> list){
         this.list = list;
     }
 
@@ -71,7 +71,7 @@ public class Store implements List {
 
     @Override
     public boolean add(Object e) {
-        return this.list.add(e);
+        return this.list.add((T) e);
     }
 
     @Override
@@ -111,12 +111,12 @@ public class Store implements List {
 
     @Override
     public Object set(int i, Object e) {
-        return this.list.set(i, e);
+        return this.list.set(i, (T) e);
     }
 
     @Override
     public void add(int i, Object e) {
-        this.list.add(i, e);
+        this.list.add(i, (T) e);
     }
 
     @Override
