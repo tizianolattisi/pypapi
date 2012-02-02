@@ -76,7 +76,7 @@ public class Form extends QMainWindow implements IForm {
         /* context's children */
         this.initModels();
         NavigationToolBar bar = new NavigationToolBar("Navigation", this);
-        bar.setMovable(false);
+        bar.setMovable(true);
         this.addToolBar(bar);
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
         this.context.getMapper().toFirst();
@@ -93,7 +93,7 @@ public class Form extends QMainWindow implements IForm {
         for( QByteArray name: window.dynamicPropertyNames()){
             this.setProperty(name.toString(), window.property(name.toString()));
         }
-        this.layout().addWidget(window);
+        this.setCentralWidget(window);
     }
 
     private void initModels(){
