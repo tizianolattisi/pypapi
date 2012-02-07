@@ -19,6 +19,8 @@ package com.axiastudio.pypapi;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +51,38 @@ public class Resolver {
         }
         return referenced;
     }
+
+    public static Class collectionClassFromReference(Class parent, String reference){
+        String methodName = "get"+reference.substring(0,1).toUpperCase()+reference.substring(1);
+        Method method = null;
+        try {
+            method = parent.getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();
+        Type[] actualTypeArguments = pt.getActualTypeArguments();
+        Class collectionClass = (Class) actualTypeArguments[0];
+
+        return collectionClass;
+    }
+    
+    public static Class entityClassFromReference(Class parent, String reference){
+        String methodName = "get"+reference.substring(0,1).toUpperCase()+reference.substring(1);
+        Method entityMethod = null;
+        try {
+            entityMethod = parent.getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Class entityClass = (Class) entityMethod.getGenericReturnType();
+
+        return entityClass;
+        }
     
     public static Class<?> interfaceFromEntityClass(Class entityClass){
         Class<?> iface = null;

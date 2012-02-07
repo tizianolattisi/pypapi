@@ -89,6 +89,10 @@ public class PyPaPiTableView extends QTableView{
 
 
     private void contextMenu(QPoint point){
+        TableModel model = (TableModel) this.model();
+        Class rootClass = model.getContextHandle().getRootClass();
+        String entityName = (String) this.property("entity");
+        Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Boolean selected = !rows.isEmpty();
         Object reference = Register.queryRelation(this, "reference");
@@ -98,7 +102,6 @@ public class PyPaPiTableView extends QTableView{
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if (this.actionOpen.equals(action)){
             for (QModelIndex idx: rows){
-                TableModel model = (TableModel) this.model();
                 Object entity = model.getEntityByRow(idx.row());
                 if ( reference != null ){
                     entity = Resolver.entityFromReference(entity, (String) reference);
@@ -109,32 +112,15 @@ public class PyPaPiTableView extends QTableView{
         } else if (this.actionAdd.equals(action)){
             if ( reference != null ){
                 String name = (String) reference;
-                // XXX: class name should be equal to reference name (bad!)
-                String className = name.substring(0,1).toUpperCase() + name.substring(1);
+                String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
                 Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
                 PickerDialog pd = new PickerDialog(this, controller);
                 int res = pd.exec();
-                // TODO: in utility
                 if ( res == 1 ){
                     if( pd.getSelection().size()>0 ){
                         Object entity = pd.getSelection().get(0);
                         Class<?> ifaceFrom = Resolver.interfaceFromEntityClass(entity.getClass());
-                        Class entityClass = null;
-                        TableModel model = (TableModel) this.model();
-                        Class rootClass = model.getContextHandle().getRootClass();
-                        String entityName = (String) this.property("entity");
-                        String entityMethodName = "get"+entityName.substring(1,2).toUpperCase()+entityName.substring(2);
-                        try {
-                            Method entityMethod = rootClass.getDeclaredMethod(entityMethodName);
-                            ParameterizedType pt = (ParameterizedType) entityMethod.getGenericReturnType();
-                            Type[] actualTypeArguments = pt.getActualTypeArguments();
-                            entityClass = (Class) actualTypeArguments[0];
-                        } catch (NoSuchMethodException ex) {
-                            Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (SecurityException ex) {
-                            Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Class<?> ifaceTo = Resolver.interfaceFromEntityClass(entityClass);
+                        Class<?> ifaceTo = Resolver.interfaceFromEntityClass(collectionClass);
                         // TODO: I need an adapter...
                         if ( ifaceFrom != null && ifaceTo != null){
                             Method adapter = (Method) Register.queryAdapter(ifaceFrom, ifaceTo);
