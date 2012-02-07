@@ -108,16 +108,16 @@ Register.registerAdapter(adapter, ToAdapt.class, Adapted.class);
 
 
 
-Relation resolver utility
--------------------------
+Resolver utility
+----------------
 
 A utility class with these ability:
 
-1. return the relation entity from a parent entity and a relation string
+1. return the referenced entity from a parent entity and a reference string
 
 ex.
 Lending lend = person.getCurrentLending()
-Book book = Resolver.entityFromRelation(lend, 'book');
+Book book = Resolver.entityFromReference(lend, 'book');
 
 2. resolve the type from a Collection (typeFromCollection)
 

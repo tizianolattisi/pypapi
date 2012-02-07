@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.ui.Form;
@@ -90,7 +91,7 @@ public class PyPaPiTableView extends QTableView{
     private void contextMenu(QPoint point){
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Boolean selected = !rows.isEmpty();
-        Object relation = Register.queryRelation(this, "reference");
+        Object reference = Register.queryRelation(this, "reference");
         this.actionInfo.setEnabled(selected);
         this.actionOpen.setEnabled(selected);
         this.actionDel.setEnabled(selected);
@@ -99,32 +100,16 @@ public class PyPaPiTableView extends QTableView{
             for (QModelIndex idx: rows){
                 TableModel model = (TableModel) this.model();
                 Object entity = model.getEntityByRow(idx.row());
-                if ( relation != null ){
-                    try {
-                        String name = (String) relation;
-                        String getterName = "get" + name.substring(0,1).toUpperCase() +
-                        name.substring(1);
-                        Method m = entity.getClass().getMethod(getterName);
-                        entity = m.invoke(entity);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InvocationTargetException ex) {
-                        Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (NoSuchMethodException ex) {
-                        Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (SecurityException ex) {
-                        Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                if ( reference != null ){
+                    entity = Resolver.entityFromReference(entity, (String) reference);
                 }
                 Form form = Util.formFromEntity(entity);
                 form.show();
             }
         } else if (this.actionAdd.equals(action)){
-            if ( relation != null ){
-                String name = (String) relation;
-                // XXX: class name should be equal to relation name (bad!)
+            if ( reference != null ){
+                String name = (String) reference;
+                // XXX: class name should be equal to reference name (bad!)
                 String className = name.substring(0,1).toUpperCase() + name.substring(1);
                 Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
                 PickerDialog pd = new PickerDialog(this, controller);
@@ -132,12 +117,8 @@ public class PyPaPiTableView extends QTableView{
                 // TODO: in utility
                 if ( res == 1 ){
                     if( pd.getSelection().size()>0 ){
-                        Class<?> ifaceFrom = null;      // to adapt
-                        Class<?> ifaceTo = null;        // to provide
                         Object entity = pd.getSelection().get(0);
-                        for( Class<?> iface: entity.getClass().getInterfaces() ){
-                            ifaceFrom = iface;
-                        }
+                        Class<?> ifaceFrom = Resolver.interfaceFromEntityClass(entity.getClass());
                         Class entityClass = null;
                         TableModel model = (TableModel) this.model();
                         Class rootClass = model.getContextHandle().getRootClass();
@@ -153,11 +134,7 @@ public class PyPaPiTableView extends QTableView{
                         } catch (SecurityException ex) {
                             Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        entityClass.getInterfaces();
-                        for( Class<?> iface: entityClass.getInterfaces() ){
-                            ifaceTo = iface;
-                        }
-                                               
+                        Class<?> ifaceTo = Resolver.interfaceFromEntityClass(entityClass);
                         // TODO: I need an adapter...
                         if ( ifaceFrom != null && ifaceTo != null){
                             Method adapter = (Method) Register.queryAdapter(ifaceFrom, ifaceTo);
