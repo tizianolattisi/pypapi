@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 
 
 /**
@@ -77,7 +77,7 @@ public class Context extends QObject {
         if(".".equals(this.name)){
             this.primaryDc = this;
         } else {
-            this.primaryDc = (Context) GlobalManager.queryRelation(this.parent, ".");
+            this.primaryDc = (Context) Register.queryRelation(this.parent, ".");
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
@@ -92,8 +92,8 @@ public class Context extends QObject {
 
         /* resolve entity class */
         if(".".equals(this.name)){
-            Database db = (Database) GlobalManager.queryUtility(IDatabase.class);
-            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
             if( store == null ){
                 store = controller.createFullStore();
             }
@@ -164,7 +164,7 @@ public class Context extends QObject {
         QModelIndex idx=null;
         if ( newEntity == null ){
             String entityName = this.rootClass.getName();
-            Class cls = (Class) GlobalManager.queryUtility(IFactory.class, entityName);
+            Class cls = (Class) Register.queryUtility(IFactory.class, entityName);
             try {
                 entity = cls.newInstance();
             } catch (InstantiationException ex) {
@@ -187,20 +187,20 @@ public class Context extends QObject {
     }
 
     public void commitChanges(){
-        Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         c.edit(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
 
     public void cancelChanges(){
-        Controller c = (Controller) GlobalManager.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         c.refresh(this.primaryDc.currentEntity);
         this.model.purgeItemCache(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
     
     public void search(){
-        Controller controller = (Controller) GlobalManager.queryUtility(IController.class, this.rootClass.getName());
+        Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
         PickerDialog pd = new PickerDialog(this.parent, controller);
         int res = pd.exec();
         if ( res == 1 ){

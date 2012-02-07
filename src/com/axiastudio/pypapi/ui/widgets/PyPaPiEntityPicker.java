@@ -20,7 +20,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.ui.Util;
@@ -69,7 +69,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
 
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
-        Context context = (Context) GlobalManager.queryRelation(this.window(), ".");
+        Context context = (Context) Register.queryRelation(this.window(), ".");
         ItemLookup item;
         try {
             item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
@@ -82,7 +82,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
             Form newForm = Util.formFromEntity(entity);
             newForm.show();
         } else if (this.actionSelect.equals(action)){
-            Controller controller = (Controller) GlobalManager.queryUtility(IController.class, item.getName());
+            Controller controller = (Controller) Register.queryUtility(IController.class, item.getName());
             PickerDialog pd = new PickerDialog(this, controller);
         int res = pd.exec();
         if ( res == 1 ){

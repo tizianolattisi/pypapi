@@ -21,7 +21,7 @@ import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
 
@@ -55,7 +55,7 @@ public class PickerDialog extends QDialog {
         this.selection = new ArrayList();
         this.criteriaWidgets = new HashMap();
         this.init();
-        EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> criteria = behavior.getCriteria();
         this.isCriteria = false;
         if (criteria != null){
@@ -130,7 +130,7 @@ public class PickerDialog extends QDialog {
     
     public final void executeSearch(){
         Store supersetStore=null;
-        EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> columns = behavior.getSearchColumns();
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();

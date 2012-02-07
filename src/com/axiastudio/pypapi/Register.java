@@ -24,11 +24,11 @@ import java.util.List;
  *
  * @author tiziano
  * 
- * The GlobalManager class provides method for register and query utility and
+ * The Register class provides method for register and query utility and
  * adapters.
  * 
  */
-public class GlobalManager {
+public class Register {
     
     private static HashMap utilities = new HashMap();
     private static HashMap adapters = new HashMap();
@@ -42,7 +42,7 @@ public class GlobalManager {
      * 
      */
     public static void registerUtility(Object utility, Class iface){
-        GlobalManager.registerUtility(utility, iface, ".");
+        Register.registerUtility(utility, iface, ".");
 
     }
 
@@ -56,14 +56,14 @@ public class GlobalManager {
      */
     public static void registerUtility(Object utility, Class iface, String name){
         HashMap hm = null;
-        Object hmObject = GlobalManager.utilities.get(iface);
+        Object hmObject = Register.utilities.get(iface);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
         } else {
             hm = new HashMap();
         }
         hm.put(name, utility);
-        GlobalManager.utilities.put(iface, hm);
+        Register.utilities.put(iface, hm);
     }
 
     /**
@@ -74,7 +74,7 @@ public class GlobalManager {
      * 
      */
     public static Object queryUtility(Class iface){
-        return GlobalManager.queryUtility(iface, ".");
+        return Register.queryUtility(iface, ".");
     }
 
     /**
@@ -89,7 +89,7 @@ public class GlobalManager {
     public static Object queryUtility(Class iface, String name, Boolean noPrefix){
         HashMap hm = null;
         Object utility = null;
-        Object hmObject = GlobalManager.utilities.get(iface);
+        Object hmObject = Register.utilities.get(iface);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
             if (noPrefix == false){
@@ -115,7 +115,7 @@ public class GlobalManager {
      * 
      */
     public static Object queryUtility(Class iface, String name){
-        return GlobalManager.queryUtility(iface, name, Boolean.FALSE);
+        return Register.queryUtility(iface, name, Boolean.FALSE);
     }
 
     /**
@@ -129,14 +129,14 @@ public class GlobalManager {
     public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
         HashMap hm = null;
         for (Class c: adapts ){
-            Object hmObject = GlobalManager.adapters.get(c);
+            Object hmObject = Register.adapters.get(c);
             if( hmObject != null ){
                 hm = (HashMap) hmObject;
             } else {
                 hm = new HashMap();
             }
             hm.put(provides, adatper);
-            GlobalManager.adapters.put(c, hm);
+            Register.adapters.put(c, hm);
         }
     }
 
@@ -148,7 +148,7 @@ public class GlobalManager {
      * @param provides The interface that the adapter implements
      */
     public static void registerAdapter(Object adatper, List<Class> adapts, Class provides){
-        GlobalManager.registerAdapter(adatper, adapts, provides, null);
+        Register.registerAdapter(adatper, adapts, provides, null);
     }
 
 
@@ -162,7 +162,7 @@ public class GlobalManager {
     public static void registerAdapter(Object adapter, Class adapts, Class provides){
         List adaptsList = new ArrayList();
         adaptsList.add(adapts);
-        GlobalManager.registerAdapter(adapter, adaptsList, provides);
+        Register.registerAdapter(adapter, adaptsList, provides);
     }
 
     /**
@@ -175,7 +175,7 @@ public class GlobalManager {
     public static Object queryAdapter(Class adapts, Class provides){
         HashMap hm = null;
         Object adapter = null;
-        Object hmObject = GlobalManager.adapters.get(adapts);
+        Object hmObject = Register.adapters.get(adapts);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
             adapter = hm.get(provides);
@@ -193,14 +193,14 @@ public class GlobalManager {
      */
     public static void registerRelation(Object related, Object object, String name){
         HashMap hm = null;
-        Object hmObject = GlobalManager.relations.get(object);
+        Object hmObject = Register.relations.get(object);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
         } else {
             hm = new HashMap();
         }
         hm.put(name, related);
-        GlobalManager.relations.put(object, hm);
+        Register.relations.put(object, hm);
     }
 
     /**
@@ -214,7 +214,7 @@ public class GlobalManager {
     public static Object queryRelation(Object object, String name){
         HashMap hm = null;
         Object related = null;
-        Object hmObject = GlobalManager.relations.get(object);
+        Object hmObject = Register.relations.get(object);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
             related = hm.get(name);

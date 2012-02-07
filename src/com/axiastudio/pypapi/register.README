@@ -1,7 +1,7 @@
 Introduction
 ============
 
-GlobalManager is a class utility for registering globals utilities, adapters and
+Register is a class utility for registering globals utilities, adapters and
 relations between object.
 
 
@@ -22,7 +22,7 @@ With the code below we creates and registers a form for the entity object "Book"
 Form booksForm = new Form("classpath:org/pypapi/demo/forms/books.ui",
                 Book.class, "Demo application - Library");
 
-GlobalManager.registerUtility(booksForm, IForm.class,
+Register.registerUtility(booksForm, IForm.class,
                 "org.pypapi.demo.entities.Book");
 
 Notice that the booksForm utility is registred with the name of the object Book.
@@ -42,7 +42,7 @@ The code below creates and registers the controller:
 
 BookJpaController jpaCtrl= new BookJpaController(db.getEntityManagerFactory());
 Controller bookController = new Controller(jpaCtrl, "org.pypapi.demo.entities.Book");
-GlobalManager.registerUtility(bookController, IController.class,
+Register.registerUtility(bookController, IController.class,
                 "org.pypapi.demo.entities.Book");
 
 The PyPaPi Controller object is an adapter for the Netbeans JPA Controller.
@@ -54,7 +54,7 @@ The factory
 The factory for the object managed by the form could be, in the easist way, the
 class itself.
 
-GlobalManager.registerUtility(Book.class, IFactory.class, "org.pypapi.demo.entities.Book");
+Register.registerUtility(Book.class, IFactory.class, "org.pypapi.demo.entities.Book");
 
 The code above registers the Book class as factory.
 
@@ -84,7 +84,7 @@ TableView widgets and columns to display
 
 The framework uses a relation to determine witch columns to display in a
 TableView widget.
-This relation is registred on the widget with the GlobalManager.
+This relation is registred on the widget with the Register.
 
 
 The behavior object
@@ -99,13 +99,13 @@ List<Column> criteria = behavior.getCriteria;
 // omissam...
 EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
 behavior.setCriteria(criteria);
-GlobalManager.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
+Register.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
 
 You can override the behavior of a entity querying and re-registering the
 utility:
 
-EntityBehavior behavior = (EntityBehavior) GlobalManager.queryUtility(IEntityBehavior.class, "org.pypapi.demo.entities.Book");
+EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, "org.pypapi.demo.entities.Book");
 List<Column> criteria = behavior.getCriteria();
 criteria.add(newSearchColumn);
-GlobalManager.registerUtility(behavior, IEntityBehavior.class, "org.pypapi.demo.entities.Book");
+Register.registerUtility(behavior, IEntityBehavior.class, "org.pypapi.demo.entities.Book");
 

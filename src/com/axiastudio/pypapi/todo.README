@@ -3,13 +3,6 @@ To do list
 
 
 
-Resize form
------------
-
-The Form sould be able to resize itself
-
-
-
 New Store
 ---------
 
@@ -74,8 +67,8 @@ final recordset:
 
 
 
-GlobalManager registration by interfaces and by classes
--------------------------------------------------------
+Register registration by interfaces and by classes
+--------------------------------------------------
 
 The actual adaption mechanism supports the registration with the interfaces of
 the objects "to adapt" and "adapted".
@@ -94,7 +87,7 @@ present), and then the lesser specific one.
 Adapter thru annotation
 -----------------------
 
-The way to define an adapter is to register it in GlobalManager.
+The way to define an adapter is to register it in Register.
 
 An adapter could be often a method of the class to adapt, so we can provide
 an annotation designed for an *automatic registration" of the adapter.
@@ -111,5 +104,20 @@ example:
 will implicit execute:
 
 adapter = ToAdapt.class.getMethod("adaptToAdapted", ToAdapt.class);
-GlobalManager.registerAdapter(adapter, ToAdapt.class, Adapted.class);
+Register.registerAdapter(adapter, ToAdapt.class, Adapted.class);
+
+
+
+Relation resolver utility
+-------------------------
+
+A utility class with these ability:
+
+1. return the relation entity from a parent entity and a relation string
+
+ex.
+Lending lend = person.getCurrentLending()
+Book book = Resolver.entityFromRelation(lend, 'book');
+
+2. resolve the type from a Collection (typeFromCollection)
 

@@ -21,7 +21,7 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
 import java.util.ArrayList;
 import java.util.List;
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
 
 /**
@@ -34,7 +34,7 @@ public class Util {
         List entities = new ArrayList();
         entities.add(entity);
         Store store = new Store(entities);
-        Form form = (Form) GlobalManager.queryUtility(IForm.class, entity.getClass().getName());
+        Form form = (Form) Register.queryUtility(IForm.class, entity.getClass().getName());
         Form newForm = new Form(form);
         newForm.init(store);
         return newForm;

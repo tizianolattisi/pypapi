@@ -25,7 +25,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.NavigationToolBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
@@ -114,14 +114,14 @@ public class Form extends QMainWindow implements IForm {
         if(".".equals(path)){
             contextColumns = this.columns;
         } else {
-            contextColumns = (List) GlobalManager.queryRelation(this.widgets.get(path), "columns");
+            contextColumns = (List) Register.queryRelation(this.widgets.get(path), "columns");
         }
         if( store == null){
             dataContext = new Context(this, this.entityClass, path, contextColumns);
         } else {
             dataContext = new Context(this, this.entityClass, path, contextColumns, store);
         }
-        GlobalManager.registerRelation(dataContext, this, path);
+        Register.registerRelation(dataContext, this, path);
         if(! ".".equals(path)){
             ((QTableView) this.widgets.get(path)).setModel(dataContext.getModel());
             
@@ -201,11 +201,11 @@ public class Form extends QMainWindow implements IForm {
                         Column tableColumn = new Column(name, name, name);
                         tableColumns.add(tableColumn);
                     }
-                    GlobalManager.registerRelation(tableColumns, child, "columns");
+                    Register.registerRelation(tableColumns, child, "columns");
                 }
                 Object referenceProperty = child.property("reference");
                 if (referenceProperty != null){
-                    GlobalManager.registerRelation((String) referenceProperty, child, "reference");
+                    Register.registerRelation((String) referenceProperty, child, "reference");
                 }
             }
         }
@@ -221,7 +221,7 @@ public class Form extends QMainWindow implements IForm {
         EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
         behavior.setCriteria(criteria);
         behavior.setSearchColumns(searchColumns);
-        GlobalManager.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
+        Register.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
     }
 
     private void addMappers() {

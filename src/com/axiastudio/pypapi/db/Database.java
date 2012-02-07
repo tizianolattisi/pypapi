@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 
 
 /**
@@ -39,7 +39,7 @@ public class Database implements IDatabase {
 
     @Override
     public void open(String persistenceUnit) {
-        GlobalManager.registerUtility(this, IDatabase.class);
+        Register.registerUtility(this, IDatabase.class);
         try {
             this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
         } catch (Exception ex) {

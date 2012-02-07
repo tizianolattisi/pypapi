@@ -25,7 +25,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.axiastudio.pypapi.GlobalManager;
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.ui.Form;
@@ -90,7 +90,7 @@ public class PyPaPiTableView extends QTableView{
     private void contextMenu(QPoint point){
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Boolean selected = !rows.isEmpty();
-        Object relation = GlobalManager.queryRelation(this, "reference");
+        Object relation = Register.queryRelation(this, "reference");
         this.actionInfo.setEnabled(selected);
         this.actionOpen.setEnabled(selected);
         this.actionDel.setEnabled(selected);
@@ -126,7 +126,7 @@ public class PyPaPiTableView extends QTableView{
                 String name = (String) relation;
                 // XXX: class name should be equal to relation name (bad!)
                 String className = name.substring(0,1).toUpperCase() + name.substring(1);
-                Controller controller = (Controller) GlobalManager.queryUtility(IController.class, className, true);
+                Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
                 PickerDialog pd = new PickerDialog(this, controller);
                 int res = pd.exec();
                 // TODO: in utility
@@ -160,7 +160,7 @@ public class PyPaPiTableView extends QTableView{
                                                
                         // TODO: I need an adapter...
                         if ( ifaceFrom != null && ifaceTo != null){
-                            Method adapter = (Method) GlobalManager.queryAdapter(ifaceFrom, ifaceTo);
+                            Method adapter = (Method) Register.queryAdapter(ifaceFrom, ifaceTo);
                             try {
                                 Object adapted = adapter.invoke(null, entity);
                                 model.getContextHandle().insertElement(adapted);
