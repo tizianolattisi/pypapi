@@ -30,13 +30,13 @@ public class BooleanItemField extends ItemField {
         super(column, value, setterMethod, entity);
     }
     
+    @Override
     public Qt.CheckState getCheckstate(){
         Boolean b = (Boolean) this.get();
-        if( b == true){
-            return Qt.CheckState.Checked;
-        } else {
+        if( b == null || b == false ){
             return Qt.CheckState.Unchecked;
         }
+        return Qt.CheckState.Checked;
     }
     
     public Boolean setCheckstate(Boolean objValue){
