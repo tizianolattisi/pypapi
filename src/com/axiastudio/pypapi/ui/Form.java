@@ -193,12 +193,23 @@ public class Form extends QMainWindow implements IForm {
             }
             // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
+                Object headersProperty = child.property("headers");
+                String[] headerNames=null;
+                if (headersProperty != null){
+                    headerNames = ((String) headersProperty).split(",");
+                    System.out.println(headerNames);
+                }
                 Object columnsProperty = child.property("columns");
                 if (columnsProperty != null){
                     String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
-                    for(String name: columnNames){
-                        Column tableColumn = new Column(name, name, name);
+                    for(int c=0; c<columnNames.length;c++){
+                        String name = columnNames[c];
+                        String label = name;
+                        if( headerNames != null){
+                            label = headerNames[c];
+                        }
+                        Column tableColumn = new Column(name, label, name);
                         tableColumns.add(tableColumn);
                     }
                     Register.registerRelation(tableColumns, child, "columns");

@@ -87,6 +87,12 @@ columns to show in the detail table. These columns should be comma separated
 value, without double quotes.
 
 
+Headers (String) dynamic property
+=================================
+Apply to: LVW (optional)
+The header's labels for the columns in the TbaleView widget (comma separated).
+
+
 Reference (String) dynamic property
 ===================================
 

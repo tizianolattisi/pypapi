@@ -26,6 +26,7 @@ import com.trolltech.qt.gui.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.axiastudio.pypapi.db.Store;
+import com.trolltech.qt.core.Qt.Orientation;
 
 /**
  *
@@ -33,10 +34,18 @@ import com.axiastudio.pypapi.db.Store;
  */
 public class TableModel extends QAbstractTableModel {
     
-    private List columns;
+    private List<Column> columns;
     private Store store;
     private HashMap cache;
     private Context contextHandle;
+
+    @Override
+    public Object headerData(int i, Orientation orntn, int i1) {
+        if( i1 == Qt.ItemDataRole.DisplayRole && orntn == Qt.Orientation.Horizontal ){
+            return this.columns.get(i).getLabel();
+        }
+        return super.headerData(i, orntn, i1);
+    }
 
     public Context getContextHandle() {
         return contextHandle;

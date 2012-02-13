@@ -56,7 +56,7 @@ public class PyPaPiTableView extends QTableView{
          *  init
          */
         this.setSelectionBehavior(SelectionBehavior.SelectRows);
-        this.initializeContextMenu();
+        this.initializeContextMenu();        
     }
     
     private void initializeContextMenu(){
