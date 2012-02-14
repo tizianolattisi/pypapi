@@ -197,7 +197,6 @@ public class Form extends QMainWindow implements IForm {
                 String[] headerNames=null;
                 if (headersProperty != null){
                     headerNames = ((String) headersProperty).split(",");
-                    System.out.println(headerNames);
                 }
                 Object columnsProperty = child.property("columns");
                 if (columnsProperty != null){
