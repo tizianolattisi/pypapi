@@ -37,7 +37,7 @@ public class ItemEditable extends Item {
         this.setter = setterMethod;
     }
 
-    public boolean setRoleValue(int role, Object objValue) throws Exception {
+    public boolean set(int role, Object objValue) throws Exception {
         /*
          * Set the value corresponding to the requested role
          * thru the correct setter method.

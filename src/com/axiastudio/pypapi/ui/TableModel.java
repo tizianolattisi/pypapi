@@ -137,7 +137,7 @@ public class TableModel extends QAbstractTableModel {
         try {
             Object oldValue = item.get(role);
             if (!oldValue.equals(value)){
-                boolean res = item.setRoleValue(role, value);
+                boolean res = item.set(role, value);
             } else return true;
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
