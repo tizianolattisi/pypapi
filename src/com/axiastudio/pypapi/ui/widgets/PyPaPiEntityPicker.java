@@ -41,10 +41,15 @@ public class PyPaPiEntityPicker extends QLineEdit{
     private QMenu menuPopup;
 
     public PyPaPiEntityPicker(){
+        this(null);
+    }
+    
+    public PyPaPiEntityPicker(QWidget parent){
         /*
          *  init
          */
-        this.initializeContextMenu();
+        this.setParent(parent);
+        this.initializeContextMenu();        
     }
 
     private void initializeContextMenu(){
@@ -62,7 +67,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);
         
-        this.installEventFilter(this);
+        //this.installEventFilter(this);
         
     }
 
@@ -91,12 +96,14 @@ public class PyPaPiEntityPicker extends QLineEdit{
 
         }
     }
-    
+
+    /*
     @Override
     public boolean eventFilter(QObject dist, QEvent event){
         // TODO: fast selector from id?
         return false;
     }
+    */
 
     
     public Column getBindColumn() {
