@@ -25,18 +25,18 @@ import java.util.logging.Logger;
  *
  * @author tiziano
  */
-public class ItemLookup extends ItemEditable {
+public class LookupItemField extends ItemEditable {
 
     private String lookup;
     private String name;
 
-    public ItemLookup(Column column, Object value, Method setterMethod,
+    public LookupItemField(Column column, Object value, Method setterMethod,
             Object entity, String lookup, String name){
         super(column, value, setterMethod, entity);
         this.lookup = lookup;
         this.name = name;
     }
-        
+
     @Override
     public Object getEdit(){
         /*
@@ -51,18 +51,18 @@ public class ItemLookup extends ItemEditable {
         try {
             m = result.getClass().getMethod("get" + this.lookup);
         } catch (NoSuchMethodException ex) {
-            Logger.getLogger(ItemLookup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
-            Logger.getLogger(ItemLookup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             lookupped = m.invoke(result);
         } catch (IllegalAccessException ex) {
-            Logger.getLogger(ItemLookup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(ItemLookup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(ItemLookup.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
         }
         return lookupped;
     }

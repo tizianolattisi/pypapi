@@ -92,7 +92,7 @@ public class Column {
             BooleanItemField item = new BooleanItemField(this, result, setter, entity);
             return item;
         } else {
-            ItemLookup item = new ItemLookup(this, result, setter, entity,
+            LookupItemField item = new LookupItemField(this, result, setter, entity,
                     this.lookup, returnType.getName());
             return item;
         }

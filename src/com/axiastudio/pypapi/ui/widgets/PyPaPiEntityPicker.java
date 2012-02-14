@@ -27,7 +27,7 @@ import com.axiastudio.pypapi.ui.Util;
 import com.axiastudio.pypapi.ui.Column;
 import com.axiastudio.pypapi.ui.Context;
 import com.axiastudio.pypapi.ui.Form;
-import com.axiastudio.pypapi.ui.ItemLookup;
+import com.axiastudio.pypapi.ui.LookupItemField;
 import com.axiastudio.pypapi.ui.PickerDialog;
 
 /**
@@ -75,9 +75,9 @@ public class PyPaPiEntityPicker extends QLineEdit{
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         Context context = (Context) Register.queryRelation(this.window(), ".");
-        ItemLookup item;
+        LookupItemField item;
         try {
-            item = (ItemLookup) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
+            item = (LookupItemField) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
         } catch (Exception ex) {
             Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
             return;
