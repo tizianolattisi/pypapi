@@ -27,7 +27,7 @@ import com.trolltech.qt.designer.QUiLoaderException;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
-import com.axiastudio.pypapi.ui.widgets.NavigationToolBar;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiMenuBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 
@@ -75,7 +75,7 @@ public class Form extends QMainWindow implements IForm {
         this.addMappers();
         /* context's children */
         this.initModels();
-        NavigationToolBar bar = new NavigationToolBar("Navigation", this);
+        PyPaPiMenuBar bar = new PyPaPiMenuBar("Navigation", this);
         bar.setMovable(true);
         this.addToolBar(bar);
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");

@@ -27,12 +27,12 @@ import com.axiastudio.pypapi.ui.Form;
  *
  * @author tiziano
  */
-public class NavigationToolBar extends QToolBar {
+public class PyPaPiMenuBar extends QToolBar {
 
     private static HashMap buttons;
     private Form parentForm;
 
-    public NavigationToolBar(String title, Form parent){
+    public PyPaPiMenuBar(String title, Form parent){
         this.parentForm = parent;
         this.configButtons();
     }
