@@ -48,7 +48,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
         /*
          *  init
          */
-        this.setParent(parent);
+        super(parent);
         this.initializeContextMenu();        
     }
 
