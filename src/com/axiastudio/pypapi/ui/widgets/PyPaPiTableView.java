@@ -16,15 +16,6 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
@@ -33,6 +24,17 @@ import com.axiastudio.pypapi.ui.Form;
 import com.axiastudio.pypapi.ui.PickerDialog;
 import com.axiastudio.pypapi.ui.TableModel;
 import com.axiastudio.pypapi.ui.Util;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.*;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -109,6 +111,12 @@ public class PyPaPiTableView extends QTableView{
                 Form form = Util.formFromEntity(entity);
                 form.show();
             }
+        } else if (this.actionInfo.equals(action)){
+            for (QModelIndex idx: rows){
+                Object entity = model.getEntityByRow(idx.row());
+                Form form = Util.formFromEntity(entity);
+                form.show();
+            }
         } else if (this.actionAdd.equals(action)){
             if ( reference != null ){
                 String name = (String) reference;
@@ -119,11 +127,16 @@ public class PyPaPiTableView extends QTableView{
                 if ( res == 1 ){
                     if( pd.getSelection().size()>0 ){
                         Object entity = pd.getSelection().get(0);
-                        Class<?> ifaceFrom = Resolver.interfaceFromEntityClass(entity.getClass());
-                        Class<?> ifaceTo = Resolver.interfaceFromEntityClass(collectionClass);
-                        // TODO: I need an adapter...
-                        if ( ifaceFrom != null && ifaceTo != null){
-                            Method adapter = (Method) Register.queryAdapter(ifaceFrom, ifaceTo);
+                        Class<?> ifaceOrClassFrom = Resolver.interfaceFromEntityClass(entity.getClass());
+                        if( ifaceOrClassFrom == Serializable.class ){
+                            ifaceOrClassFrom = entity.getClass();
+                        }
+                        Class<?> ifaceOrClassTo = Resolver.interfaceFromEntityClass(collectionClass);
+                        if( ifaceOrClassTo == Serializable.class ){
+                            ifaceOrClassTo = collectionClass;
+                        }
+                        Method adapter = (Method) Register.queryAdapter(ifaceOrClassFrom, ifaceOrClassTo);
+                        if( adapter != null ){
                             try {
                                 Object adapted = adapter.invoke(null, entity);
                                 model.getContextHandle().insertElement(adapted);
@@ -134,6 +147,10 @@ public class PyPaPiTableView extends QTableView{
                             } catch (InvocationTargetException ex) {
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                        } else {
+                            String title = "Adapter warning";
+                            String description = "Unable to find an adapter from "+ifaceOrClassFrom+" to "+ifaceOrClassTo;
+                            Util.messageBox(this, title, description);
                         }
                     }
                 }

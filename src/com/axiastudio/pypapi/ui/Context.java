@@ -54,7 +54,7 @@ public class Context extends QObject {
     }
 
     public Context(QWidget parent, Class rootClass, String name, List columns, Store store){
-        Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", name);
+        Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
@@ -197,6 +197,7 @@ public class Context extends QObject {
         c.refresh(this.primaryDc.currentEntity);
         this.model.purgeItemCache(this.primaryDc.currentEntity);
         this.isDirty = false;
+        this.mapper.revert();
     }
     
     public void search(){

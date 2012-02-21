@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
+import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QMessageBox;
+import com.trolltech.qt.gui.QMessageBox.StandardButton;
+import com.trolltech.qt.gui.QWidget;
 
 /**
  *
@@ -65,4 +69,8 @@ public class Util {
         return jui;
     }
 
+    public static StandardButton messageBox(QWidget parent, String title, String description){
+        StandardButton warning = QMessageBox.warning(parent, title, description);
+        return warning;
+    }
 } 
