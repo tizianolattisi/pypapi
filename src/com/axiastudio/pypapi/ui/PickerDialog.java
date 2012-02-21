@@ -68,6 +68,7 @@ public class PickerDialog extends QDialog {
             this.executeSearch();
             this.buttonSearch.setEnabled(false);
         }
+        this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
     }
     
     private void init(){

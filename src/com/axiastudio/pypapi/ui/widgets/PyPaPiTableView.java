@@ -24,10 +24,7 @@ import com.axiastudio.pypapi.ui.Form;
 import com.axiastudio.pypapi.ui.PickerDialog;
 import com.axiastudio.pypapi.ui.TableModel;
 import com.axiastudio.pypapi.ui.Util;
-import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.QPoint;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -58,7 +55,8 @@ public class PyPaPiTableView extends QTableView{
          *  init
          */
         this.setSelectionBehavior(SelectionBehavior.SelectRows);
-        this.initializeContextMenu();        
+        this.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
+        this.initializeContextMenu();
     }
     
     private void initializeContextMenu(){
