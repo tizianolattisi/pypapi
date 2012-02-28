@@ -156,8 +156,8 @@ public class Register {
      * Registers an adapter for a single interface.
      * 
      * @param adapter The adapter object
-     * @param adapts The interface that the adapter adapts
-     * @param provides The interface that the adapter implements
+     * @param adapts The class or interface that the adapter adapts
+     * @param provides The class or interface that the adapter implements
      */
     public static void registerAdapter(Object adapter, Class adapts, Class provides){
         List adaptsList = new ArrayList();
@@ -168,8 +168,8 @@ public class Register {
     /**
      * Query an adapter.
      * 
-     * @param adapts The interface of the adapted object
-     * @param provides The interface that the adapter should implement
+     * @param adapts The class or interface of the adapted object
+     * @param provides The class or interface that the adapter should implement
      * @return  The adapter
      */
     public static Object queryAdapter(Class adapts, Class provides){
