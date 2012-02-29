@@ -16,21 +16,17 @@
  */
 package com.axiastudio.pypapi.db;
 
-import java.io.Serializable;
-import java.util.List;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import com.axiastudio.pypapi.ui.Column;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import com.axiastudio.pypapi.ui.Column;
 
 
 /**
@@ -39,61 +35,25 @@ import com.axiastudio.pypapi.ui.Column;
  */
 public class Controller implements IController {
     
-    private Serializable jpaController;
-    private String className;
-    private String entityName;
+    private Class entityClass;
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager=null;
 
-    public Controller(Serializable jpaController, String className){
-        this.jpaController = jpaController;
-        this.className = className;
-        String[] split = className.split("\\.");
-        this.entityName = split[split.length-1];
+    public Controller(EntityManagerFactory emf, Class entityClass){
+        this.entityClass = entityClass;
+        this.entityManagerFactory = emf;
     }
 
     public EntityManager getEntityManager() {
-        EntityManager em=null;
-        try {
-            Method m;
-            m = this.jpaController.getClass().getMethod("getEntityManager");
-            em = (EntityManager) m.invoke(this.jpaController);
-            return em;
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return em;
+        return this.entityManagerFactory.createEntityManager();
     }
     
     public Store createCriteriaStore(HashMap criteria){
-        Store store=null;
         EntityManager em = this.getEntityManager();
+        Store store;
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Object> cq = cb.createQuery();
-
-        Method m = null;
-        try {
-            m = this.jpaController.getClass().getMethod("find"+this.entityName, Long.class);
-        } catch (NoSuchMethodException ex) {
-            try {
-                m = this.jpaController.getClass().getMethod("find"+this.entityName, Integer.class);
-            } catch (NoSuchMethodException ex2) {
-                try {
-                    m = this.jpaController.getClass().getMethod("find"+this.entityName, Short.class);
-                } catch (NoSuchMethodException ex3) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Class<?> returnType = m.getReturnType();
+        Class<?> returnType = this.entityClass;
         Root from = cq.from(returnType);
         CriteriaQuery<Object> select = cq.select(from);
         for( Object k: criteria.keySet() ){
@@ -111,90 +71,48 @@ public class Controller implements IController {
     
     @Override
     public Store createFullStore(){
+        EntityManager em = this.getEntityManager();
         try {
-            Method m;
-            String methodName = "find" + this.entityName + "Entities";
-            m = this.jpaController.getClass().getMethod(methodName);
-            List entities = (List) m.invoke(this.jpaController);
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            cq.select(cq.from(this.entityClass));
+            Query q = em.createQuery(cq);
+            List entities = q.getResultList();
             Store store = new Store(entities);
             return store;
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            em.close();
         }
-        return null;
     }
 
     @Override
     public void edit(Object entity){
-        try {
-            Method m = this.jpaController.getClass().getMethod("edit", entity.getClass());
-            m.invoke(this.jpaController, entity);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        EntityManager em = this.getEntityManager();
+        em.getTransaction().begin();
+        Object res = em.merge(entity);
+        em.getTransaction().commit();
     }
 
     public void create(Object entity){
-        try {
-            Method m = this.jpaController.getClass().getMethod("create", entity.getClass());
-            m.invoke(this.jpaController, entity);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        EntityManager em = this.getEntityManager();
+        em.getTransaction().begin();
+        em.persist(entity);
+        em.getTransaction().commit();
     }
     
     @Override
     public Object refresh(Object entity){
-        try {
-            Method m = this.jpaController.getClass().getMethod("getEntityManager");
-            EntityManager em = (EntityManager) m.invoke(this.jpaController);
-            // XXX: controller refresh... does not work :-(
-            em.refresh(em.merge(entity));
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        // TODO: controller refresh method
         return entity;
     }
     
     public String getEntityName() {
-        return entityName;
+        String[] split = this.getClassName().split("\\.");
+        return split[split.length-1];
     }
     
 
     public String getClassName() {
-        return className;
+        return this.entityClass.getName();
     }
-
+    
 }

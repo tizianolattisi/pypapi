@@ -21,11 +21,11 @@ import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.ui.Form;
 import com.axiastudio.pypapi.ui.IForm;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -62,7 +62,7 @@ public class Register {
      * 
      */
     public static void registerUtility(Object utility, Class iface, String name){
-        HashMap hm = null;
+        HashMap hm;
         Object hmObject = Register.utilities.get(iface);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
@@ -94,7 +94,7 @@ public class Register {
      * 
      */
     public static Object queryUtility(Class iface, String name, Boolean noPrefix){
-        HashMap hm = null;
+        HashMap hm;
         Object utility = null;
         Object hmObject = Register.utilities.get(iface);
         if( hmObject != null ){
@@ -154,7 +154,7 @@ public class Register {
      * @param name The string name 
      */
     public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
-        HashMap hm = null;
+        HashMap hm;
         for (Class c: adapts ){
             Object hmObject = Register.adapters.get(c);
             if( hmObject != null ){
@@ -200,7 +200,7 @@ public class Register {
      * @return  The adapter
      */
     public static Object queryAdapter(Class adapts, Class provides){
-        HashMap hm = null;
+        HashMap hm;
         Object adapter = null;
         Object hmObject = Register.adapters.get(adapts);
         if( hmObject != null ){
@@ -219,7 +219,7 @@ public class Register {
      * 
      */
     public static void registerRelation(Object related, Object object, String name){
-        HashMap hm = null;
+        HashMap hm;
         Object hmObject = Register.relations.get(object);
         if( hmObject != null ){
             hm = (HashMap) hmObject;
@@ -239,7 +239,7 @@ public class Register {
      * 
      */
     public static Object queryRelation(Object object, String name){
-        HashMap hm = null;
+        HashMap hm;
         Object related = null;
         Object hmObject = Register.relations.get(object);
         if( hmObject != null ){
@@ -252,26 +252,26 @@ public class Register {
     /**
      * Registers controller, factory and form.
      * 
-     * @param controller The jpa controller
+     * @param emf The entity manager factory
      * @param ui The classpath of the ui form
      * @param factory The class factory
      * 
      */
-    public static Form registerForm(Serializable jpaController, String ui, Class factory){
-        return Register.registerForm(jpaController, ui, factory, "");
+    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory){
+        return Register.registerForm(emf, ui, factory, "");
     }        
 
     /**
      * Registers controller, factory and form.
      * 
-     * @param controller The jpa controller
+     * @param emf The entity manager factory
      * @param ui The classpath of the ui form
      * @param factory The class factory
      * @param title The title of the form
      * 
      */
-    public static Form registerForm(Serializable jpaController, String ui, Class factory, String title){        
-        Controller controller = new Controller(jpaController, factory.getName());
+    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory, String title){        
+        Controller controller = new Controller(emf, factory);
         Register.registerUtility(controller, IController.class, factory.getName());
         Form form = new Form(ui, factory, title);
         Register.registerUtility(form, IForm.class, factory.getName());
