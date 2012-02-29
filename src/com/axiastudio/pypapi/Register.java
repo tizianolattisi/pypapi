@@ -16,6 +16,12 @@
  */
 package com.axiastudio.pypapi;
 
+import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.IController;
+import com.axiastudio.pypapi.db.IFactory;
+import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.IForm;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -242,4 +248,36 @@ public class Register {
         }
         return related;
     }
+
+    /**
+     * Registers controller, factory and form.
+     * 
+     * @param controller The jpa controller
+     * @param ui The classpath of the ui form
+     * @param factory The class factory
+     * 
+     */
+    public static Form registerForm(Serializable jpaController, String ui, Class factory){
+        return Register.registerForm(jpaController, ui, factory, "");
+    }        
+
+    /**
+     * Registers controller, factory and form.
+     * 
+     * @param controller The jpa controller
+     * @param ui The classpath of the ui form
+     * @param factory The class factory
+     * @param title The title of the form
+     * 
+     */
+    public static Form registerForm(Serializable jpaController, String ui, Class factory, String title){        
+        Controller controller = new Controller(jpaController, factory.getName());
+        Register.registerUtility(controller, IController.class, factory.getName());
+        Form form = new Form(ui, factory, title);
+        Register.registerUtility(form, IForm.class, factory.getName());
+        Register.registerUtility(factory, IFactory.class, factory.getName());
+        form.init();
+        return form;
+    }
+
 }
