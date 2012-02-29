@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +119,26 @@ public class Register {
         return Register.queryUtility(iface, name, Boolean.FALSE);
     }
 
+    /**
+     * Registers adapters from a list of methods. This is useful in conjunction
+     * with Resolver.adaptersFromEntityClass method.
+     * 
+     * @param adatpers  The list of adapter methods
+     */
+    public static void registerAdapters(List<Method> methods){
+        for(Method adapter: methods){
+            Class<?> toClass = adapter.getReturnType();
+            Class<?>[] parameterTypes = adapter.getParameterTypes();
+            Class<?> fromClass = null;
+            if( parameterTypes.length == 1){
+                fromClass = parameterTypes[0];
+            }
+            if( fromClass != null ){
+                Register.registerAdapter(adapter, fromClass, toClass);
+            }
+        }
+    }
+    
     /**
      * Registers a named adapter for a list of interfaces.
      * 
