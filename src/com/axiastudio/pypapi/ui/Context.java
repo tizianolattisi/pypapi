@@ -30,6 +30,7 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 import com.axiastudio.pypapi.Register;
+import java.io.Serializable;
 
 
 /**
@@ -188,7 +189,11 @@ public class Context extends QObject {
 
     public void commitChanges(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.edit(this.primaryDc.currentEntity);
+        if( ((Serializable) this.primaryDc.currentEntity).hashCode() == 0){
+            c.create(this.primaryDc.currentEntity);
+        } else {
+            c.edit(this.primaryDc.currentEntity);
+        }
         this.isDirty = false;
     }
 
