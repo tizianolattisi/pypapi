@@ -125,15 +125,27 @@ public class PyPaPiTableView extends QTableView{
                 if ( res == 1 ){
                     if( pd.getSelection().size()>0 ){
                         Object entity = pd.getSelection().get(0);
-                        Class<?> ifaceOrClassFrom = Resolver.interfaceFromEntityClass(entity.getClass());
-                        if( ifaceOrClassFrom == Serializable.class ){
-                            ifaceOrClassFrom = entity.getClass();
+                        Class<?> classFrom = entity.getClass();
+                        Class<?> classTo = collectionClass;
+
+                        // from class to class
+                        Method adapter = (Method) Register.queryAdapter(classFrom, classTo);
+                        String fromTo;
+                        if( adapter == null ){
+                            // from iface to class
+                            Class<?> ifaceFrom = Resolver.interfaceFromEntityClass(entity.getClass());
+                            adapter = (Method) Register.queryAdapter(ifaceFrom, classTo);
+                            if( adapter == null ){
+                                // form class to iface
+                                Class<?> ifaceTo = Resolver.interfaceFromEntityClass(collectionClass);
+                                adapter = (Method) Register.queryAdapter(classFrom, ifaceTo);
+                                if( adapter == null ){
+                                    // from iface to iface
+                                    adapter = (Method) Register.queryAdapter(ifaceFrom, ifaceTo);
+                                }
+                            }
                         }
-                        Class<?> ifaceOrClassTo = Resolver.interfaceFromEntityClass(collectionClass);
-                        if( ifaceOrClassTo == Serializable.class ){
-                            ifaceOrClassTo = collectionClass;
-                        }
-                        Method adapter = (Method) Register.queryAdapter(ifaceOrClassFrom, ifaceOrClassTo);
+                            
                         if( adapter != null ){
                             try {
                                 Object adapted = adapter.invoke(null, entity);
@@ -147,7 +159,7 @@ public class PyPaPiTableView extends QTableView{
                             }
                         } else {
                             String title = "Adapter warning";
-                            String description = "Unable to find an adapter from "+ifaceOrClassFrom+" to "+ifaceOrClassTo;
+                            String description = "Unable to find an adapter from "+classFrom+" to "+classTo;
                             Util.messageBox(this, title, description);
                         }
                     }
