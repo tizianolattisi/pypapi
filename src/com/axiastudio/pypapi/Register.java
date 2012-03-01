@@ -29,10 +29,10 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author Tiziano Lattisi <tiziano at axiastudio.it>
+ * The Register class provides method for register and query utilities,
+ * adapters and relations.
  * 
- * The Register class provides method for register and query utility and
- * adapters.
+ * @author Tiziano Lattisi <tiziano at axiastudio.it>
  * 
  */
 public class Register {
@@ -262,7 +262,7 @@ public class Register {
     }        
 
     /**
-     * Registers controller, factory and form.
+     * Registers controller, factory and form as utilities.
      * 
      * @param emf The entity manager factory
      * @param ui The classpath of the ui form
