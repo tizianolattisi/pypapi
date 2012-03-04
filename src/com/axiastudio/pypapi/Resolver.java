@@ -28,7 +28,10 @@ import java.util.logging.Logger;
 
 /**
  *
+ * Resolver class
+ * 
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
+ * 
  */
 public class Resolver {
     
@@ -104,5 +107,64 @@ public class Resolver {
         }
         return adapters;
     }
-    
+
+    /**
+     * Find the getter method of a Serializable from the field name.
+     * 
+     * @param entityClass The Serializable class
+     * @param fieldName The name of the field
+     * @return  The accessory getter method
+     * 
+     */    
+    public static Method getterFromFieldName(Class entityClass, String name){
+        String getterName = "get" + name.substring(0,1).toUpperCase() + name.substring(1);
+        Method getter = null;
+        try {
+            getter = entityClass.getMethod(getterName);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return getter;
+    }
+
+    /**
+     * Find the setter method of a Serializable from the field name.
+     * 
+     * @param entityClass The Serializable class
+     * @param fieldName The name of the field
+     * @param valueType The value type of the field
+     * @return  The accessory setter method
+     * 
+     */    
+    public static Method setterFromFieldName(Class entityClass, String name, Class<?> valueType){
+        String setterName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
+        Method setter = null;
+        if( valueType == null ){
+            Method getter = Resolver.getterFromFieldName(entityClass, name);
+            valueType = getter.getReturnType();
+        }
+        try {
+            setter = entityClass.getMethod(setterName, valueType);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return setter;
+    }
+
+    /**
+     * Find the setter method of a Serializable from the field name.
+     * 
+     * @param entityClass The Serializable class
+     * @param fieldName The name of the field
+     * @return  The accessory setter method
+     * 
+     */        
+    public static Method setterFromFieldName(Class entityClass, String name){
+        return Resolver.setterFromFieldName(entityClass, name, null);
+    }
+
 }

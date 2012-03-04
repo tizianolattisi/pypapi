@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Resolver;
 import java.lang.reflect.Method;
 import java.util.*;
 import com.trolltech.qt.core.*;
@@ -57,10 +58,8 @@ public class Item {
             return null;
         }
         String name = (String) nameObject;
-        String getterName = "get" + name.substring(0,1).toUpperCase() +
-                name.substring(1);
-        Method m = this.getClass().getMethod(getterName);
-        result = m.invoke(this);
+        Method getter = Resolver.getterFromFieldName(this.getClass(), name);
+        result = getter.invoke(this);
         return result;
     }
 

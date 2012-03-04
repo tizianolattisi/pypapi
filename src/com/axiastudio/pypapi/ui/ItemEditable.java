@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Resolver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -27,14 +28,14 @@ import java.util.logging.Logger;
  */
 public class ItemEditable extends Item {
     
-    private Method setter;
-    private Object parentEntity;
+    private Method setterMethod;
+    private Object entity;
 
     public ItemEditable(Column column, Object value, Method setterMethod,
             Object entity){
         super(column, value);
-        this.parentEntity = entity;
-        this.setter = setterMethod;
+        this.entity = entity;
+        this.setterMethod = setterMethod;
     }
 
     public boolean set(int role, Object objValue) throws Exception {
@@ -42,24 +43,21 @@ public class ItemEditable extends Item {
          * Set the value corresponding to the requested role
          * thru the correct setter method.
          */
-
+        // XXX: chek ItemEditable.set(role, value) -> Item*.set*(value) -> ItemEditable.set(value)
         Object result;
-
         Object nameObject = ItemEditable.ITEM_ROLES.get(role);
         if( nameObject == null){
             return false;
         }
         String name = (String) nameObject;
-        String setterName = "set" + name.substring(0,1).toUpperCase() +
-                name.substring(1);
-        Method m = this.getClass().getMethod(setterName, Object.class);
-        result = m.invoke(this, objValue);
+        Method setter = Resolver.setterFromFieldName(this.getClass(), name, Object.class);
+        result = setter.invoke(this, objValue);
         return true;
     }
 
     public boolean set(Object objValue){
         try {
-            Object res = this.setter.invoke(parentEntity, objValue);
+            Object res = this.setterMethod.invoke(entity, objValue);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(ItemEditable.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {

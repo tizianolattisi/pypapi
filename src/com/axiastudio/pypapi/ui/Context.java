@@ -16,21 +16,19 @@
  */
 package com.axiastudio.pypapi.ui;
 
-import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.db.Database;
-import com.axiastudio.pypapi.db.IFactory;
-import com.axiastudio.pypapi.db.Store;
-import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IDatabase;
-import java.util.*;
+import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.db.*;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.gui.QDataWidgetMapper;
+import com.trolltech.qt.gui.QWidget;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-
-import com.axiastudio.pypapi.Register;
-import java.io.Serializable;
 
 
 /**
@@ -124,13 +122,8 @@ public class Context extends QObject {
     }
 
     private void parentIndexChanged(int row) throws Exception {
-        /* retrieve this.name store */
-        List result=null;
-        String getterName = "get" + this.name.substring(1,2).toUpperCase() +
-                this.name.substring(2);
-        result = (List) this.primaryDc.currentEntity.getClass()
-                 .getMethod(getterName).invoke(this.primaryDc.currentEntity);
-
+        Method getter = Resolver.getterFromFieldName(this.primaryDc.currentEntity.getClass(), this.name.substring(1));
+        List result = (List) getter.invoke(this.primaryDc.currentEntity);
         Store store = new Store(result);
         this.model.setStore(store);
         this.firstElement();
