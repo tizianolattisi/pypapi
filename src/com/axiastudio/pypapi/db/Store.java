@@ -27,6 +27,9 @@ public class Store<T> implements List {
     private List<T> list;
 
     public Store(List<T> list){
+        if( list == null ){
+            list = new ArrayList();
+        }
         this.list = list;
     }
 
