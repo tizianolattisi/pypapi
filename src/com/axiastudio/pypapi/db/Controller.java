@@ -90,20 +90,11 @@ public class Controller implements IController {
         }
     }
 
-    @Override
-    public void edit(Object entity){
-        EntityManager em = this.getEntityManager();
-        em.getTransaction().begin();
-        Object res = em.merge(entity);
-        em.getTransaction().commit();
-    }
-
     /*
-     * The create method hooks the items of the collections to the parent entity
-     * and merge.
+     * The parentize method hooks the items of the collections to the parent
+     * entity.
      */
-    public void create(Object entity){
-        EntityManager em = this.getEntityManager();
+    private void parentize(Object entity){
         for(Field f: entity.getClass().getDeclaredFields()){
             for( Annotation a: f.getAnnotations()){
                 if( a.annotationType().equals(javax.persistence.OneToMany.class) ){
@@ -152,6 +143,21 @@ public class Controller implements IController {
                 }
             }
         }
+    }
+    
+    @Override
+    public void edit(Object entity){
+        this.parentize(entity);
+        EntityManager em = this.getEntityManager();
+        em.getTransaction().begin();
+        Object res = em.merge(entity);
+        em.getTransaction().commit();
+    }
+
+    @Override
+    public void create(Object entity){
+        this.parentize(entity);
+        EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
         em.merge(entity);
         em.getTransaction().commit();

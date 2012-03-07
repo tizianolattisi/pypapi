@@ -26,6 +26,8 @@ public interface IController {
 
     void edit(Object entity);
 
+    void create(Object entity);
+
     Object refresh(Object entity);
     
 }
