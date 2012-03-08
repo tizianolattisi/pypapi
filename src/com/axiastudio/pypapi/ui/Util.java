@@ -69,8 +69,17 @@ public class Util {
         return jui;
     }
 
-    public static StandardButton messageBox(QWidget parent, String title, String description){
-        StandardButton warning = QMessageBox.warning(parent, title, description);
-        return warning;
+    public static void warningBox(QWidget parent, String title, String description){
+        StandardButton res = QMessageBox.warning(parent, title, description);
     }
+
+    public static Boolean questionBox(QWidget parent, String title, String description){
+        int res = QMessageBox.question(parent, title, description, 
+                QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No);
+        if( res == QMessageBox.StandardButton.Yes.value() ){
+            return true;
+        }
+        return false;
+    }
+
 } 

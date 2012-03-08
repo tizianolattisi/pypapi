@@ -160,7 +160,7 @@ public class PyPaPiTableView extends QTableView{
                         } else {
                             String title = "Adapter warning";
                             String description = "Unable to find an adapter from "+classFrom+" to "+classTo;
-                            Util.messageBox(this, title, description);
+                            Util.warningBox(this, title, description);
                         }
                     }
                 }
