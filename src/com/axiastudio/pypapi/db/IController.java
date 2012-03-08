@@ -16,6 +16,8 @@
  */
 package com.axiastudio.pypapi.db;
 
+import java.util.HashMap;
+
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
@@ -24,9 +26,11 @@ public interface IController {
 
     Store createFullStore();
 
-    void edit(Object entity);
-
-    void create(Object entity);
+    Store createCriteriaStore(HashMap criteria);
+    
+    void commit(Object entity);
+    
+    void delete(Object entity);
 
     Object refresh(Object entity);
     

@@ -188,16 +188,13 @@ public class Context extends QObject {
     }
 
     public void deleteElement(){
-
+        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        c.delete(this.primaryDc.currentEntity);
     }
 
     public void commitChanges(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        if( ((Serializable) this.primaryDc.currentEntity).hashCode() == 0){
-            c.create(this.primaryDc.currentEntity);
-        } else {
-            c.edit(this.primaryDc.currentEntity);
-        }
+        c.commit(this.primaryDc.currentEntity);
         this.isDirty = false;
     }
 

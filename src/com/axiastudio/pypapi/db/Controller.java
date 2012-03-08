@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.db;
 
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.ui.Column;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -54,6 +55,7 @@ public class Controller implements IController {
         return this.entityManagerFactory.createEntityManager();
     }
     
+    @Override
     public Store createCriteriaStore(HashMap criteria){
         EntityManager em = this.getEntityManager();
         Store store;
@@ -146,22 +148,24 @@ public class Controller implements IController {
     }
     
     @Override
-    public void edit(Object entity){
-        this.parentize(entity);
-        EntityManager em = this.getEntityManager();
-        em.getTransaction().begin();
-        Object res = em.merge(entity);
-        em.getTransaction().commit();
-    }
-
-    @Override
-    public void create(Object entity){
+    public void commit(Object entity){
         this.parentize(entity);
         EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
         em.merge(entity);
         em.getTransaction().commit();
         em.close();
+    }
+
+    @Override
+    public void delete(Object entity) {
+        EntityManager em = this.getEntityManager();
+        em.getTransaction().begin();
+        // XXX: Entity must be managed to call remove
+        // entity = em.getReference(entity.getClass(), id);
+        // de-parent
+        // em.remove(entity);
+        em.getTransaction().commit();
     }
             
     @Override
