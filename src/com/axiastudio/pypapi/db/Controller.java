@@ -161,10 +161,8 @@ public class Controller implements IController {
     public void delete(Object entity) {
         EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
-        // XXX: Entity must be managed to call remove
-        // entity = em.getReference(entity.getClass(), id);
-        // de-parent
-        // em.remove(entity);
+        Object merged = em.merge(entity);
+        em.remove(merged);
         em.getTransaction().commit();
     }
             

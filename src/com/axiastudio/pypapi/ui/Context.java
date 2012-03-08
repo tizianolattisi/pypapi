@@ -22,6 +22,7 @@ import com.axiastudio.pypapi.db.*;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
+import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.QWidget;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -188,8 +189,11 @@ public class Context extends QObject {
     }
 
     public void deleteElement(){
-        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.delete(this.primaryDc.currentEntity);
+        Boolean res = Util.questionBox(this.parent, "Delete element", "Sure you want to delete this element?");
+        if( res == true ){
+            Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+            c.delete(this.primaryDc.currentEntity);
+        }
     }
 
     public void commitChanges(){
