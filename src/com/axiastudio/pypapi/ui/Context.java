@@ -22,9 +22,7 @@ import com.axiastudio.pypapi.db.*;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
-import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.QWidget;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -204,9 +202,11 @@ public class Context extends QObject {
 
     public void cancelChanges(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.refresh(this.primaryDc.currentEntity);
+        this.primaryDc.currentEntity = c.refresh(this.primaryDc.currentEntity);
+        this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);
         this.model.purgeItemCache(this.primaryDc.currentEntity);
         this.isDirty = false;
+        this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
         this.mapper.revert();
     }
     

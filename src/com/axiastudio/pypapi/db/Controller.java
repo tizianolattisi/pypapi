@@ -168,8 +168,12 @@ public class Controller implements IController {
             
     @Override
     public Object refresh(Object entity){
-        // TODO: controller refresh method
-        return entity;
+        EntityManager em = this.getEntityManager();
+        em.getTransaction().begin();
+        Object merged = em.merge(entity);
+        em.refresh(merged);
+        em.getTransaction().commit();
+        return merged;
     }
     
     public String getEntityName() {

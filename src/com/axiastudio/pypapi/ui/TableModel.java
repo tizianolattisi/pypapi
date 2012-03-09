@@ -63,9 +63,9 @@ public class TableModel extends QAbstractTableModel {
     }
 
     public void setStore(Store store){
-        this.beginResetModel();
         this.store = store;
-        this.cache = new HashMap();
+        this.beginResetModel();
+        this.purgeItemCache();
         this.endResetModel();
     }
     public Store getStore(){
@@ -188,9 +188,18 @@ public class TableModel extends QAbstractTableModel {
     public Object getEntityByRow(int row){
         return this.store.get(row);
     }
+
+    public void replaceEntity(int row, Object entity){
+        this.store.remove(row);
+        this.store.add(row, entity);
+    }
     
+    public void purgeItemCache(){
+        this.cache = new HashMap();
+    }
+
     public void purgeItemCache(Object entity){
-        this.cache.put(entity, new HashMap());
+        this.cache.remove(entity);
     }
 
     public void purgeItemCache(Object entity, Column column){
