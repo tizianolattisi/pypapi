@@ -129,7 +129,7 @@ public class Register {
      * Registers adapters from a list of methods. This is useful in conjunction
      * with Resolver.adaptersFromEntityClass method.
      * 
-     * @param adatpers  The list of adapter methods
+     * @param methods The list of methods
      */
     public static void registerAdapters(List<Method> methods){
         for(Method adapter: methods){
@@ -146,14 +146,13 @@ public class Register {
     }
     
     /**
-     * Registers a named adapter for a list of interfaces.
+     * Registers an adapter for a list of interfaces.
      * 
-     * @param adatper  The adapter itself
+     * @param adatper The adapter itself
      * @param adapts The list of interfaces that the adapter adapts
      * @param provides The interface that the adapter implements
-     * @param name The string name 
      */
-    public static void registerAdapter(Object adatper, List<Class> adapts, Class provides, String name){
+    public static void registerAdapter(Object adatper, List<Class> adapts, Class provides){
         HashMap hm;
         for (Class c: adapts ){
             Object hmObject = Register.adapters.get(c);
@@ -166,18 +165,6 @@ public class Register {
             Register.adapters.put(c, hm);
         }
     }
-
-    /**
-     * Registers an adapter for a list of interfaces.
-     * 
-     * @param adatper The adapter itself
-     * @param adapts The list of interfaces that the adapter adapts
-     * @param provides The interface that the adapter implements
-     */
-    public static void registerAdapter(Object adatper, List<Class> adapts, Class provides){
-        Register.registerAdapter(adatper, adapts, provides, null);
-    }
-
 
     /**
      * Registers an adapter for a single interface.
@@ -255,6 +242,7 @@ public class Register {
      * @param emf The entity manager factory
      * @param ui The classpath of the ui form
      * @param factory The class factory
+     * @return The initializated form
      * 
      */
     public static Form registerForm(EntityManagerFactory emf, String ui, Class factory){
@@ -268,6 +256,7 @@ public class Register {
      * @param ui The classpath of the ui form
      * @param factory The class factory
      * @param title The title of the form
+     * @return The initializated form
      * 
      */
     public static Form registerForm(EntityManagerFactory emf, String ui, Class factory, String title){        

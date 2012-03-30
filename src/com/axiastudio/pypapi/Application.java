@@ -27,10 +27,10 @@ public class Application {
     public static void initialize(String[] args){
         QApplication.initialize(args);
     }
-    
+
     public static int exec(){
         int res = QApplication.execStatic();
         return res;
     }
-    
+
 }
