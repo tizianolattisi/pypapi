@@ -38,9 +38,8 @@ public class Resolver {
     public static Object entityFromReference(Object parent, String reference){
         Object referenced = null;
         try {
-            String name = (String) reference;
-            String getterName = "get" + name.substring(0,1).toUpperCase() +
-            name.substring(1);
+            String getterName = "get" + reference.substring(0,1).toUpperCase() +
+            reference.substring(1);
             Method m = parent.getClass().getMethod(getterName);
             referenced = m.invoke(parent);
         } catch (IllegalAccessException ex) {
