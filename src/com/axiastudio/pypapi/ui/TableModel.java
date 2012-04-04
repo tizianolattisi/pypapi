@@ -16,17 +16,18 @@
  */
 package com.axiastudio.pypapi.ui;
 
-import com.trolltech.qt.core.Qt.ItemFlags;
-import java.util.*;
-
+import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.QVariant;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.ItemFlags;
+import com.trolltech.qt.core.Qt.Orientation;
+import com.trolltech.qt.gui.QAbstractTableModel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.axiastudio.pypapi.db.Store;
-import com.trolltech.qt.core.Qt.Orientation;
 
 /**
  *
