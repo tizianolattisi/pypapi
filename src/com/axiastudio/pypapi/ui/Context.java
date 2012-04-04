@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class Context extends QObject {
+public final class Context extends QObject {
 
     private TableModel model;
     private QDataWidgetMapper mapper;
@@ -65,6 +65,9 @@ public class Context extends QObject {
         this.model.setColumns(columns);
         this.initializeContext();
         this.isDirty = false;
+        if( store.isEmpty() ){
+            this.insertElement();
+        }
     }
 
     public Class getRootClass() {
@@ -101,7 +104,7 @@ public class Context extends QObject {
             tableModel = new TableModel(null, null);
         }
         tableModel.setContextHandle(this);
-
+        
         return tableModel;
     }
 
@@ -243,5 +246,5 @@ public class Context extends QObject {
     public Boolean getIsDirty() {
         return isDirty;
     }
-
+    
 }
