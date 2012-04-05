@@ -1,3 +1,11 @@
 Manifest-Version: 1.0
-X-COMMENT: Main-Class will be added automatically by build
+Ant-Version: Apache Ant 1.8.2
+Created-By: 1.6.0_29-b11-402-11D50d (Apple Inc.)
+Specification-Title: PyPaPi
+Specification-Version: ${version.num}
+Specification-Vendor: AXIA Studio (http://www.axiastudio.com)
+Implementation-Title: com.axiastudio.pypapi
+Implementation-Version: e6cb9907c90fcd285f01814e33ec3ac2b48e4172
+Implementation-Date: 2012-04-05 11:00:58 CEST
+Implementation-Vendor: AXIA Studio (http://www.axiastudio.com)
 
