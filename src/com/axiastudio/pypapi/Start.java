@@ -16,6 +16,12 @@
  */
 package com.axiastudio.pypapi;
 
+import com.axiastudio.pypapi.db.Database;
+import com.axiastudio.pypapi.demo.entities.Book;
+import com.axiastudio.pypapi.ui.Form;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
@@ -24,9 +30,37 @@ public class Start {
     
     public static void main(String[] args) {
         
+        /*
         Application.initialize(args);
+        Util.warningBox(null, "PyPaPi Qt Java Frmework", "Ok");
+        Application.exec();
+        */
+
+        /* Initialize demo data */
+        Database db = new Database();
+        db.open("DemoPU");
+        EntityManagerFactory emf = db.getEntityManagerFactory();
+        EntityManager em = emf.createEntityManager();
+        
+        Book book = new Book();
+        book.setTitle("Anna Karenina");
+        book.setDescription("description...");
+        
+        em.getTransaction().begin();
+        em.persist(book);
+        em.getTransaction().commit();
+        em.close();
+        
+        /* start demo */
+        Application.initialize(args);
+
+        Form formBook = Register.registerForm(db.getEntityManagerFactory(),
+                            "classpath:com/axiastudio/pypapi/demo/forms/book.ui",
+                            Book.class);
+        formBook.show();
+        
         Application.exec();
         
-        
+ 
     }
 }

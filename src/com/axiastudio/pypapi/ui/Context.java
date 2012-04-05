@@ -65,7 +65,7 @@ public final class Context extends QObject {
         this.model.setColumns(columns);
         this.initializeContext();
         this.isDirty = false;
-        if( store.isEmpty() ){
+        if( this.model.getStore().isEmpty() ){
             this.insertElement();
         }
     }
