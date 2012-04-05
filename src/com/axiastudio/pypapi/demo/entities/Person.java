@@ -1,0 +1,116 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.axiastudio.pypapi.demo.entities;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author tiziano
+ */
+@Entity
+@Table(name = "person")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Person.findAll", query = "SELECT b FROM Person b"),
+    @NamedQuery(name = "Person.findById", query = "SELECT b FROM Person b WHERE b.id = :id"),
+    @NamedQuery(name = "Person.findByName", query = "SELECT b FROM Person b WHERE b.name = :name"),
+    @NamedQuery(name = "Person.findBySurname", query = "SELECT b FROM Person b WHERE b.surname = :surname"),
+    @NamedQuery(name = "Person.findByBirthday", query = "SELECT b FROM Person b WHERE b.birthday = :birthday")})
+public class Person implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "surname")
+    private String surname;
+    @Column(name = "birthday")
+    @Temporal(TemporalType.DATE)
+    private Date birthday;
+    @OneToMany(mappedBy = "person", orphanRemoval = true)
+    private Collection<Loan> loanCollection;
+
+    public Person() {
+    }
+
+    public Person(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    @XmlTransient
+    public Collection<Loan> getLoanCollection() {
+        return loanCollection;
+    }
+
+    public void setLoanCollection(Collection<Loan> loanCollection) {
+        this.loanCollection = loanCollection;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Person)) {
+            return false;
+        }
+        Person other = (Person) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "biblio.entities.Person[ id=" + id + " ]";
+    }
+    
+}

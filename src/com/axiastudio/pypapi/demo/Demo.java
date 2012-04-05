@@ -14,10 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axiastudio.pypapi;
+package com.axiastudio.pypapi.demo;
 
+import com.axiastudio.pypapi.Application;
+import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
 import com.axiastudio.pypapi.demo.entities.Book;
+import com.axiastudio.pypapi.demo.entities.Loan;
+import com.axiastudio.pypapi.demo.entities.Person;
 import com.axiastudio.pypapi.ui.Form;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,16 +31,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class Start {
-    
-    public static void main(String[] args) {
+public class Demo {
+        public static void main(String[] args) {
         
-        /*
-        Application.initialize(args);
-        Util.warningBox(null, "PyPaPi Qt Java Frmework", "Ok");
-        Application.exec();
-        */
-
         /* Initialize demo data */
         Database db = new Database();
         db.open("DemoPU");
@@ -45,22 +43,39 @@ public class Start {
         Book book = new Book();
         book.setTitle("Anna Karenina");
         book.setDescription("description...");
+
+        Person person = new Person();
+        person.setName("Tiziano");
+        person.setSurname("Lattisi");
         
         em.getTransaction().begin();
         em.persist(book);
+        em.persist(person);
         em.getTransaction().commit();
         em.close();
         
         /* start demo */
         Application.initialize(args);
 
+        // Book
         Form formBook = Register.registerForm(db.getEntityManagerFactory(),
                             "classpath:com/axiastudio/pypapi/demo/forms/book.ui",
                             Book.class);
-        formBook.show();
+        // Person
+        Form formPerson = Register.registerForm(db.getEntityManagerFactory(),
+                            "classpath:com/axiastudio/pypapi/demo/forms/person.ui",
+                            Person.class);
+        // Loan
+        Form formLoan = Register.registerForm(db.getEntityManagerFactory(),
+                            "classpath:com/axiastudio/pypapi/demo/forms/loan.ui",
+                            Loan.class);
+        
+        // Adapter
+        Register.registerAdapters(Resolver.adaptersFromEntityClass(Book.class));
+
+        formPerson.show();
         
         Application.exec();
         
- 
     }
 }

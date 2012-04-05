@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.demo.entities;
 
+import com.axiastudio.pypapi.db.Adapter;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -99,5 +100,16 @@ public class Book implements Serializable {
     public String toString() {
         return this.getTitle();
     }
-    
+  
+        /**
+     * Adapter Book->Loan
+     * 
+     */
+    @Adapter
+    public static Loan adaptToLoan(Book book){
+        Loan loan = new Loan();
+        loan.setBook(book);
+        return loan;
+    }
+
 }

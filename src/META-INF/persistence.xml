@@ -3,10 +3,12 @@
   <persistence-unit name="DemoPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.axiastudio.pypapi.demo.entities.Book</class>
+    <class>com.axiastudio.pypapi.demo.entities.Loan</class>
+    <class>com.axiastudio.pypapi.demo.entities.Person</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:sqlite::memory:"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:demo"/>
       <property name="javax.persistence.jdbc.password" value=""/>
-      <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC"/>
+      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
       <property name="javax.persistence.jdbc.user" value=""/>
       <property name="eclipselink.ddl-generation" value="create-tables"/>
     </properties>
