@@ -42,7 +42,7 @@ public class ChoiceItemField extends ItemField {
                 return i;
             }
         }
-        return null;
+        return 0;
     }
 
     @Override
