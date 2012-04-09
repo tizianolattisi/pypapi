@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Resolver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -53,17 +54,8 @@ public class Column {
     public Item bind(Object entity) {
         
         /* getter */
-        String getterName = "get" + this.name;
-        Method getter=null;
-        Class<?> returnType = null;
-        try {
-            getter = entity.getClass().getMethod(getterName);
-            returnType = getter.getReturnType();
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Method getter = Resolver.getterFromFieldName(entity.getClass(), this.name);
+        Class<?> returnType = getter.getReturnType();
         Object result=null;
         try {
             result = getter.invoke(entity);
@@ -76,16 +68,7 @@ public class Column {
         }
         
         /* setter */
-        String setterName = "set" + this.name;
-        Method setter = null;
-        try {
-            setter = entity.getClass().getMethod(setterName, returnType);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        Method setter = Resolver.setterFromFieldName(entity.getClass(), this.name, returnType);
         if( returnType == String.class ){
             ItemField item = new ItemField(this, result, setter, entity);
             return item;
