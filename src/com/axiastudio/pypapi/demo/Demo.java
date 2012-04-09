@@ -21,6 +21,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
 import com.axiastudio.pypapi.demo.entities.Book;
+import com.axiastudio.pypapi.demo.entities.Genre;
 import com.axiastudio.pypapi.demo.entities.Loan;
 import com.axiastudio.pypapi.demo.entities.Person;
 import com.axiastudio.pypapi.ui.Form;
@@ -43,6 +44,7 @@ public class Demo {
         Book book = new Book();
         book.setTitle("Anna Karenina");
         book.setDescription("description...");
+        book.setGenre(Genre.REFERENCE);
 
         Person person = new Person();
         person.setName("Tiziano");

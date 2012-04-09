@@ -18,12 +18,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "person")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Person.findAll", query = "SELECT b FROM Person b"),
-    @NamedQuery(name = "Person.findById", query = "SELECT b FROM Person b WHERE b.id = :id"),
-    @NamedQuery(name = "Person.findByName", query = "SELECT b FROM Person b WHERE b.name = :name"),
-    @NamedQuery(name = "Person.findBySurname", query = "SELECT b FROM Person b WHERE b.surname = :surname"),
-    @NamedQuery(name = "Person.findByBirthday", query = "SELECT b FROM Person b WHERE b.birthday = :birthday")})
 public class Person implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

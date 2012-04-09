@@ -16,11 +16,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "loan")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Loan.findAll", query = "SELECT l FROM Loan l"),
-    @NamedQuery(name = "Loan.findById", query = "SELECT l FROM Loan l WHERE l.id = :id"),
-    @NamedQuery(name = "Loan.findByFromdate", query = "SELECT l FROM Loan l WHERE l.fromdate = :fromdate"),
-    @NamedQuery(name = "Loan.findByTodate", query = "SELECT l FROM Loan l WHERE l.todate = :todate")})
 public class Loan implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

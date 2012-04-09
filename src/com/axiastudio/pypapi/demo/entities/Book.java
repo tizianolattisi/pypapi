@@ -28,11 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "book")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Book.findAll", query = "SELECT b FROM Book b"),
-    @NamedQuery(name = "Book.findById", query = "SELECT b FROM Book b WHERE b.id = :id"),
-    @NamedQuery(name = "Book.findByTitle", query = "SELECT b FROM Book b WHERE b.title = :title"),
-    @NamedQuery(name = "Book.findByDescription", query = "SELECT b FROM Book b WHERE b.description = :description")})
 public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,7 +39,9 @@ public class Book implements Serializable {
     private String title;
     @Column(name = "description")
     private String description;
-
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
+    
     public Book() {
     }
 
@@ -74,6 +71,14 @@ public class Book implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 
     @Override
