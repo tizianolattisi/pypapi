@@ -161,14 +161,13 @@ public class TableModel extends QAbstractTableModel {
 
     private Object get(int row, Column column) throws Exception{
         Object entity = this.store.get(row);
-        Object result = null;
-        result = this.getByEntity(entity, column);
+        Object result = this.getByEntity(entity, column);
         return result;
     }
 
     public Object getByEntity(Object entity, Column column) throws Exception {
-        Item result=null;
-        HashMap hm=null;
+        Item result;
+        HashMap hm;
         if (this.cache.containsKey(entity)) {
             hm = (HashMap) this.cache.get(entity);
             if (hm.containsKey(column)){
