@@ -19,7 +19,10 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Resolver;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,6 +80,11 @@ public class Column {
             return item;
         } else if( returnType == Date.class ){
             DateItemField item = new DateItemField(this, result, setter, entity);
+            return item;
+        } else if( returnType.isEnum() ) {
+            List choices = new ArrayList();
+            choices.addAll(Arrays.asList(returnType.getEnumConstants()));
+            ChoiceItemField item = new ChoiceItemField(this, result, setter, entity, choices);
             return item;
         } else {
             LookupItemField item = new LookupItemField(this, result, setter, entity,

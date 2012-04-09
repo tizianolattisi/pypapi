@@ -238,7 +238,13 @@ public class Form extends QMainWindow implements IForm {
         for (int i=0; i<this.columns.size(); i++){
             Column column = (Column) this.columns.get(i);
             QObject widget = (QObject) this.widgets.get(column.getName());
-            this.context.getMapper().addMapping((QWidget) widget, i);
+            if( widget.getClass().equals(QTextEdit.class)){
+                this.context.getMapper().addMapping((QWidget) widget, i, new QByteArray("plainText"));
+            } else if( widget.getClass().equals(QComboBox.class) ){
+                this.context.getMapper().addMapping((QWidget) widget, i, new QByteArray("currentIndex"));
+            } else {
+                this.context.getMapper().addMapping((QWidget) widget, i);
+            }
         }
     }
     
