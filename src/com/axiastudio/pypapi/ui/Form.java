@@ -16,20 +16,22 @@
  */
 package com.axiastudio.pypapi.ui;
 
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.trolltech.qt.gui.*;
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.designer.QUiLoader;
-import com.trolltech.qt.designer.QUiLoaderException;
-
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
-import com.axiastudio.pypapi.ui.widgets.PyPaPiMenuBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiMenuBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
+import com.trolltech.qt.core.QByteArray;
+import com.trolltech.qt.core.QFile;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.designer.QUiLoader;
+import com.trolltech.qt.designer.QUiLoaderException;
+import com.trolltech.qt.gui.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -109,8 +111,8 @@ public class Form extends QMainWindow implements IForm {
     }
 
     private Context createContext(String path, Store store){
-        List contextColumns = null;
-        Context dataContext = null;
+        List contextColumns;
+        Context dataContext;
         if(".".equals(path)){
             contextColumns = this.columns;
         } else {
@@ -131,7 +133,7 @@ public class Form extends QMainWindow implements IForm {
 
     private void resolveColumns(){
 
-        QObject child = null;
+        QObject child;
         List children = this.findChildren();
         Boolean isColumn;
         Boolean isEntity;
@@ -161,12 +163,10 @@ public class Form extends QMainWindow implements IForm {
             }
             if (isColumn){
                 String lookupPropertyName=null;
-                String columnPropertyName = (String) columnProperty;
+                String columnPropertyName = this.capitalize((String) columnProperty);
                 Object lookupProperty = child.property("lookup");
                 if ( lookupProperty != null){
-                    lookupPropertyName = (String) lookupProperty;                    
-                    lookupPropertyName = lookupPropertyName.substring(0,1).toUpperCase()
-                            + lookupPropertyName.substring(1);
+                    lookupPropertyName = this.capitalize((String) lookupProperty);
                 }
                 column = new Column(columnPropertyName, columnPropertyName, columnPropertyName,
                         lookupPropertyName);
@@ -174,7 +174,7 @@ public class Form extends QMainWindow implements IForm {
                 Object put = this.widgets.put(columnPropertyName, child);
             }
             if (isEntity){
-                String entityPropertyName = (String) entityProperty;
+                String entityPropertyName = this.capitalize((String) entityProperty);
                 column = new Column(entityPropertyName, entityPropertyName, entityPropertyName);
                 boolean add = this.entities.add(column);
                 Object put = this.widgets.put(entityPropertyName, child);
@@ -203,7 +203,7 @@ public class Form extends QMainWindow implements IForm {
                     String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
                     for(int c=0; c<columnNames.length;c++){
-                        String name = columnNames[c];
+                        String name = this.capitalize(columnNames[c]);
                         String label = name;
                         if( headerNames != null){
                             label = headerNames[c];
@@ -224,6 +224,7 @@ public class Form extends QMainWindow implements IForm {
         if (searchColumnsProperty != null){
             String[] columnNames = ((String) searchColumnsProperty).split(",");
             for(String name: columnNames){
+                name = this.capitalize(name);
                 Column searchColumn = new Column(name, name, name);
                 searchColumns.add(searchColumn);
             }
@@ -256,6 +257,10 @@ public class Form extends QMainWindow implements IForm {
 
     public Context getContext() {
         return context;
+    }
+    
+    private String capitalize(String s) {
+        return s.substring(0,1).toUpperCase() + s.substring(1);
     }
     
 }
