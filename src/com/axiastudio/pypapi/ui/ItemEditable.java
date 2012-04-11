@@ -57,7 +57,7 @@ public class ItemEditable extends Item {
 
     public boolean set(Object objValue){
         try {
-            Object res = this.setterMethod.invoke(entity, objValue);
+            Object res = this.setterMethod.invoke(this.entity, objValue);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(ItemEditable.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {

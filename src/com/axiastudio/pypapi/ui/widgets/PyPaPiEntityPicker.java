@@ -16,19 +16,15 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.ui.Util;
-import com.axiastudio.pypapi.ui.Column;
-import com.axiastudio.pypapi.ui.Context;
-import com.axiastudio.pypapi.ui.Form;
-import com.axiastudio.pypapi.ui.LookupItemField;
-import com.axiastudio.pypapi.ui.PickerDialog;
+import com.axiastudio.pypapi.ui.*;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -91,7 +87,11 @@ public class PyPaPiEntityPicker extends QLineEdit{
             PickerDialog pd = new PickerDialog(this, controller);
         int res = pd.exec();
         if ( res == 1 ){
-            System.out.println(pd.getSelection());
+            Object value = pd.getSelection().get(0);
+            item.set(value);
+            // XXX: dummy workaround to force the repaint
+            this.clearFocus();
+            this.setFocus();
         }
 
         }
