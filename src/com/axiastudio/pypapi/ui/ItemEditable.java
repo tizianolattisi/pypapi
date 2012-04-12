@@ -17,6 +17,8 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.ItemFlags;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -79,6 +81,14 @@ public class ItemEditable extends Item {
     public boolean setEdit(Object objValue){
         boolean res = this.set(objValue);
         return res;
+    }
+
+    protected ItemFlags getFlags() {
+        ItemFlags flags = Qt.ItemFlag.createQFlags();
+        flags.set(Qt.ItemFlag.ItemIsSelectable);
+        flags.set(Qt.ItemFlag.ItemIsEnabled);
+        flags.set(Qt.ItemFlag.ItemIsEditable);
+        return flags;
     }
 
 }

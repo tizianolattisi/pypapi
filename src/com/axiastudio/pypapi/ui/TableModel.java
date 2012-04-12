@@ -20,7 +20,6 @@ import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.core.Qt.ItemFlags;
 import com.trolltech.qt.core.Qt.Orientation;
 import com.trolltech.qt.gui.QAbstractTableModel;
 import java.util.ArrayList;
@@ -108,7 +107,6 @@ public class TableModel extends QAbstractTableModel {
 
     @Override
     public Object data(QModelIndex qmi, int role) {
-
         Object value = new QVariant();
         Item item = null;
         if(qmi == null) return value;
@@ -151,12 +149,13 @@ public class TableModel extends QAbstractTableModel {
 
     @Override
     public Qt.ItemFlags flags(QModelIndex qmi){
-        // XXX: flags coming out from Item
-        ItemFlags flags = Qt.ItemFlag.createQFlags();
-        flags.set(Qt.ItemFlag.ItemIsSelectable);
-        flags.set(Qt.ItemFlag.ItemIsEnabled);
-        flags.set(Qt.ItemFlag.ItemIsEditable);
-        return flags;
+        ItemEditable item = null;
+        try {
+            item = (ItemEditable) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
+        } catch (Exception ex) {
+            Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return item.getFlags();
     }
 
     private Object get(int row, Column column) throws Exception{

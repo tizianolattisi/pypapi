@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.ItemFlags;
 import java.lang.reflect.Method;
 
 /**
@@ -38,6 +39,22 @@ public class BooleanItemField extends ItemField {
         }
         return Qt.CheckState.Checked;
     }
+
+    @Override
+    public Boolean getEdit(){
+        Boolean b = (Boolean) this.get();
+        if( b == null || b == false ){
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean setEdit(Object objValue) {
+        Boolean state = (Boolean) objValue;
+        return this.set(state);
+    }
+    
     
     public Boolean setCheckstate(Boolean objValue){
         return this.set(objValue);
@@ -47,4 +64,15 @@ public class BooleanItemField extends ItemField {
     public Object getDisplay(){
         return null;
     }
+
+    @Override
+    protected ItemFlags getFlags() {
+        ItemFlags flags = Qt.ItemFlag.createQFlags();
+        flags.set(Qt.ItemFlag.ItemIsSelectable);
+        flags.set(Qt.ItemFlag.ItemIsEnabled);
+        flags.set(Qt.ItemFlag.ItemIsEditable);
+        flags.set(Qt.ItemFlag.ItemIsUserCheckable);
+        return flags;
+    }
+    
 }

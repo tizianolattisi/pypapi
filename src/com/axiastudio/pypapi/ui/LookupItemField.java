@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.trolltech.qt.core.Qt;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -71,4 +72,12 @@ public class LookupItemField extends ItemEditable {
         return name;
     }
     
+    @Override
+    protected Qt.ItemFlags getFlags() {
+        Qt.ItemFlags flags = Qt.ItemFlag.createQFlags();
+        flags.set(Qt.ItemFlag.ItemIsSelectable);
+        flags.set(Qt.ItemFlag.ItemIsEnabled);
+        return flags;
+    }
+
 }

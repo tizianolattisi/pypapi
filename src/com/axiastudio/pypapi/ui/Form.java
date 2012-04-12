@@ -24,6 +24,7 @@ import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
@@ -240,9 +241,13 @@ public class Form extends QMainWindow implements IForm {
             Column column = (Column) this.columns.get(i);
             QObject widget = (QObject) this.widgets.get(column.getName());
             if( widget.getClass().equals(QTextEdit.class)){
-                this.context.getMapper().addMapping((QWidget) widget, i, new QByteArray("plainText"));
+                this.context.getMapper().addMapping((QTextEdit) widget, i, new QByteArray("plainText"));
+            } else if( widget.getClass().equals(QCheckBox.class) ){
+                this.context.getMapper().addMapping((QCheckBox) widget, i, new QByteArray("checked"));
+                // XXX: it's the right way?
+                ((QCheckBox) widget).clicked.connect(this.context.getMapper(), "submit()", Qt.ConnectionType.AutoConnection);
             } else if( widget.getClass().equals(QComboBox.class) ){
-                this.context.getMapper().addMapping((QWidget) widget, i, new QByteArray("currentIndex"));
+                this.context.getMapper().addMapping((QComboBox) widget, i, new QByteArray("currentIndex"));
             } else {
                 this.context.getMapper().addMapping((QWidget) widget, i);
             }
