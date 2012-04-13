@@ -165,7 +165,15 @@ public class PyPaPiTableView extends QTableView{
                     }
                 }
             } else {
-                // TODO: use the factory to create the row
+                try {
+                    Object notAdapted = collectionClass.newInstance();
+                    model.getContextHandle().insertElement(notAdapted);
+                } catch (InstantiationException ex) {
+                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }
         }
     }
