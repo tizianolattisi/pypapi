@@ -75,6 +75,9 @@ public class Column {
         if( returnType == String.class ){
             ItemField item = new ItemField(this, result, setter, entity);
             return item;
+        } else if( returnType == Integer.class ){
+            IntegerItemField item = new IntegerItemField(this, result, setter, entity);
+            return item;
         } else if( returnType == Boolean.class ){
             BooleanItemField item = new BooleanItemField(this, result, setter, entity);
             return item;
