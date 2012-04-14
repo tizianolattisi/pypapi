@@ -106,7 +106,7 @@ public class Book implements Serializable {
         return this.getTitle();
     }
   
-        /**
+    /**
      * Adapter Book->Loan
      * 
      */

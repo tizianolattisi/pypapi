@@ -73,6 +73,8 @@ public class Demo {
                             Loan.class);
         
         // Adapter
+        // note: you can comment the line because the framework can inspect and
+        // find the adapter itself.
         Register.registerAdapters(Resolver.adaptersFromEntityClass(Book.class));
 
         formPerson.show();

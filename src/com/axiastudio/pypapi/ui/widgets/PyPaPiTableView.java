@@ -125,6 +125,7 @@ public class PyPaPiTableView extends QTableView{
                 if ( res == 1 ){
                     if( pd.getSelection().size()>0 ){
                         Object entity = pd.getSelection().get(0);
+                        Object adapted = null;
                         Class<?> classFrom = entity.getClass();
                         Class<?> classTo = collectionClass;
 
@@ -148,8 +149,7 @@ public class PyPaPiTableView extends QTableView{
                             
                         if( adapter != null ){
                             try {
-                                Object adapted = adapter.invoke(null, entity);
-                                model.getContextHandle().insertElement(adapted);
+                                adapted = adapter.invoke(null, entity);
                             } catch (IllegalAccessException ex) {
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (IllegalArgumentException ex) {
@@ -158,8 +158,28 @@ public class PyPaPiTableView extends QTableView{
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         } else {
+                            List<Method> setters = Resolver.settersFromEntityClass(classTo, classFrom);
+                            if(setters.size()==1){
+                                try {
+                                    adapted = classTo.newInstance();
+                                    setters.get(0).invoke(adapted, entity);
+                                } catch (IllegalArgumentException ex) {
+                                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (InvocationTargetException ex) {
+                                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (InstantiationException ex) {
+                                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IllegalAccessException ex) {
+                                    Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                        
+                        if( adapted != null ){
+                            model.getContextHandle().insertElement(adapted);
+                        } else {
                             String title = "Adapter warning";
-                            String description = "Unable to find an adapter from "+classFrom+" to "+classTo;
+                            String description = "Unable to find an adapter from "+classFrom+" to "+classTo+".";
                             Util.warningBox(this, title, description);
                         }
                     }

@@ -165,5 +165,24 @@ public class Resolver {
     public static Method setterFromFieldName(Class entityClass, String name){
         return Resolver.setterFromFieldName(entityClass, name, null);
     }
+    
+    /**
+     * Discover the setter method fot the given entityClass.
+     * 
+     * @param entityClass the class
+     * @param entityToSet the class of the setter's parameter
+     * @return the setter method
+     * 
+     */
+    public static List<Method> settersFromEntityClass(Class entityClass, Class entityToSet){
+        List<Method> setters = new ArrayList();
+        for (Method m : entityClass.getMethods()) {
+            Class<?>[] pars = m.getParameterTypes();
+            if( pars.length == 1 && pars[0] == entityToSet ){
+                setters.add(m);
+            }
+        }
+        return setters;
+    }
 
 }
