@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.db.Adapter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.junit.*;
 
 
@@ -126,5 +127,12 @@ public class ResolverTest {
         Method method2 = Resolver.setterFromFieldName(EntityClass.class, "referenced", ReferencedClass.class);
         assert method2.equals(EntityClass.class.getMethod("setReferenced", ReferencedClass.class));
     }
-    
+
+    @Test
+    public void testSettersFromEntityClass() throws NoSuchMethodException{
+        List<Method> setters = Resolver.settersFromEntityClass(EntityClass.class, ReferencedClass.class);
+        assert setters.size() == 1;
+        assert setters.get(0).equals(EntityClass.class.getMethod("setReferenced", ReferencedClass.class));
+    }
+
 }
