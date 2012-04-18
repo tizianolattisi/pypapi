@@ -48,7 +48,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" rowspan="2">
+       <item row="1" column="1">
         <widget class="QLineEdit" name="lineEdit_2">
          <property name="column" stdset="0">
           <string>Surname</string>
@@ -58,14 +58,14 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" rowspan="2">
+       <item row="2" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>Birth day</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="2" column="1">
         <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit" name="dateEdit">
          <property name="displayFormat">
           <string>dd/MM/yyyy</string>
@@ -75,6 +75,29 @@
          </property>
          <property name="column" stdset="0">
           <string>Birthday</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>57</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1">
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>disabled</string>
+         </property>
+         <property name="column" stdset="0">
+          <string>disabled</string>
          </property>
         </widget>
        </item>

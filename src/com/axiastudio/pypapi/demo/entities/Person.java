@@ -33,6 +33,8 @@ public class Person implements Serializable {
     private Date birthday;
     @OneToMany(mappedBy = "person", orphanRemoval = true)
     private Collection<Loan> loanCollection;
+    @Column(name="disabled")
+    private Boolean disabled;
 
     public Person() {
     }
@@ -80,6 +82,14 @@ public class Person implements Serializable {
 
     public void setLoanCollection(Collection<Loan> loanCollection) {
         this.loanCollection = loanCollection;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override
