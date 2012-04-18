@@ -242,9 +242,9 @@ public class Form extends QMainWindow implements IForm {
             QObject widget = (QObject) this.widgets.get(column.getName());
             if( widget.getClass().equals(QTextEdit.class)){
                 this.context.getMapper().addMapping((QTextEdit) widget, i, new QByteArray("plainText"));
+                ((QTextEdit) widget).setTabChangesFocus(true);
             } else if( widget.getClass().equals(QCheckBox.class) ){
                 this.context.getMapper().addMapping((QCheckBox) widget, i, new QByteArray("checked"));
-                // XXX: it's the right way?
                 ((QCheckBox) widget).clicked.connect(this.context.getMapper(), "submit()", Qt.ConnectionType.AutoConnection);
             } else if( widget.getClass().equals(QComboBox.class) ){
                 this.context.getMapper().addMapping((QComboBox) widget, i, new QByteArray("currentIndex"));
