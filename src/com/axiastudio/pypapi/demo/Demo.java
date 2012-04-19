@@ -20,11 +20,10 @@ import com.axiastudio.pypapi.Application;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
-import com.axiastudio.pypapi.demo.entities.Book;
-import com.axiastudio.pypapi.demo.entities.Genre;
-import com.axiastudio.pypapi.demo.entities.Loan;
-import com.axiastudio.pypapi.demo.entities.Person;
+import com.axiastudio.pypapi.demo.entities.*;
 import com.axiastudio.pypapi.ui.Form;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -49,6 +48,15 @@ public class Demo {
         Person person = new Person();
         person.setName("Tiziano");
         person.setSurname("Lattisi");
+        
+        Reference r = new Reference();
+        r.setReferencetype(Referencetype.EMAIL);
+        r.setReferencevalue("tiziano (at) axiastudio.it");
+        
+        Collection<Reference> referenceCollection = new ArrayList();
+        referenceCollection.add(r);
+        
+        person.setReferenceCollection(referenceCollection);
         
         em.getTransaction().begin();
         em.persist(book);

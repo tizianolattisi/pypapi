@@ -118,25 +118,47 @@
      </spacer>
     </item>
     <item row="1" column="0" colspan="2">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>Loans</string>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiTableView" name="tableView">
-         <property name="entity" stdset="0">
-          <string>.loanCollection</string>
-         </property>
-         <property name="columns" stdset="0">
-          <string>Book,Fromdate,Todate</string>
-         </property>
-         <property name="reference" stdset="0">
-          <string>Book</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Loans</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiTableView" name="tableView">
+          <property name="entity" stdset="0">
+           <string>.loanCollection</string>
+          </property>
+          <property name="columns" stdset="0">
+           <string>book,fromdate,todate,extension</string>
+          </property>
+          <property name="reference" stdset="0">
+           <string>Book</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>References</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiTableView" name="tableView_2">
+          <property name="entity" stdset="0">
+           <string>.referenceCollection</string>
+          </property>
+          <property name="columns" stdset="0">
+           <string>active,priority,referencetype,referencevalue,note</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>

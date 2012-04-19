@@ -34,6 +34,8 @@ public class Loan implements Serializable {
     @JoinColumn(name = "book", referencedColumnName = "id")
     @ManyToOne
     private Book book;
+    @Column(name = "extension")
+    private Boolean extension;
 
     public Loan() {
     }
@@ -80,6 +82,14 @@ public class Loan implements Serializable {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Boolean getExtension() {
+        return extension;
+    }
+
+    public void setExtension(Boolean extension) {
+        this.extension = extension;
     }
 
     @Override

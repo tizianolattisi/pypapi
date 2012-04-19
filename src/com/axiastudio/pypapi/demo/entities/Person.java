@@ -31,10 +31,12 @@ public class Person implements Serializable {
     @Column(name = "birthday")
     @Temporal(TemporalType.DATE)
     private Date birthday;
-    @OneToMany(mappedBy = "person", orphanRemoval = true)
+    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade=CascadeType.ALL)
     private Collection<Loan> loanCollection;
     @Column(name="disabled")
     private Boolean disabled;
+    @OneToMany(mappedBy = "person", orphanRemoval = true, cascade=CascadeType.ALL)
+    private Collection<Reference> referenceCollection;
 
     public Person() {
     }
@@ -90,6 +92,14 @@ public class Person implements Serializable {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public Collection<Reference> getReferenceCollection() {
+        return referenceCollection;
+    }
+
+    public void setReferenceCollection(Collection<Reference> referenceCollection) {
+        this.referenceCollection = referenceCollection;
     }
 
     @Override

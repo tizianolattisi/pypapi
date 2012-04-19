@@ -39,6 +39,7 @@ public class Book implements Serializable {
     private String title;
     @Column(name = "description")
     private String description;
+    @Column(name="genre")
     @Enumerated(EnumType.STRING)
     private Genre genre;
     

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>206</height>
+    <width>349</width>
+    <height>231</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1" colspan="2">
+       <item row="0" column="1">
         <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker" name="lineEdit">
          <property name="column" stdset="0">
           <string>Person</string>
@@ -45,7 +45,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="2">
+       <item row="1" column="1">
         <widget class="com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker" name="lineEdit_2">
          <property name="column" stdset="0">
           <string>Book</string>
@@ -120,6 +120,29 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="4" column="0">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>extension</string>
+         </property>
+         <property name="column" stdset="0">
+          <string>extension</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
