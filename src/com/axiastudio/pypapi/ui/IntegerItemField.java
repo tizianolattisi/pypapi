@@ -31,6 +31,12 @@ public class IntegerItemField extends ItemField {
     }
 
     @Override
+    public Object getDisplay() {
+        Integer i = (Integer) this.get();
+        return i;
+    }
+
+    @Override
     public Integer getEdit(){
         Integer i = (Integer) this.get();
         return i;
