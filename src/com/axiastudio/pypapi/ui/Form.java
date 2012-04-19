@@ -219,6 +219,11 @@ public class Form extends QMainWindow implements IForm {
                     Register.registerRelation((String) referenceProperty, child, "reference");
                 }
             }
+            // Delegate
+            if (child.getClass().equals(PyPaPiTableView.class)){
+                PyPaPiTableView ptv = (PyPaPiTableView) child;
+                ptv.setItemDelegate(new Delegate(ptv));
+            }
         }
         // search columns
         Object searchColumnsProperty = this.property("searchcolumns");
