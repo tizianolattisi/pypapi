@@ -37,7 +37,8 @@ public class Column {
     private String label;
     private String description;
     private String lookup;    
-    private TableModel model;
+    //private TableModel model;
+    private CellEditorType editorType = null;
 
     public Column(String name, String label, String description, String lookup){
         this.name = name;
@@ -48,10 +49,6 @@ public class Column {
 
     public Column(String name, String label, String description){
         this(name, label, description, null);
-    }
-
-    public void bindModel(TableModel model){
-        this.model = model;
     }
 
     public Item bind(Object entity) {
@@ -74,24 +71,30 @@ public class Column {
         Method setter = Resolver.setterFromFieldName(entity.getClass(), this.name, returnType);
         if( returnType == String.class ){
             ItemField item = new ItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.STRING;
             return item;
         } else if( returnType == Integer.class ){
             IntegerItemField item = new IntegerItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.INTEGER;
             return item;
         } else if( returnType == Boolean.class ){
             BooleanItemField item = new BooleanItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.BOOLEAN;
             return item;
         } else if( returnType == Date.class ){
             DateItemField item = new DateItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.DATE;
             return item;
         } else if( returnType.isEnum() ) {
             List choices = new ArrayList();
             choices.addAll(Arrays.asList(returnType.getEnumConstants()));
             ChoiceItemField item = new ChoiceItemField(this, result, setter, entity, choices);
+            this.editorType = CellEditorType.CHOICE;
             return item;
         } else {
             LookupItemField item = new LookupItemField(this, result, setter, entity,
                     this.lookup, returnType.getName());
+            this.editorType = CellEditorType.LOOKUP;
             return item;
         }
     }
@@ -110,6 +113,10 @@ public class Column {
 
     public String getName() {
         return name;
+    }
+
+    public CellEditorType getEditorType() {
+        return editorType;
     }
 
 

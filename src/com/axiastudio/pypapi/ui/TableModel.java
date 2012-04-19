@@ -77,10 +77,6 @@ public class TableModel extends QAbstractTableModel {
     }
 
     public final void setColumns(List columns){
-        for( int i=0; i<columns.size(); i++){
-            Column column = (Column) columns.get(i);
-            column.bindModel(this);
-        }
         this.columns = columns;
     }
 
