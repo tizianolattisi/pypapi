@@ -35,6 +35,7 @@ public class PyPaPiMenuBar extends QToolBar {
     public PyPaPiMenuBar(String title, Form parent){
         this.parentForm = parent;
         this.configButtons();
+        this.parentForm.getContext().getModel().dataChanged.connect(this, "refresh()");
     }
 
     private void configButtons(){
@@ -77,7 +78,6 @@ public class PyPaPiMenuBar extends QToolBar {
         action.setIcon(icon);
         action.triggered.connect(agent, actionName+"()");
         action.triggered.connect(this, "refresh()");
-        this.parentForm.getContext().getModel().dataChanged.connect(this, "refresh()");
         this.addAction(action);
     }
 
