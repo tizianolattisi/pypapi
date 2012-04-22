@@ -43,8 +43,8 @@ public final class Context extends QObject {
     private String name;
     private Object currentEntity;
     private Boolean isDirty;
-    private Boolean atBof;
-    private Boolean atEof;
+    private Boolean atBof=true;
+    private Boolean atEof=true;
     private Context primaryDc;
     private QWidget parent;
 
@@ -65,7 +65,7 @@ public final class Context extends QObject {
         this.model.setColumns(columns);
         this.initializeContext();
         this.isDirty = false;
-        if( this.model.getStore().isEmpty() ){
+        if( ".".equals(this.name) && this.model.getStore().isEmpty() ){
             this.insertElement();
         }
     }
