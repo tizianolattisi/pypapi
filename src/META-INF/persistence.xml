@@ -5,6 +5,7 @@
     <class>com.axiastudio.pypapi.demo.entities.Book</class>
     <class>com.axiastudio.pypapi.demo.entities.Loan</class>
     <class>com.axiastudio.pypapi.demo.entities.Person</class>
+    <class>com.axiastudio.pypapi.demo.entities.Reference</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:demo"/>
       <property name="javax.persistence.jdbc.password" value=""/>
