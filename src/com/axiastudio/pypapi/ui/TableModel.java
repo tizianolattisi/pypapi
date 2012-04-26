@@ -175,7 +175,9 @@ public class TableModel extends QAbstractTableModel {
             result = column.bind(entity);
             hm = new HashMap();
             hm.put(column, result);
-            this.cache.put(entity, hm);
+            if( entity.hashCode() != 0){
+                this.cache.put(entity, hm);
+            }
         }
         return result;
     }
