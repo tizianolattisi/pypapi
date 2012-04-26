@@ -149,7 +149,8 @@ public class Controller implements IController {
     
     @Override
     public void commit(Object entity){
-        this.parentize(entity);
+        // XXX: if no CascadeType.ALL?
+        //this.parentize(entity);
         EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
         em.merge(entity);
