@@ -28,6 +28,8 @@ public class Person implements Serializable {
     private String name;
     @Column(name = "surname")
     private String surname;
+    @Column(name = "email")
+    private String email;
     @Column(name = "birthday")
     @Temporal(TemporalType.DATE)
     private Date birthday;
@@ -67,6 +69,14 @@ public class Person implements Serializable {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getBirthday() {
