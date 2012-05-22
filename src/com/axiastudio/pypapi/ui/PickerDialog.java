@@ -69,6 +69,9 @@ public class PickerDialog extends QDialog {
             this.buttonSearch.setEnabled(false);
         }
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
+        this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
+        this.tableView.setSortingEnabled(true);
+        this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.Interactive);
     }
     
     private void init(){
@@ -151,6 +154,7 @@ public class PickerDialog extends QDialog {
             supersetStore = this.controller.createCriteriaStore(criteriaMap);
         }
         TableModel model = new TableModel(supersetStore, columns);
+        model.setEditable(false);
         this.tableView.setModel(model);
         this.selectionModel = new QItemSelectionModel(model);
         this.tableView.setSelectionModel(this.selectionModel);

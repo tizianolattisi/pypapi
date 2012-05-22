@@ -24,9 +24,11 @@ import com.axiastudio.pypapi.ui.Form;
 import com.axiastudio.pypapi.ui.PickerDialog;
 import com.axiastudio.pypapi.ui.TableModel;
 import com.axiastudio.pypapi.ui.Util;
-import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -55,7 +57,8 @@ public class PyPaPiTableView extends QTableView{
          *  init
          */
         this.setSelectionBehavior(SelectionBehavior.SelectRows);
-        this.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
+        this.setSortingEnabled(true);
+        this.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.Interactive);
         this.initializeContextMenu();
     }
     
@@ -116,6 +119,7 @@ public class PyPaPiTableView extends QTableView{
                 form.show();
             }
         } else if (this.actionAdd.equals(action)){
+            // TODO: to move outside the widget
             if ( reference != null ){
                 String name = (String) reference;
                 String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();

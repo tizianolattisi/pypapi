@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.QVariant;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.ItemFlags;
 import com.trolltech.qt.core.Qt.Orientation;
 import com.trolltech.qt.gui.QAbstractTableModel;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class TableModel extends QAbstractTableModel {
     private Store store;
     private HashMap cache;
     private Context contextHandle;
+    private boolean editable=true;
 
     @Override
     public Object headerData(int i, Orientation orntn, int i1) {
@@ -151,7 +153,11 @@ public class TableModel extends QAbstractTableModel {
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return item.getFlags();
+        ItemFlags flags = item.getFlags();
+        if( !this.editable && flags.isSet(Qt.ItemFlag.ItemIsEditable) ){
+            flags.clear(Qt.ItemFlag.ItemIsEditable);
+        }
+        return flags;
     }
 
     private Object get(int row, Column column) throws Exception{
@@ -225,6 +231,16 @@ public class TableModel extends QAbstractTableModel {
         this.endInsertRows();
         return true;
     }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+    
+    
 }
 
 
