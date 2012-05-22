@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -33,6 +34,7 @@ public class EntityBehavior implements IEntityBehavior {
     private String className;
     private List<Column> criteria;
     private List<Column> searchColumns;
+    private HashMap<String, String> validators = new HashMap<String, String>();
     
     public EntityBehavior(String className){
         this.className = className;
@@ -76,6 +78,21 @@ public class EntityBehavior implements IEntityBehavior {
     @Override
     public void setSearchColumns(List<Column> searchColumns) {
         this.searchColumns = searchColumns;
+    }
+
+    @Override
+    public void setReValidator(String widgetName, String re) {
+        this.validators.put(widgetName, re);
+    }
+
+    @Override
+    public String getReValidator(String widgetName) {
+        return this.validators.get(widgetName);
+    }
+
+    @Override
+    public Set<String> getReValidatorKeys() {
+        return this.validators.keySet();
     }
     
 }

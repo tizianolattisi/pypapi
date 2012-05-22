@@ -73,6 +73,9 @@
          <property name="search" stdset="0">
           <bool>false</bool>
          </property>
+         <property name="validator" stdset="0">
+          <string>^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$</string>
+         </property>
         </widget>
        </item>
        <item row="3" column="0">

@@ -21,10 +21,7 @@ import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiMenuBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
-import com.trolltech.qt.core.QByteArray;
-import com.trolltech.qt.core.QFile;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
@@ -44,7 +41,7 @@ public class Form extends QMainWindow implements IForm {
     private String uiFile;
     private String title;
     private Context context;
-    private HashMap widgets;
+    private HashMap<String, QObject> widgets;
     private List<Column> columns;
     private List<Column> entities;
 
@@ -73,6 +70,7 @@ public class Form extends QMainWindow implements IForm {
     @Override
     public void init(Store store){
         this.resolveColumns();
+        this.addValidators();
         /* root context */
         this.context = this.createContext(".", store);
         this.addMappers();
@@ -146,6 +144,7 @@ public class Form extends QMainWindow implements IForm {
         this.columns = new ArrayList();
         this.entities = new ArrayList();
         this.widgets = new HashMap();
+        EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
 
         for (int i=0; i<children.size(); i++){
             Object entityProperty=null;
@@ -173,6 +172,11 @@ public class Form extends QMainWindow implements IForm {
                         lookupPropertyName);
                 boolean add = this.columns.add(column);
                 Object put = this.widgets.put(columnPropertyName, child);
+                // Reg Exp validator
+                Object validatorProperty = child.property("validator");
+                if( validatorProperty != null){
+                    behavior.setReValidator(columnPropertyName, (String) validatorProperty);
+                }
             }
             if (isEntity){
                 String entityPropertyName = this.capitalize((String) entityProperty);
@@ -235,7 +239,6 @@ public class Form extends QMainWindow implements IForm {
                 searchColumns.add(searchColumn);
             }
         }
-        EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
         behavior.setCriteria(criteria);
         behavior.setSearchColumns(searchColumns);
         Register.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
@@ -255,6 +258,20 @@ public class Form extends QMainWindow implements IForm {
                 this.context.getMapper().addMapping((QComboBox) widget, i, new QByteArray("currentIndex"));
             } else {
                 this.context.getMapper().addMapping((QWidget) widget, i);
+            }
+        }
+    }
+    
+    private void addValidators() {
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
+        for( String widgetName: behavior.getReValidatorKeys() ){
+            QObject widget = this.widgets.get(widgetName);
+            if( widget.getClass() == QLineEdit.class ){
+                String re = behavior.getReValidator(widgetName);
+                QRegExp regExp = new QRegExp(re);
+                QRegExpValidator validator = new QRegExpValidator(widget);
+                validator.setRegExp(regExp);
+                ((QLineEdit) widget).setValidator(validator);
             }
         }
     }

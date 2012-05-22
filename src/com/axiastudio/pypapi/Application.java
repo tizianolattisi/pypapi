@@ -32,5 +32,5 @@ public class Application {
         int res = QApplication.execStatic();
         return res;
     }
-
+    
 }

@@ -73,7 +73,7 @@ public class ItemEditable extends Item {
     public Object getEdit(){
         Object result = this.value;
         if( result == null ){
-            result = "n.d.";
+            result = "";
         }
         return result;
     }

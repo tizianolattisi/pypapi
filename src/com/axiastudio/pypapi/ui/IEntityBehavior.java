@@ -17,7 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import java.util.List;
-import com.axiastudio.pypapi.ui.Column;
+import java.util.Set;
 
 /**
  *
@@ -49,5 +49,21 @@ public interface IEntityBehavior {
      * @param criteria the search columns to set
      */
     void setSearchColumns(List<Column> searchColumns);
+    
+    /**
+     * @param widgetName the name of the widget to validate
+     * @param re the regolar expression
+     */
+    void setReValidator(String widgetName, String re);
+
+    /**
+     * @param widgetName the name of the widget
+     */
+    String getReValidator(String widgetName);
+
+    /**
+     * 
+     */
+    Set<String> getReValidatorKeys();
 
 }

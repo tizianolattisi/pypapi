@@ -72,7 +72,7 @@ public class Item {
     public Object getDisplay(){
         Object result = this.value;
         if( result == null ){
-            result = "n.d.";
+            result = "";
         }
         return result;
     }
