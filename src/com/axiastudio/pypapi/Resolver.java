@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi;
 
 import com.axiastudio.pypapi.db.Adapter;
+import com.axiastudio.pypapi.db.Validator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -97,14 +98,30 @@ public class Resolver {
         return iface;
     }
     
-    public static List<Method> adaptersFromEntityClass(Class entityClass){
-        List<Method> adapters = new ArrayList();
-        for (Method m : entityClass.getMethods()) {
-            if (m.isAnnotationPresent(Adapter.class)) {
-                adapters.add(m);
+    public static List<Method> adaptersFromClass(Class klass){
+        return Resolver.annotatedFromClass(klass, Adapter.class);
+    }
+
+    public static List<Method> validatorsFromClass(Class klass){
+        return Resolver.annotatedFromClass(klass, Validator.class);
+    }
+    
+    /**
+     * Return tha list of annotated method of a class
+     * 
+     * @param klass The class
+     * @param annotation The annotation to search
+     * @return  The list of methods
+     * 
+     */    
+    private static List<Method> annotatedFromClass(Class klass, Class annotation){
+        List<Method> annotated = new ArrayList();
+        for (Method m : klass.getMethods()) {
+            if (m.isAnnotationPresent(annotation)) {
+                annotated.add(m);
             }
         }
-        return adapters;
+        return annotated;
     }
 
     /**

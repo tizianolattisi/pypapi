@@ -40,6 +40,7 @@ public class Register {
     private static HashMap utilities = new HashMap();
     private static HashMap adapters = new HashMap();
     private static HashMap relations = new HashMap();
+    private static HashMap validators = new HashMap();
 
     /**
      * Registers the unnamed utility for the given interface.
@@ -197,6 +198,43 @@ public class Register {
         return adapter;
     }
 
+    /**
+     * Registers validators from a list of methods.
+     * 
+     * @param methods The list of methods
+     */
+    public static void registerValidators(List<Method> methods){
+        for(Method validator: methods){
+            Class<?>[] parameterTypes = validator.getParameterTypes();
+            Class<?> forClass = null;
+            if( parameterTypes.length == 1){
+                forClass = parameterTypes[0];
+            }
+            if( forClass != null ){
+                Register.registerValidator(validator, forClass);
+            }
+        }
+    }
+
+    /**
+     * Registers a validator for a class.
+     * 
+     * @param validator The validator itself
+     * @param klass The class
+     */
+    public static void registerValidator(Object validator, Class klass){
+        Register.validators.put(klass, validator);
+    }
+
+    /**
+     * Query the validator for a class.
+     * 
+     * @param klass The class
+     */
+    public static Object queryValidator(Class klass){
+        return Register.validators.get(klass);
+    }
+    
     /**
      * Registers a named relation.
      * 

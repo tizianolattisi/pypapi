@@ -16,14 +16,17 @@
  */
 package com.axiastudio.pypapi.db;
 
+import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.ui.Column;
-import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -148,14 +151,33 @@ public class Controller implements IController {
     }
     
     @Override
-    public void commit(Object entity){
+    public Boolean commit(Object entity){
         // XXX: if no CascadeType.ALL?
         //this.parentize(entity);
-        EntityManager em = this.getEntityManager();
-        em.getTransaction().begin();
-        em.merge(entity);
-        em.getTransaction().commit();
-        em.close();
+        Method validator = (Method) Register.queryValidator(entity.getClass());
+        Boolean isOk=false;
+        if( validator != null ){
+            try {
+                isOk = (Boolean) validator.invoke(null, entity);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            isOk=true;
+        }
+        if( isOk ){
+            EntityManager em = this.getEntityManager();
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+            em.close();
+            return true;
+        }
+        return false;
     }
 
     @Override

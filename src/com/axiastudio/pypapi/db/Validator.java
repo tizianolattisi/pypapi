@@ -16,22 +16,17 @@
  */
 package com.axiastudio.pypapi.db;
 
-import java.util.HashMap;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public interface IController {
-
-    Store createFullStore();
-
-    Store createCriteriaStore(HashMap criteria);
-    
-    Boolean commit(Object entity);
-    
-    void delete(Object entity);
-
-    Object refresh(Object entity);
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Validator {
     
 }
