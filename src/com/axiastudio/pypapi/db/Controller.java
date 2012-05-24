@@ -70,7 +70,7 @@ public class Controller implements IController {
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             String value = (String) criteria.get(column);
-            // TODO: % and * should be are whildchars
+            // TODO: % and * should be whildchars
             Predicate predicate = cb.like(from.get(column.getName().toLowerCase()), value);
             cq = cq.where(predicate);
         }
