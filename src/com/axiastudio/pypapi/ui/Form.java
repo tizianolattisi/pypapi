@@ -210,23 +210,29 @@ public class Form extends QMainWindow implements IForm {
                     String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
                     for(int c=0; c<columnNames.length; c++){
-                        String name = this.capitalize(columnNames[c]);
+                        String first = columnNames[c].substring(0, 1);
+                        String last = columnNames[c].substring(columnNames[c].length()-1,columnNames[c].length());
+                        Integer resizeMode=0; // QHeaderView::Interactive
+                        String name;
+                        if( "<".equals(first) ){
+                            if( ">".equals(last) ){
+                                // ex. <columnname> -> QHeaderView::Stretch
+                                resizeMode = 1;
+                            }
+                        } else if( ">".equals(first) ){
+                            if( "<".equals(last) ){
+                                // ex. >columnname< -> QHeaderView::ResizeToContent
+                                resizeMode = 3;
+                            }
+                        }
+                        if( resizeMode>0 ){
+                            name = this.capitalize(columnNames[c].substring(1, columnNames[c].length()-1));
+                        } else {
+                            name = this.capitalize(columnNames[c]);
+                        }
                         String label = name;
-                        Integer resizeMode=0;
                         if( headerNames != null){
                             label = headerNames[c];
-                        }
-                        if( Character.isLowerCase(columnNames[c].charAt(0)) ){
-                            /* ex. columnname -> QHeaderView::ResizeToContent */
-                            resizeMode = 3;
-                        } else if ( Character.isUpperCase(columnNames[c].charAt(0)) &&
-                                    Character.isUpperCase(columnNames[c].charAt(1))){
-                            /* ex. COLUMNNAME -> QHeaderView::Stretch */
-                            resizeMode = 1;
-                        } else if ( Character.isUpperCase(columnNames[c].charAt(0)) &&
-                                    Character.isLowerCase(columnNames[c].charAt(1))){
-                            /* ex. Columnname -> QHeaderView::Interactive */
-                            resizeMode = 0;
                         }
                         Column tableColumn = new Column(name, label, name, null, resizeMode);
                         tableColumns.add(tableColumn);
@@ -326,7 +332,6 @@ public class Form extends QMainWindow implements IForm {
     }
     
     private String capitalize(String s) {
-        s = s.toLowerCase();
         return s.substring(0,1).toUpperCase() + s.substring(1);
     }
     
