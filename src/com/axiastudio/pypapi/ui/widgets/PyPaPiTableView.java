@@ -59,6 +59,7 @@ public class PyPaPiTableView extends QTableView{
         this.setSelectionBehavior(SelectionBehavior.SelectRows);
         this.setSortingEnabled(true);
         this.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.Interactive);
+        this.verticalHeader().hide();
         this.initializeContextMenu();
     }
     

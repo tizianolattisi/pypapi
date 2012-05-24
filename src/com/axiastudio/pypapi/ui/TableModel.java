@@ -74,7 +74,7 @@ public class TableModel extends QAbstractTableModel {
         return this.store;
     }
 
-    private List getColumns(){
+    public List<Column> getColumns(){
         return this.columns;
     }
 

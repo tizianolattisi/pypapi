@@ -24,6 +24,7 @@ import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
+import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,8 +125,9 @@ public class Form extends QMainWindow implements IForm {
         }
         Register.registerRelation(dataContext, this, path);
         if(! ".".equals(path)){
-            ((QTableView) this.widgets.get(path)).setModel(dataContext.getModel());
-            
+            QTableView qtv = (QTableView) this.widgets.get(path);
+            qtv.setModel(dataContext.getModel());
+            this.setResizeModes(qtv);
         }
         return dataContext;
     }
@@ -207,13 +209,26 @@ public class Form extends QMainWindow implements IForm {
                 if (columnsProperty != null){
                     String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
-                    for(int c=0; c<columnNames.length;c++){
+                    for(int c=0; c<columnNames.length; c++){
                         String name = this.capitalize(columnNames[c]);
                         String label = name;
+                        Integer resizeMode=0;
                         if( headerNames != null){
                             label = headerNames[c];
                         }
-                        Column tableColumn = new Column(name, label, name);
+                        if( Character.isLowerCase(columnNames[c].charAt(0)) ){
+                            /* ex. columnname -> QHeaderView::ResizeToContent */
+                            resizeMode = 3;
+                        } else if ( Character.isUpperCase(columnNames[c].charAt(0)) &&
+                                    Character.isUpperCase(columnNames[c].charAt(1))){
+                            /* ex. COLUMNNAME -> QHeaderView::Stretch */
+                            resizeMode = 1;
+                        } else if ( Character.isUpperCase(columnNames[c].charAt(0)) &&
+                                    Character.isLowerCase(columnNames[c].charAt(1))){
+                            /* ex. Columnname -> QHeaderView::Interactive */
+                            resizeMode = 0;
+                        }
+                        Column tableColumn = new Column(name, label, name, null, resizeMode);
                         tableColumns.add(tableColumn);
                     }
                     Register.registerRelation(tableColumns, child, "columns");
@@ -276,6 +291,30 @@ public class Form extends QMainWindow implements IForm {
         }
     }
     
+    private void setResizeModes(QTableView qtv){
+        TableModel model = (TableModel) qtv.model();
+        QHeaderView horizontalHeader = qtv.horizontalHeader();
+        for( int i=0; i<model.getColumns().size(); i++ ){
+            Column c = model.getColumns().get(i);
+            ResizeMode mode = QHeaderView.ResizeMode.Interactive;
+            switch(c.getResizeMode()){
+                case 0:
+                    mode = QHeaderView.ResizeMode.Interactive;
+                    break;
+                case 1:
+                    mode = QHeaderView.ResizeMode.Stretch;
+                    break;
+                case 2:
+                    mode = QHeaderView.ResizeMode.Fixed;
+                    break;
+                case 3:
+                    mode = QHeaderView.ResizeMode.ResizeToContents;
+                    break;
+            }
+            horizontalHeader.setResizeMode(i, mode);
+        }
+    }
+    
     private void indexChanged(int row){
         int idx = this.context.getMapper().currentIndex() + 1;
         int tot = this.context.getModel().rowCount();
@@ -287,6 +326,7 @@ public class Form extends QMainWindow implements IForm {
     }
     
     private String capitalize(String s) {
+        s = s.toLowerCase();
         return s.substring(0,1).toUpperCase() + s.substring(1);
     }
     

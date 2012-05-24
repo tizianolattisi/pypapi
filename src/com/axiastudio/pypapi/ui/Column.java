@@ -39,16 +39,22 @@ public class Column {
     private String lookup;    
     //private TableModel model;
     private CellEditorType editorType = null;
+    private final Integer resizeMode;
 
-    public Column(String name, String label, String description, String lookup){
+    public Column(String name, String label, String description, String lookup, Integer resizeMode){
         this.name = name;
         this.label = label;
         this.description = description;
         this.lookup = lookup;
+        this.resizeMode = resizeMode;
+    }
+    
+    public Column(String name, String label, String description, String lookup){
+        this(name, label, description, lookup, 0);
     }
 
     public Column(String name, String label, String description){
-        this(name, label, description, null);
+        this(name, label, description, null, 0);
     }
 
     public Item bind(Object entity) {
@@ -117,6 +123,10 @@ public class Column {
 
     public CellEditorType getEditorType() {
         return editorType;
+    }
+
+    public Integer getResizeMode() {
+        return resizeMode;
     }
 
 
