@@ -297,7 +297,7 @@ public class Register {
      * @return The initializated form
      * 
      */
-    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory, String title){        
+    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory, String title){
         Controller controller = new Controller(emf, factory);
         Register.registerUtility(controller, IController.class, factory.getName());
         Form form = new Form(ui, factory, title);

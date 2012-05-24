@@ -16,26 +16,21 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import java.util.*;
-
-import com.trolltech.qt.core.*;
-import com.trolltech.qt.gui.*;
-
 import com.axiastudio.pypapi.ui.Form;
+import com.trolltech.qt.gui.QAction;
+import java.util.HashMap;
 
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class PyPaPiMenuBar extends QToolBar {
+public class PyPaPiNavigationBar extends PyPaPiToolBar {
 
-    private static HashMap buttons;
-    private Form parentForm;
-
-    public PyPaPiMenuBar(String title, Form parent){
-        this.parentForm = parent;
+    public PyPaPiNavigationBar(String title, Form parent){
+        super(title, parent);
         this.configButtons();
         this.parentForm.getContext().getModel().dataChanged.connect(this, "refresh()");
+
     }
 
     private void configButtons(){
@@ -68,49 +63,35 @@ public class PyPaPiMenuBar extends QToolBar {
                 "Search elements", this.parentForm.getContext());
     }
 
-    private void insertButton(String actionName, String text, String iconName,
-            String toolTip, QObject agent){
-        QAction action = new QAction(this.parentForm);
-        QIcon icon = new QIcon(iconName);
-        action.setObjectName(actionName);
-        action.setText(text);
-        action.setToolTip(toolTip);
-        action.setIcon(icon);
-        action.triggered.connect(agent, actionName+"()");
-        action.triggered.connect(this, "refresh()");
-        this.addAction(action);
-    }
-
-    public void refresh(){
+    @Override
+    public void refresh() {
         /*
          * Refresh enabled status of the buttons
          */
         Boolean atBof = this.parentForm.getContext().getAtBof();
         Boolean atEof = this.parentForm.getContext().getAtEof();
         Boolean isDirty = this.parentForm.getContext().getIsDirty();
-
-        for(QAction action:this.actions()){
+        for (QAction action : this.actions()) {
             String objName = action.objectName();
-            if ("firstElement".equals(objName)){
+            if ("firstElement".equals(objName)) {
                 action.setEnabled(!isDirty && !atBof);
-            } else if("previousElement".equals(objName)){
+            } else if ("previousElement".equals(objName)) {
                 action.setEnabled(!isDirty && !atBof);
-            } else if("nextElement".equals(objName)){
+            } else if ("nextElement".equals(objName)) {
                 action.setEnabled(!isDirty && !atEof);
-            } else if("lastElement".equals(objName)){
+            } else if ("lastElement".equals(objName)) {
                 action.setEnabled(!isDirty && !atEof);
-            } else if("commitChanges".equals(objName)){
+            } else if ("commitChanges".equals(objName)) {
                 action.setEnabled(isDirty);
-            } else if("cancelChanges".equals(objName)){
+            } else if ("cancelChanges".equals(objName)) {
                 action.setEnabled(isDirty);
-            } else if("search".equals(objName)){
+            } else if ("search".equals(objName)) {
                 action.setEnabled(!isDirty);
-            } else if("insertElement".equals(objName)){
+            } else if ("insertElement".equals(objName)) {
                 action.setEnabled(!isDirty);
-            } else if("deleteElement".equals(objName)){
+            } else if ("deleteElement".equals(objName)) {
                 action.setEnabled(!isDirty);
             }
         }
     }
-
 }

@@ -19,7 +19,7 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
-import com.axiastudio.pypapi.ui.widgets.PyPaPiMenuBar;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiNavigationBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.designer.QUiLoader;
@@ -77,7 +77,7 @@ public class Form extends QMainWindow implements IForm {
         this.addMappers();
         /* context's children */
         this.initModels();
-        PyPaPiMenuBar bar = new PyPaPiMenuBar("Navigation", this);
+        PyPaPiNavigationBar bar = new PyPaPiNavigationBar("Navigation", this);
         bar.setMovable(true);
         this.addToolBar(bar);
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
