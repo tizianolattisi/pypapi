@@ -39,14 +39,14 @@ public class Column {
     private String lookup;    
     //private TableModel model;
     private CellEditorType editorType = null;
-    private final Integer resizeMode;
+    private final Integer resizeModeValue;
 
-    public Column(String name, String label, String description, String lookup, Integer resizeMode){
+    public Column(String name, String label, String description, String lookup, Integer resizeModeValue){
         this.name = name;
         this.label = label;
         this.description = description;
         this.lookup = lookup;
-        this.resizeMode = resizeMode;
+        this.resizeModeValue = resizeModeValue;
     }
     
     public Column(String name, String label, String description, String lookup){
@@ -125,8 +125,8 @@ public class Column {
         return editorType;
     }
 
-    public Integer getResizeMode() {
-        return resizeMode;
+    public Integer getResizeModeValue() {
+        return resizeModeValue;
     }
 
 

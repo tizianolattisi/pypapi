@@ -16,14 +16,14 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.axiastudio.pypapi.Register;
-import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.Store;
 
 /**
  *
@@ -71,7 +71,10 @@ public class PickerDialog extends QDialog {
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
         this.tableView.setSortingEnabled(true);
-        this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.Interactive);
+        for( int i=0; i<behavior.getSearchColumns().size(); i++ ){
+            Column c = behavior.getSearchColumns().get(i);
+            this.tableView.horizontalHeader().setResizeMode(i, QHeaderView.ResizeMode.resolve(c.getResizeModeValue()));
+        }
     }
     
     private void init(){

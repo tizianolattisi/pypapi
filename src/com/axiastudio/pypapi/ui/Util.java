@@ -16,17 +16,18 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
-import java.util.ArrayList;
-import java.util.List;
-import com.axiastudio.pypapi.Register;
-import com.axiastudio.pypapi.db.Store;
-import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.QWidget;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -81,5 +82,36 @@ public class Util {
         }
         return false;
     }
+    
+    /*
+     * Clean the column name, removing the ResizeMode marker.
+     */
+    public static String cleanColumnName(String name){
+        String first = name.substring(0, 1);
+        String last = name.substring(name.length()-1,name.length());
+        if( "<".equals(first) || ">".equals(first) ){
+            name = name.substring(1);
+        }
+        if( "<".equals(last) || ">".equals(last) ){
+            name = name.substring(0,name.length()-1);
+        }        
+        return name;
+    }
+    
+    /*
+     *  Extract the ResizeMode from the column's name
+     */
+    public static ResizeMode extractResizeMode(String name){
+        String first = name.substring(0, 1);
+        String last = name.substring(name.length()-1,name.length());
+        if( "<".equals(first) && ">".equals(last) ){
+            return QHeaderView.ResizeMode.Stretch;
+        } else if( ">".equals(first) && "<".equals(last) ){
+            return QHeaderView.ResizeMode.ResizeToContents;
+        }
+        return QHeaderView.ResizeMode.Interactive;
+    }
+    
+    
 
 } 

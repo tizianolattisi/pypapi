@@ -210,31 +210,14 @@ public class Form extends QMainWindow implements IForm {
                     String[] columnNames = ((String) columnsProperty).split(",");
                     List<Column> tableColumns = new ArrayList();
                     for(int c=0; c<columnNames.length; c++){
-                        String first = columnNames[c].substring(0, 1);
-                        String last = columnNames[c].substring(columnNames[c].length()-1,columnNames[c].length());
-                        Integer resizeMode=0; // QHeaderView::Interactive
-                        String name;
-                        if( "<".equals(first) ){
-                            if( ">".equals(last) ){
-                                // ex. <columnname> -> QHeaderView::Stretch
-                                resizeMode = 1;
-                            }
-                        } else if( ">".equals(first) ){
-                            if( "<".equals(last) ){
-                                // ex. >columnname< -> QHeaderView::ResizeToContent
-                                resizeMode = 3;
-                            }
-                        }
-                        if( resizeMode>0 ){
-                            name = this.capitalize(columnNames[c].substring(1, columnNames[c].length()-1));
-                        } else {
-                            name = this.capitalize(columnNames[c]);
-                        }
+                        ResizeMode resizeMode = Util.extractResizeMode(columnNames[c]);
+                        String name = Util.cleanColumnName(columnNames[c]);
+                        name = this.capitalize(name);
                         String label = name;
                         if( headerNames != null){
                             label = headerNames[c];
                         }
-                        Column tableColumn = new Column(name, label, name, null, resizeMode);
+                        Column tableColumn = new Column(name, label, name, null, resizeMode.value());
                         tableColumns.add(tableColumn);
                     }
                     Register.registerRelation(tableColumns, child, "columns");
@@ -255,8 +238,10 @@ public class Form extends QMainWindow implements IForm {
         if (searchColumnsProperty != null){
             String[] columnNames = ((String) searchColumnsProperty).split(",");
             for(String name: columnNames){
+                ResizeMode resizeMode = Util.extractResizeMode(name);
+                name = Util.cleanColumnName(name);
                 name = this.capitalize(name);
-                Column searchColumn = new Column(name, name, name);
+                Column searchColumn = new Column(name, name, name, null, resizeMode.value());
                 searchColumns.add(searchColumn);
             }
         }
@@ -302,21 +287,7 @@ public class Form extends QMainWindow implements IForm {
         QHeaderView horizontalHeader = qtv.horizontalHeader();
         for( int i=0; i<model.getColumns().size(); i++ ){
             Column c = model.getColumns().get(i);
-            ResizeMode mode = QHeaderView.ResizeMode.Interactive;
-            switch(c.getResizeMode()){
-                case 0:
-                    mode = QHeaderView.ResizeMode.Interactive;
-                    break;
-                case 1:
-                    mode = QHeaderView.ResizeMode.Stretch;
-                    break;
-                case 2:
-                    mode = QHeaderView.ResizeMode.Fixed;
-                    break;
-                case 3:
-                    mode = QHeaderView.ResizeMode.ResizeToContents;
-                    break;
-            }
+            ResizeMode mode = QHeaderView.ResizeMode.resolve(c.getResizeModeValue());
             horizontalHeader.setResizeMode(i, mode);
         }
     }
