@@ -141,7 +141,7 @@ public class TableModel extends QAbstractTableModel {
         }
         // clean cache
         this.purgeItemCache(this.store.get(qmi.row()), (Column) this.columns.get(qmi.column()));
-        dataChanged.emit(qmi, qmi);
+        this.dataChanged.emit(qmi, qmi);
         return true;
     }
 

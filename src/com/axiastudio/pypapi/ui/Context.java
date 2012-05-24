@@ -83,9 +83,8 @@ public final class Context extends QObject {
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
-        // TODO: implements inserting and removing rows 
-        //this.model.rowsRemoved.connect(primaryDc, "modelDataChanged()");
-        //this.model.rowsInserted.connect(primaryDc, "modelDataChanged()");
+        this.model.rowsRemoved.connect(primaryDc, "modelDataChanged(QModelIndex, int, int)");
+        this.model.rowsInserted.connect(primaryDc, "modelDataChanged(QModelIndex, int, int)");
     }
 
 
@@ -146,6 +145,11 @@ public final class Context extends QObject {
         this.isDirty = true;
     }
 
+    private void modelDataChanged(QModelIndex topLeft, int start, int end){
+        this.isDirty = true;
+        this.model.dataChanged.emit(topLeft, topLeft);
+    }
+    
     public void firstElement(){
         this.mapper.toFirst();
     }
