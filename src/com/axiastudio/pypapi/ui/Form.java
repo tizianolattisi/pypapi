@@ -86,7 +86,7 @@ public class Form extends QMainWindow implements IForm {
     }
 
     private void loadUi(QFile uiFile){
-        QWidget window = null;
+        QMainWindow window = null;
         try {
             window = (QMainWindow) QUiLoader.load(uiFile);
         } catch (QUiLoaderException ex) {
@@ -95,7 +95,7 @@ public class Form extends QMainWindow implements IForm {
         for( QByteArray name: window.dynamicPropertyNames()){
             this.setProperty(name.toString(), window.property(name.toString()));
         }
-        this.setCentralWidget(window);
+        this.setCentralWidget(window.centralWidget());
     }
 
     private void initModels(){

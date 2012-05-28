@@ -118,10 +118,10 @@ public class Util {
      */
     public static QWidget findParentForm(QWidget widget){
         QWidget out=widget;
-        while(out.getClass()!=QMainWindow.class){
+        while(!QMainWindow.class.isInstance(out)){
             out = out.parentWidget();
         }
-        return out.parentWidget();
+        return out;
     }
     
     
