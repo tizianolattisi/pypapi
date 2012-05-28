@@ -70,7 +70,8 @@ public class PyPaPiEntityPicker extends QLineEdit{
 
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
-        Context context = (Context) Register.queryRelation(this.window(), ".");
+        QWidget window = Util.findParentForm(this);
+        Context context = (Context) Register.queryRelation(window, ".");
         LookupItemField item;
         try {
             item = (LookupItemField) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
@@ -89,9 +90,8 @@ public class PyPaPiEntityPicker extends QLineEdit{
         if ( res == 1 ){
             Object value = pd.getSelection().get(0);
             item.set(value);
-            // XXX: dummy workaround to force the repaint
-            this.clearFocus();
-            this.setFocus();
+            // XXX: how to force the repaint?
+            context.getDirty();
         }
 
         }

@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
 import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
+import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.QWidget;
@@ -112,6 +113,16 @@ public class Util {
         return QHeaderView.ResizeMode.Interactive;
     }
     
+    /*
+     * Find the first parent of type QMainWindow
+     */
+    public static QWidget findParentForm(QWidget widget){
+        QWidget out=widget;
+        while(out.getClass()!=QMainWindow.class){
+            out = out.parentWidget();
+        }
+        return out.parentWidget();
+    }
     
-
+    
 } 
