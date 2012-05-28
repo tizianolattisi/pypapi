@@ -292,7 +292,7 @@ public class Form extends QMainWindow implements IForm {
         }
     }
     
-    private void indexChanged(int row){
+    protected void indexChanged(int row){
         int idx = this.context.getMapper().currentIndex() + 1;
         int tot = this.context.getModel().rowCount();
         this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
