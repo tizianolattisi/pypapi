@@ -226,7 +226,13 @@ public final class Context extends QObject {
             this.firstElement();
         }
     }
-
+    
+    public void getDirty(){
+        // XXX: it's the right way?
+        QModelIndex index = this.getModel().index(0, 0);
+        this.getModel().dataChanged.emit(index, index);
+    }
+    
     public TableModel getModel() {
         return model;
     }
