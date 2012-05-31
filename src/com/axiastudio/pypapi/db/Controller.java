@@ -153,7 +153,7 @@ public class Controller implements IController {
     @Override
     public Boolean commit(Object entity){
         // XXX: if no CascadeType.ALL?
-        //this.parentize(entity);
+        this.parentize(entity);
         Method validator = (Method) Register.queryValidator(entity.getClass());
         Boolean isOk=false;
         if( validator != null ){
