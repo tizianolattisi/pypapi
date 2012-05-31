@@ -22,15 +22,10 @@ import com.trolltech.qt.gui.QApplication;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class Application {
+public class Application extends QApplication {
     
-    public static void initialize(String[] args){
-        QApplication.initialize(args);
-    }
-
-    public static int exec(){
-        int res = QApplication.execStatic();
-        return res;
+    public Application(String[] args){
+        super(args);
     }
     
 }

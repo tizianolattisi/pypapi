@@ -39,7 +39,7 @@ public class Demo {
         db.open("DemoPU");
         EntityManagerFactory emf = db.getEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
-        
+                
         Book book = new Book();
         book.setTitle("Anna Karenina");
         book.setDescription("description...");
@@ -55,17 +55,25 @@ public class Demo {
         
         Collection<Reference> referenceCollection = new ArrayList();
         referenceCollection.add(r);
-        
+
         person.setReferenceCollection(referenceCollection);
+
+        Loan l = new Loan();
+        l.setBook(book);
         
+        Collection<Loan> loanCollection = new ArrayList();
+        loanCollection.add(l);
+        
+        person.setLoanCollection(loanCollection);
+
         em.getTransaction().begin();
         em.persist(book);
         em.persist(person);
         em.getTransaction().commit();
         em.close();
-        
+            
         /* start demo */
-        Application.initialize(args);
+        Application app = new Application(args);
 
         // Book
         Form formBook = Register.registerForm(db.getEntityManagerFactory(),
@@ -83,11 +91,10 @@ public class Demo {
         // Adapter
         // note: you can comment the line because the framework can inspect and
         // find the adapter itself.
-        Register.registerAdapters(Resolver.adaptersFromEntityClass(Book.class));
+        Register.registerAdapters(Resolver.adaptersFromClass(Book.class));
 
         formPerson.show();
-        
-        Application.exec();
+        int exec = app.exec();
         
     }
 }
