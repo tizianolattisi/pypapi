@@ -107,6 +107,9 @@ public final class Context extends QObject {
         return tableModel;
     }
 
+    private void IndexChanged() {
+        this.indexChanged(0);
+    }
     private void indexChanged(int row){
         int cnt = this.model.rowCount();
         if(".".equals(this.name)){
@@ -231,6 +234,7 @@ public final class Context extends QObject {
         // XXX: it's the right way?
         QModelIndex index = this.getModel().index(0, 0);
         this.getModel().dataChanged.emit(index, index);
+        this.mapper.currentIndexChanged.emit(0);
     }
     
     public TableModel getModel() {
