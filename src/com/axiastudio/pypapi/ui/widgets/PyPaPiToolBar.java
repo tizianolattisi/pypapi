@@ -21,6 +21,8 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QToolBar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -28,6 +30,7 @@ import com.trolltech.qt.gui.QToolBar;
  */
 public class PyPaPiToolBar extends QToolBar {
     protected final Form parentForm;
+    protected Map<String, QAction> actions = new HashMap<String, QAction>();
 
     public PyPaPiToolBar(String title, Form parent) {
         this.parentForm = parent;
@@ -45,11 +48,16 @@ public class PyPaPiToolBar extends QToolBar {
         action.triggered.connect(agent, actionName+"()");
         action.triggered.connect(this, "refresh()");
         this.addAction(action);
+        this.actions.put(actionName, action);
     }
 
     private void configButtons(){}
     
     public void refresh() {}
+    
+    public QAction actionByName(String name){
+        return this.actions.get(name);
+    }
 
     
 }
