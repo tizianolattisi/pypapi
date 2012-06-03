@@ -30,6 +30,10 @@ import java.util.List;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class PickerDialog extends QDialog {
+    
+    private final String STYLE="QLineEdit {"
+            + "image: none;"
+            + "}";
 
     private List selection;
     private QTableView tableView;
@@ -75,6 +79,7 @@ public class PickerDialog extends QDialog {
             Column c = behavior.getSearchColumns().get(i);
             this.tableView.horizontalHeader().setResizeMode(i, QHeaderView.ResizeMode.resolve(c.getResizeModeValue()));
         }
+        this.setStyleSheet(this.STYLE);
     }
     
     private void init(){

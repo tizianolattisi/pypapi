@@ -20,7 +20,9 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.ui.*;
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QPoint;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import java.util.logging.Level;
@@ -32,9 +34,13 @@ import java.util.logging.Logger;
  */
 public class PyPaPiEntityPicker extends QLineEdit{
     
+    private final String STYLE="QLineEdit {"
+            + "image: url(classpath:com/axiastudio/pypapi/ui/resources/cog.png);"
+            + "image-position: right; border: 1px solid #999999; }";
     private Column bindColumn;
     private QAction actionOpen, actionSelect;
     private QMenu menuPopup;
+    private QToolBar toolBar;
 
     public PyPaPiEntityPicker(){
         this(null);
@@ -45,6 +51,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
          *  init
          */
         super(parent);
+        this.setStyleSheet(this.STYLE);
         this.initializeContextMenu();        
     }
 
@@ -52,16 +59,24 @@ public class PyPaPiEntityPicker extends QLineEdit{
         this.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
         this.menuPopup = new QMenu(this);
+        this.toolBar = new QToolBar(this);
+        this.toolBar.setOrientation(Qt.Orientation.Horizontal);
+        this.toolBar.setIconSize(new QSize(10, 10));
+        this.toolBar.hide();
 
         this.actionSelect = new QAction("Select", this);
         QIcon iconSelect = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/link.png");
         this.actionSelect.setIcon(iconSelect);
         this.menuPopup.addAction(actionSelect);
+        this.toolBar.addAction(actionSelect);
+        this.actionSelect.triggered.connect(this, "actionSelect()");
 
         this.actionOpen = new QAction("Open", this);
         QIcon iconOpen = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/open.png");
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);
+        this.toolBar.addAction(actionOpen);
+        this.actionOpen.triggered.connect(this, "actionOpen()");
         
         //this.installEventFilter(this);
         
@@ -70,31 +85,6 @@ public class PyPaPiEntityPicker extends QLineEdit{
 
     private void contextMenu(QPoint point){
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
-        QWidget window = Util.findParentForm(this);
-        Context context = (Context) Register.queryRelation(window, ".");
-        LookupItemField item;
-        try {
-            item = (LookupItemField) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
-        } catch (Exception ex) {
-            Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-        }
-        if (this.actionOpen.equals(action)){
-            Object entity = item.get();
-            Form newForm = Util.formFromEntity(entity);
-            newForm.show();
-        } else if (this.actionSelect.equals(action)){
-            Controller controller = (Controller) Register.queryUtility(IController.class, item.getName());
-            PickerDialog pd = new PickerDialog(this, controller);
-        int res = pd.exec();
-        if ( res == 1 ){
-            Object value = pd.getSelection().get(0);
-            item.set(value);
-            // XXX: how to force the repaint?
-            context.getDirty();
-        }
-
-        }
     }
 
     /*
@@ -114,4 +104,51 @@ public class PyPaPiEntityPicker extends QLineEdit{
         this.bindColumn = column;
     }
 
+    @Override
+    protected void enterEvent(QEvent event){
+        this.toolBar.show();
+    }
+
+    @Override
+    protected void leaveEvent(QEvent event){
+        this.toolBar.hide();
+    }
+
+    private void actionOpen(){
+        QWidget window = Util.findParentForm(this);
+        Context context = (Context) Register.queryRelation(window, ".");
+        LookupItemField item;
+        try {
+            item = (LookupItemField) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
+        } catch (Exception ex) {
+            Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        Object entity = item.get();
+        Form newForm = Util.formFromEntity(entity);
+        newForm.show();
+    }
+    
+    private void actionSelect(){
+        LookupItemField item;
+        QWidget window = Util.findParentForm(this);
+        Context context = (Context) Register.queryRelation(window, ".");
+        try {
+            item = (LookupItemField) context.getModel().getByEntity(context.getCurrentEntity(), bindColumn);
+        } catch (Exception ex) {
+            Logger.getLogger(PyPaPiEntityPicker.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        Controller controller = (Controller) Register.queryUtility(IController.class, item.getName());
+        PickerDialog pd = new PickerDialog(this, controller);
+        int res = pd.exec();
+        if ( res == 1 ){
+            Object value = pd.getSelection().get(0);
+            item.set(value);
+            // XXX: how to force the repaint?
+            context.getDirty();
+        }
+    }
+    
+    
 }
