@@ -20,6 +20,8 @@ import com.axiastudio.pypapi.ui.Form;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QKeySequence;
+import com.trolltech.qt.gui.QKeySequence.StandardKey;
 import com.trolltech.qt.gui.QToolBar;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,9 +38,24 @@ public class PyPaPiToolBar extends QToolBar {
         this.parentForm = parent;
 
     }
-    
+
     protected void insertButton(String actionName, String text, String iconName,
                                 String toolTip, QObject agent){
+        this.insertButton(actionName, text, iconName, toolTip, agent, null, null);
+    }
+
+    protected void insertButton(String actionName, String text, String iconName,
+                                String toolTip, QObject agent, StandardKey shortcut){
+            this.insertButton(actionName, text, iconName, toolTip, agent, null, shortcut);
+    }
+
+    protected void insertButton(String actionName, String text, String iconName,
+                                String toolTip, QObject agent, QKeySequence shortcut){
+        this.insertButton(actionName, text, iconName, toolTip, agent, shortcut, null);
+    }
+
+    private void insertButton(String actionName, String text, String iconName,
+                                String toolTip, QObject agent, QKeySequence qks, StandardKey sk){
         QAction action = new QAction(this.parentForm);
         QIcon icon = new QIcon(iconName);
         action.setObjectName(actionName);
@@ -47,6 +64,11 @@ public class PyPaPiToolBar extends QToolBar {
         action.setIcon(icon);
         action.triggered.connect(agent, actionName+"()");
         action.triggered.connect(this, "refresh()");
+        if( qks != null ){
+            action.setShortcut(qks);
+        } else if( sk != null ){
+            action.setShortcut(sk);
+        }
         this.addAction(action);
         this.actions.put(actionName, action);
     }

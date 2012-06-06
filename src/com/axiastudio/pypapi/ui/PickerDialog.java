@@ -19,7 +19,10 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +95,7 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
         this.tableView.setMinimumHeight(150);
         this.tableView.setSortingEnabled(true);
+        this.tableView.installEventFilter(this);
         this.layout.addWidget(this.tableView, 1);
         this.filterLineEdit = new QLineEdit();
         QLabel filterLabel = new QLabel();
@@ -100,6 +104,7 @@ public class PickerDialog extends QDialog {
         this.buttonSearch = new QToolButton(this);
         this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/key.png"));
         this.buttonSearch.clicked.connect(this, "executeSearch()");
+        this.buttonSearch.setShortcut(QKeySequence.StandardKey.Find);
         this.buttonCancel = new QToolButton(this);
         this.buttonCancel.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
         this.buttonCancel.clicked.connect(this, "reject()");
@@ -197,6 +202,19 @@ public class PickerDialog extends QDialog {
     
     public List getSelection() {
         return selection;
+    }
+
+    @Override
+    public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( qevent.type() == QEvent.Type.KeyPress ){
+            QKeyEvent qke = (QKeyEvent) qevent;
+            if( qke.key() == Qt.Key.Key_Return.value() ){
+                if( this.getSelection().size() > 0 ){
+                    this.accept();
+                }
+            }
+        }
+        return false;
     }
     
 

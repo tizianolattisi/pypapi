@@ -17,8 +17,9 @@
 package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.ui.Form;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAction;
-import java.util.HashMap;
+import com.trolltech.qt.gui.QKeySequence;
 
 /**
  *
@@ -36,31 +37,40 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
     private void configButtons(){
         this.insertButton("firstElement", "First element",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/resultset_first.png",
-                "Press to show the first element", this.parentForm.getContext());
+                "Press to show the first element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.MoveToStartOfDocument)); // XXX ctrl+pg
         this.insertButton("previousElement", "Previous element",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/resultset_previous.png",
-                "Press to show the previous element", this.parentForm.getContext());
+                "Press to show the previous element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.MoveToPreviousPage));
         this.insertButton("nextElement", "Next element",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/resultset_next.png",
-                "Press to show the next element", this.parentForm.getContext());
+                "Press to show the next element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.MoveToNextPage));
         this.insertButton("lastElement", "Last element",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/resultset_last.png",
-                "Press to show the last element", this.parentForm.getContext());
+                "Press to show the last element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.MoveToEndOfDocument)); // XXX ctrl+pg
         this.insertButton("insertElement", "Insert",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/add.png",
-                "Discard currente changes", this.parentForm.getContext());
+                "Discard currente changes", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.New));
         this.insertButton("deleteElement", "Delete",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/delete.png",
-                "Discard currente changes", this.parentForm.getContext());
+                "Discard currente changes", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.Delete));
         this.insertButton("cancelChanges", "Cancel",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png",
-                "Discard currente changes", this.parentForm.getContext());
+                "Discard currente changes", this.parentForm.getContext(),
+                new QKeySequence("Escape")); // XXX: does not work?
         this.insertButton("commitChanges", "Save",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/disk.png",
-                "Save current element", this.parentForm.getContext());
+                "Save current element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.Save));
         this.insertButton("search", "Search",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png",
-                "Search elements", this.parentForm.getContext());
+                "Search elements", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.Find));
     }
 
     @Override
