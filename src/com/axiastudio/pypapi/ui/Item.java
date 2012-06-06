@@ -17,9 +17,10 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
+import com.trolltech.qt.core.Qt;
 import java.lang.reflect.Method;
-import java.util.*;
-import com.trolltech.qt.core.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class LookupItemField extends ItemEditable {
+public class LookupItemField extends ItemField {
 
     private String lookup;
     private String name;
