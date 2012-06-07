@@ -17,7 +17,11 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiComboBox;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiNavigationBar;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
@@ -191,6 +195,13 @@ public class Form extends QMainWindow implements IForm {
             if (child.getClass().equals(PyPaPiEntityPicker.class)){
                 ((PyPaPiEntityPicker) child).setBindColumn(column);
             }
+            if (child.getClass().equals(PyPaPiComboBox.class)){
+                Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
+                Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
+                Store lookupStore = controller.createFullStore();
+                column.setLookupStore(lookupStore);
+                ((PyPaPiComboBox) child).setLookupStore(lookupStore);
+            }
             // search dynamic property
             Object searchProperty = child.property("search");
             if (searchProperty != null){
@@ -262,6 +273,8 @@ public class Form extends QMainWindow implements IForm {
                 ((QCheckBox) widget).clicked.connect(this.context.getMapper(), "submit()", Qt.ConnectionType.AutoConnection);
             } else if( widget.getClass().equals(QComboBox.class) ){
                 this.context.getMapper().addMapping((QComboBox) widget, i, new QByteArray("currentIndex"));
+            } else if( widget.getClass().equals(PyPaPiComboBox.class) ){
+                this.context.getMapper().addMapping((PyPaPiComboBox) widget, i, new QByteArray("currentIndex"));
             } else {
                 this.context.getMapper().addMapping((QWidget) widget, i);
             }

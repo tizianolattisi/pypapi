@@ -17,10 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.Qt;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -49,23 +46,7 @@ public class LookupItemField extends ItemField {
         if( result == null ){
             return null;
         }
-        try {
-            m = result.getClass().getMethod("get" + this.lookup);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            lookupped = m.invoke(result);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(LookupItemField.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return lookupped;
+        return this.column.getLookupStore().indexOf(result);
     }
 
     public String getName() {

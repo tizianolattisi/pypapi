@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemFlags;
 import java.lang.reflect.InvocationTargetException;
@@ -58,6 +59,10 @@ public class ItemEditable extends Item {
     }
 
     public boolean set(Object objValue){
+        Store lookupStore = this.column.getLookupStore();
+        if( lookupStore != null ){
+            objValue = lookupStore.get((Integer) objValue);
+        }
         try {
             Object res = this.setterMethod.invoke(this.entity, objValue);
         } catch (IllegalAccessException ex) {

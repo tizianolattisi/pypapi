@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.db.Store;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,8 +37,8 @@ public class Column {
     private String name;
     private String label;
     private String description;
-    private String lookup;    
-    //private TableModel model;
+    private String lookup;
+    private Store lookupStore = null;
     private CellEditorType editorType = null;
     private final Integer resizeModeValue;
 
@@ -127,6 +128,14 @@ public class Column {
 
     public Integer getResizeModeValue() {
         return resizeModeValue;
+    }
+
+    public void setLookupStore(Store lookupStore) {
+        this.lookupStore = lookupStore;
+    }
+
+    public Store getLookupStore() {
+        return lookupStore;
     }
 
 

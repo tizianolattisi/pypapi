@@ -36,7 +36,7 @@ public class Item {
         ITEM_ROLES.put(Qt.ItemDataRole.CheckStateRole, "Checkstate");
     }
 
-    private final Column column;
+    protected final Column column;
     protected final Object value;
 
     //protected static Map itemRolesNameMap = new HashMap();
