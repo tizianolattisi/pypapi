@@ -24,8 +24,31 @@ import com.trolltech.qt.gui.QApplication;
  */
 public class Application extends QApplication {
     
+    private String customApplicationName=null;
+    private String customApplicationCredits=null;
+    
     public Application(String[] args){
         super(args);
+    }
+
+    public String getCustomApplicationCredits() {
+        return customApplicationCredits;
+    }
+
+    public void setCustomApplicationCredits(String customApplicationCredits) {
+        this.customApplicationCredits = customApplicationCredits;
+    }
+
+    public String getCustomApplicationName() {
+        return customApplicationName;
+    }
+
+    public void setCustomApplicationName(String customApplicationName) {
+        this.customApplicationName = customApplicationName;
+    }
+    
+    public static Application getApplicationInstance(){
+        return (Application) Application.instance();
     }
     
 }

@@ -16,6 +16,8 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import com.axiastudio.pypapi.Application;
+import com.axiastudio.pypapi.Consts;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
@@ -313,6 +315,28 @@ public class Form extends QMainWindow implements IForm {
 
     public Context getContext() {
         return context;
+    }
+    
+    private void information() {
+        QDialog info = new QDialog(this);
+        QVBoxLayout layout = new QVBoxLayout(info);
+        QPixmap pix = new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/pypapi64.png");
+        QLabel pypapi = new QLabel();
+        pypapi.setPixmap(pix);
+        pypapi.setAlignment(Qt.AlignmentFlag.AlignHCenter);
+        layout.addWidget(pypapi);
+        String credits = "";
+        Application app = Application.getApplicationInstance();
+        if( app.getCustomApplicationName() != null ){
+            credits += app.getCustomApplicationName() + "<br/>";
+        }
+        if( app.getCustomApplicationCredits() != null ){
+            credits += app.getCustomApplicationCredits() + "<br/>";
+        }
+        credits += Consts.CREDITS;
+        QTextEdit text = new QTextEdit(credits);
+        layout.addWidget(text);
+        info.show();
     }
     
     private String capitalize(String s) {

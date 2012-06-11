@@ -72,7 +72,7 @@ public class PyPaPiToolBar extends QToolBar {
         this.addAction(action);
         this.actions.put(actionName, action);
     }
-
+    
     private void configButtons(){}
     
     public void refresh() {}

@@ -17,7 +17,6 @@
 package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.ui.Form;
-import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QKeySequence;
 
@@ -71,6 +70,10 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png",
                 "Search elements", this.parentForm.getContext(),
                 new QKeySequence(QKeySequence.StandardKey.Find));
+        this.insertButton("information", "Information",
+                "classpath:com/axiastudio/pypapi/ui/resources/toolbar/information.png",
+                "Information on this application", this.parentForm);
+        this.insertSeparator(this.actionByName("information"));
     }
 
     @Override
