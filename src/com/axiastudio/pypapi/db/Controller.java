@@ -49,6 +49,11 @@ public class Controller implements IController {
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager=null;
 
+    
+    public Controller(EntityManagerFactory emf){
+        this(emf, null);
+    }
+    
     public Controller(EntityManagerFactory emf, Class entityClass){
         this.entityClass = entityClass;
         this.entityManagerFactory = emf;
@@ -60,6 +65,9 @@ public class Controller implements IController {
     
     @Override
     public Store createCriteriaStore(HashMap criteria){
+        if( this.entityClass == null ){
+            return null;
+        }
         EntityManager em = this.getEntityManager();
         Store store;
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -82,6 +90,9 @@ public class Controller implements IController {
     
     @Override
     public Store createFullStore(){
+        if( this.entityClass == null ){
+            return null;
+        }
         EntityManager em = this.getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -200,13 +211,20 @@ public class Controller implements IController {
     }
     
     public String getEntityName() {
+        if( this.entityClass == null ){
+            return null;
+        }
         String[] split = this.getClassName().split("\\.");
         return split[split.length-1];
     }
     
 
     public String getClassName() {
+        if( this.entityClass == null ){
+            return null;
+        }
         return this.entityClass.getName();
     }
+    
     
 }
