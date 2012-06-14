@@ -17,12 +17,8 @@
 package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.db.Store;
-import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QComboBox;
-import com.trolltech.qt.gui.QCompleter;
 import com.trolltech.qt.gui.QWidget;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -31,7 +27,6 @@ import java.util.List;
 public class PyPaPiComboBox extends QComboBox {
     
     private Store lookupStore;
-    private QCompleter completer;
 
     public PyPaPiComboBox(QWidget qw) {
         super(qw);
@@ -46,16 +41,31 @@ public class PyPaPiComboBox extends QComboBox {
 
     public void setLookupStore(Store lookupStore) {
         this.lookupStore = lookupStore;
-        List<String> stringList = new ArrayList<String>();
         for(int i=0; i<lookupStore.size(); i++){
             Object object = lookupStore.get(i);
             String key = object.toString();
             this.addItem(key, object);
-            stringList.add(key);
         }
-        this.completer = new QCompleter(stringList, this);
-        this.completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive);
-        this.completer.setCompletionMode(QCompleter.CompletionMode.InlineCompletion);
+        this.editTextChanged.connect(this, "complete(String)");
     }
+    
+    private void complete(String s){
+        this.clear();
+        if( s.length() == 0){
+            for(int i=0; i<lookupStore.size(); i++){
+                Object object = lookupStore.get(i);
+                String key = object.toString();
+                this.addItem(key, object);
+            }
+        } else {
+            for(int i=0; i<lookupStore.size(); i++){
+                Object object = lookupStore.get(i);
+                String key = object.toString();
+                if( key.contains(s) ){
+                    this.addItem(key, object);
+                }
+            }
+        }
         
+    }
 }
