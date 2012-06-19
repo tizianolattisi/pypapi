@@ -22,6 +22,7 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
 import com.axiastudio.pypapi.demo.entities.*;
 import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -76,15 +77,15 @@ public class Demo {
         Application app = new Application(args);
 
         // Book
-        Form formBook = Register.registerForm(db.getEntityManagerFactory(),
+        Register.registerForm(db.getEntityManagerFactory(),
                             "classpath:com/axiastudio/pypapi/demo/forms/book.ui",
                             Book.class);
         // Person
-        Form formPerson = Register.registerForm(db.getEntityManagerFactory(),
+        Register.registerForm(db.getEntityManagerFactory(),
                             "classpath:com/axiastudio/pypapi/demo/forms/person.ui",
                             Person.class);
         // Loan
-        Form formLoan = Register.registerForm(db.getEntityManagerFactory(),
+        Register.registerForm(db.getEntityManagerFactory(),
                             "classpath:com/axiastudio/pypapi/demo/forms/loan.ui",
                             Loan.class);
         
@@ -92,8 +93,10 @@ public class Demo {
         // note: you can comment the line because the framework can inspect and
         // find the adapter itself.
         Register.registerAdapters(Resolver.adaptersFromClass(Book.class));
-
-        formPerson.show();
+        
+        // Query and show the form
+        Form form = Util.formFromName(Person.class.getName());
+        form.show();
         int exec = app.exec();
         
     }

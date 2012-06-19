@@ -44,16 +44,16 @@ import java.util.logging.Logger;
  */
 public class Form extends QMainWindow implements IForm {
 
-    private Class entityClass;
-    private String uiFile;
-    private String title;
+    protected Class entityClass;
+    protected String uiFile;
+    protected String title;
     private Context context;
     private HashMap<String, QObject> widgets;
     private List<Column> columns;
     private List<Column> entities;
 
     public Form(Form other) {
-        this(other.uiFile, other.entityClass);
+        this(other.uiFile, other.entityClass, other.title);
     }
 
     public Form(String uiFile, Class entityClass) {
@@ -144,15 +144,10 @@ public class Form extends QMainWindow implements IForm {
         List children = this.findChildren();
         Boolean isColumn;
         Boolean isEntity;
-        List<Column> criteria;
-        List<Column> searchColumns;
 
-        criteria = new ArrayList();
-        searchColumns = new ArrayList();
         this.columns = new ArrayList();
         this.entities = new ArrayList();
         this.widgets = new HashMap();
-        EntityBehavior behavior = new EntityBehavior(this.entityClass.getName());
 
         for (int i=0; i<children.size(); i++){
             Object entityProperty=null;
@@ -180,11 +175,6 @@ public class Form extends QMainWindow implements IForm {
                         lookupPropertyName);
                 boolean add = this.columns.add(column);
                 Object put = this.widgets.put(columnPropertyName, child);
-                // Reg Exp validator
-                Object validatorProperty = child.property("validator");
-                if( validatorProperty != null){
-                    behavior.setReValidator(columnPropertyName, (String) validatorProperty);
-                }
             }
             if (isEntity){
                 String entityPropertyName = this.capitalize((String) entityProperty);
@@ -203,13 +193,6 @@ public class Form extends QMainWindow implements IForm {
                 Store lookupStore = controller.createFullStore();
                 column.setLookupStore(lookupStore);
                 ((PyPaPiComboBox) child).setLookupStore(lookupStore);
-            }
-            // search dynamic property
-            Object searchProperty = child.property("search");
-            if (searchProperty != null){
-                if ((Boolean) searchProperty){
-                    criteria.add(column);
-                }
             }
             // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
@@ -246,21 +229,6 @@ public class Form extends QMainWindow implements IForm {
                 ptv.setItemDelegate(new Delegate(ptv));
             }
         }
-        // search columns
-        Object searchColumnsProperty = this.property("searchcolumns");
-        if (searchColumnsProperty != null){
-            String[] columnNames = ((String) searchColumnsProperty).split(",");
-            for(String name: columnNames){
-                ResizeMode resizeMode = Util.extractResizeMode(name);
-                name = Util.cleanColumnName(name);
-                name = this.capitalize(name);
-                Column searchColumn = new Column(name, name, name, null, resizeMode.value());
-                searchColumns.add(searchColumn);
-            }
-        }
-        behavior.setCriteria(criteria);
-        behavior.setSearchColumns(searchColumns);
-        Register.registerUtility(behavior, IEntityBehavior.class, this.entityClass.getName());
     }
 
     private void addMappers() {

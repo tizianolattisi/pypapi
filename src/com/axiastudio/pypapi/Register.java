@@ -21,6 +21,8 @@ import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.ui.Form;
 import com.axiastudio.pypapi.ui.IForm;
+import com.axiastudio.pypapi.ui.IUIFile;
+import com.axiastudio.pypapi.ui.UIInspector;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -274,18 +276,13 @@ public class Register {
         return related;
     }
 
-    /**
-     * Registers controller, factory and form.
-     * 
-     * @param emf The entity manager factory
-     * @param ui The classpath of the ui form
-     * @param factory The class factory
-     * @return The initializated form
-     * 
-     */
-    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory){
-        return Register.registerForm(emf, ui, factory, "");
+    public static void registerForm(EntityManagerFactory emf, String ui, Class factory){
+        Register.registerForm(emf, ui, factory, Form.class, "");
     }        
+
+    public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass){
+        Register.registerForm(emf, ui, factory, formClass, "");
+    }
 
     /**
      * Registers controller, factory and form as utilities.
@@ -293,18 +290,16 @@ public class Register {
      * @param emf The entity manager factory
      * @param ui The classpath of the ui form
      * @param factory The class factory
+     * @param formClass The class of the form
      * @param title The title of the form
-     * @return The initializated form
      * 
      */
-    public static Form registerForm(EntityManagerFactory emf, String ui, Class factory, String title){
+    public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass, String title){
+        UIInspector inspector = new UIInspector(ui, factory.getName());
         Controller controller = new Controller(emf, factory);
         Register.registerUtility(controller, IController.class, factory.getName());
-        Form form = new Form(ui, factory, title);
-        Register.registerUtility(form, IForm.class, factory.getName());
+        Register.registerUtility(formClass, IForm.class, factory.getName());
         Register.registerUtility(factory, IFactory.class, factory.getName());
-        form.init();
-        return form;
+        Register.registerUtility(ui, IUIFile.class, factory.getName());
     }
-
 }

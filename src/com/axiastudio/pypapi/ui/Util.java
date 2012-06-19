@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
@@ -27,8 +28,12 @@ import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.QWidget;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -36,14 +41,71 @@ import java.util.List;
  */
 public class Util {
     
+    public static Form formFromName(String formName){
+        Form form=null;
+        Class<? extends Form> formClass = (Class) Register.queryUtility(IForm.class, formName);
+        String uiFile = (String) Register.queryUtility(IUIFile.class, formName);
+        Class factory = (Class) Register.queryUtility(IFactory.class, formName);
+        try {
+            Constructor<? extends Form> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
+            try {
+                form = constructor.newInstance(new Object[]{uiFile, factory, ""});
+            } catch (InstantiationException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        form.init(); // XXX: full store
+        return form;
+    }
+    
+    public static Form formFromStore(Store store){
+        Form form=null;
+        Object entity = store.get(0);
+        String name = entity.getClass().getName();
+        Class<? extends Form> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
+        String uiFile = (String) Register.queryUtility(IUIFile.class, name);
+        Class factory = (Class) Register.queryUtility(IFactory.class, name);
+        try {
+            Constructor<? extends Form> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
+            try {
+                form = constructor.newInstance(new Object[]{uiFile, factory, ""});
+            } catch (InstantiationException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if( form != null ){
+            form.init(store);
+            return form;
+        } else {
+            return null;
+        }
+    }
+    
     public static Form formFromEntity(Object entity){
         List entities = new ArrayList();
         entities.add(entity);
         Store store = new Store(entities);
-        Form form = (Form) Register.queryUtility(IForm.class, entity.getClass().getName());
-        Form newForm = new Form(form);
-        newForm.init(store);
-        return newForm;
+        return Util.formFromStore(store);
     }
     
     public static QFile ui2jui(QFile ui){
@@ -123,6 +185,5 @@ public class Util {
         }
         return out;
     }
-    
     
 } 
