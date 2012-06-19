@@ -206,8 +206,13 @@ public final class Context extends QObject {
 
     public void commitChanges(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.commit(this.primaryDc.currentEntity);
-        this.isDirty = false;
+        Validation val = c.commit(this.primaryDc.currentEntity);
+        if( val.getResponse() == false ){
+            Util.warningBox(this.parent, "Error", val.getMessage());
+            this.cancelChanges();
+        } else {
+            this.isDirty = false;
+        }
     }
 
     public void cancelChanges(){

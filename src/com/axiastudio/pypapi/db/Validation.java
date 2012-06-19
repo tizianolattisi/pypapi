@@ -16,22 +16,41 @@
  */
 package com.axiastudio.pypapi.db;
 
-import java.util.HashMap;
-
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public interface IController {
-
-    Store createFullStore();
-
-    Store createCriteriaStore(HashMap criteria);
+public class Validation {
     
-    Validation commit(Object entity);
-    
-    void delete(Object entity);
+    private Boolean response=true;
+    private String message=null;
 
-    Object refresh(Object entity);
+    public Validation(Boolean res, String mes) {
+        this.response = res;
+        this.message = mes;
+    }
+
+    public Validation(Boolean res) {
+        this.response = res;
+    }
+
+    public Validation() {
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Boolean getResponse() {
+        return response;
+    }
+
+    public void setResponse(Boolean response) {
+        this.response = response;
+    }
     
 }

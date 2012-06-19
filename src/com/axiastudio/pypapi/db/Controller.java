@@ -162,14 +162,14 @@ public class Controller implements IController {
     }
     
     @Override
-    public Boolean commit(Object entity){
+    public Validation commit(Object entity){
         // XXX: if no CascadeType.ALL?
         this.parentize(entity);
         Method validator = (Method) Register.queryValidator(entity.getClass());
-        Boolean isOk=false;
+        Validation val = new Validation(true);
         if( validator != null ){
             try {
-                isOk = (Boolean) validator.invoke(null, entity);
+                val = (Validation) validator.invoke(null, entity);
             } catch (IllegalAccessException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalArgumentException ex) {
@@ -177,18 +177,15 @@ public class Controller implements IController {
             } catch (InvocationTargetException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            isOk=true;
         }
-        if( isOk ){
+        if( val.getResponse() == true ){
             EntityManager em = this.getEntityManager();
             em.getTransaction().begin();
             em.merge(entity);
             em.getTransaction().commit();
             em.close();
-            return true;
         }
-        return false;
+        return val;
     }
 
     @Override
