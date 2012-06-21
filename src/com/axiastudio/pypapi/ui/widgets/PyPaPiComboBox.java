@@ -14,9 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.db.Store;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QWidget;
 
@@ -30,9 +33,8 @@ public class PyPaPiComboBox extends QComboBox {
 
     public PyPaPiComboBox(QWidget qw) {
         super(qw);
-        this.setEditable(true);
+        this.setEditable(false);
         this.setInsertPolicy(InsertPolicy.NoInsert);
-        //this.editTextChanged.connect(this, "search(String)");
     }
 
     public PyPaPiComboBox() {
@@ -46,26 +48,48 @@ public class PyPaPiComboBox extends QComboBox {
             String key = object.toString();
             this.addItem(key, object);
         }
-        this.editTextChanged.connect(this, "complete(String)");
+        this.installEventFilter(this);
+        this.editTextChanged.connect(this, "tryToSelect(String)");
+        this.currentIndexChanged.connect(this, "tryToSelect(int)");
+        this.activatedIndex.connect(this, "tryToSelect(int)");
     }
     
-    private void complete(String s){
-        this.clear();
-        if( s.length() == 0){
-            for(int i=0; i<lookupStore.size(); i++){
-                Object object = lookupStore.get(i);
-                String key = object.toString();
-                this.addItem(key, object);
-            }
-        } else {
-            for(int i=0; i<lookupStore.size(); i++){
-                Object object = lookupStore.get(i);
-                String key = object.toString();
-                if( key.contains(s) ){
-                    this.addItem(key, object);
+    private void tryToSelect(int i){
+        this.tryToSelect(null);
+    }
+
+    private void tryToSelect(String s){
+        Integer idx=null;
+        Boolean gotcha=false;
+        for(int i=0; i<this.lookupStore.size(); i++){
+            Object object = this.lookupStore.get(i);
+            String key = object.toString();
+            if( key.toLowerCase().contains(s.toLowerCase()) ){
+                if( idx == null){
+                    idx = i;
+                    gotcha = true;
+                } else {
+                    gotcha = false;
                 }
             }
         }
-        
+        if( gotcha ){
+            this.setCurrentIndex(idx);
+            this.setEditable(false);
+            this.setFocus();
+        } else {
+            this.setEditable(true);
+        }
     }
+
+    @Override
+    public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( qevent.type() == QEvent.Type.MouseButtonPress ){
+            this.setEditable(true);
+            this.setEditText("");
+            return true;
+        }
+        return super.eventFilter(qo, qevent);
+    }
+    
 }
