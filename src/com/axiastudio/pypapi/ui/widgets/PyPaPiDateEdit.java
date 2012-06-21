@@ -16,9 +16,7 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import com.trolltech.qt.core.QDate;
-import com.trolltech.qt.core.QPoint;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 
 /**
@@ -28,6 +26,7 @@ import com.trolltech.qt.gui.*;
 public class PyPaPiDateEdit extends QDateEdit {
     private QMenu menuPopup;
     private QAction actionNull;
+    private Boolean isNull;
     
     static final String NULLSTYLE="color: white";
 
@@ -48,7 +47,8 @@ public class PyPaPiDateEdit extends QDateEdit {
         QIcon iconNull = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png");
         this.actionNull.setIcon(iconNull);
         this.menuPopup.addAction(actionNull);
-        this.dateChanged.connect(this, "updateStyleSheet()");    
+        this.dateChanged.connect(this, "updateStyleSheet()");
+        this.installEventFilter(this);
     }
     
     
@@ -67,10 +67,35 @@ public class PyPaPiDateEdit extends QDateEdit {
         String style;
         if( this.date().equals(this.minimumDate())){
             style = NULLSTYLE;
+            this.setEnabled(false);
         } else {
             style = "";
+            this.setEnabled(true);
         }
         this.setStyleSheet(style);
+    }
+
+    @Override
+    public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( this.date().equals(this.minimumDate()) ){
+            if( qevent.type() == QEvent.Type.MouseButtonPress ){
+                this.setDate(QDate.currentDate());
+                this.setFocus();
+                this.updateStyleSheet();
+                return true;
+            }
+        } else {
+            if( qevent.type() == QEvent.Type.KeyPress ){
+                QKeyEvent qkevent = (QKeyEvent) qevent;
+                if ( qkevent.key() == Qt.Key.Key_Delete.value() ){
+                    this.setDate(this.minimumDate());
+                    this.updateStyleSheet();
+                    return true;
+                }
+            }
+            
+        }
+        return super.eventFilter(qo, qevent);
     }
 
     
