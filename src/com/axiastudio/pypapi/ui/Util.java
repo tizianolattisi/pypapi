@@ -22,12 +22,9 @@ import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
-import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
-import com.trolltech.qt.gui.QMainWindow;
-import com.trolltech.qt.gui.QMessageBox;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -184,6 +181,20 @@ public class Util {
             out = out.parentWidget();
         }
         return out;
+    }
+
+    /*
+     * Find the first parent of type QMainWindow
+     */
+    public static QMdiArea findParentMdiArea(QWidget widget){
+        QWidget out=widget;
+        while(out != null && !QMdiArea.class.isInstance(out)){
+            out = out.parentWidget();
+        }
+        if( out != null){
+            return (QMdiArea) out;
+        }
+        return null;
     }
     
 } 

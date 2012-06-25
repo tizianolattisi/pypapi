@@ -148,6 +148,10 @@ public class PyPaPiTableView extends QTableView{
                 entity = Resolver.entityFromReference(entity, (String) reference);
             }
             Form form = Util.formFromEntity(entity);
+            QMdiArea workspace = Util.findParentMdiArea(this);
+            if( workspace != null ){
+                workspace.addSubWindow(form);
+            }
             form.show();
         }
     }
@@ -158,6 +162,10 @@ public class PyPaPiTableView extends QTableView{
         for (QModelIndex idx: rows){
             Object entity = model.getEntityByRow(idx.row());
             Form form = Util.formFromEntity(entity);
+            QMdiArea workspace = Util.findParentMdiArea(this);
+            if( workspace != null ){
+                workspace.addSubWindow(form);
+            }
             form.show();
         }
     }
@@ -251,6 +259,9 @@ public class PyPaPiTableView extends QTableView{
             }
 
         }
+        /* select and open info for the last row */
+        this.selectRow(this.model().rowCount()-1);
+        this.actionInfo();
     }
     
 
