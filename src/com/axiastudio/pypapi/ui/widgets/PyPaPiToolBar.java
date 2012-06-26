@@ -39,22 +39,22 @@ public class PyPaPiToolBar extends QToolBar {
 
     }
 
-    protected void insertButton(String actionName, String text, String iconName,
+    protected QAction insertButton(String actionName, String text, String iconName,
                                 String toolTip, QObject agent){
-        this.insertButton(actionName, text, iconName, toolTip, agent, null, null);
+        return this.insertButton(actionName, text, iconName, toolTip, agent, null, null);
     }
 
-    protected void insertButton(String actionName, String text, String iconName,
+    protected QAction insertButton(String actionName, String text, String iconName,
                                 String toolTip, QObject agent, StandardKey shortcut){
-            this.insertButton(actionName, text, iconName, toolTip, agent, null, shortcut);
+        return this.insertButton(actionName, text, iconName, toolTip, agent, null, shortcut);
     }
 
-    protected void insertButton(String actionName, String text, String iconName,
+    protected QAction insertButton(String actionName, String text, String iconName,
                                 String toolTip, QObject agent, QKeySequence shortcut){
-        this.insertButton(actionName, text, iconName, toolTip, agent, shortcut, null);
+        return this.insertButton(actionName, text, iconName, toolTip, agent, shortcut, null);
     }
 
-    private void insertButton(String actionName, String text, String iconName,
+    private QAction insertButton(String actionName, String text, String iconName,
                                 String toolTip, QObject agent, QKeySequence qks, StandardKey sk){
         QAction action = new QAction(this.parentForm);
         QIcon icon = new QIcon(iconName);
@@ -71,6 +71,7 @@ public class PyPaPiToolBar extends QToolBar {
         }
         this.addAction(action);
         this.actions.put(actionName, action);
+        return action;
     }
     
     private void configButtons(){}
