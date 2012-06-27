@@ -51,6 +51,7 @@ public class Form extends QMainWindow implements IForm {
     private HashMap<String, QObject> widgets;
     private List<Column> columns;
     private List<Column> entities;
+    private PyPaPiNavigationBar navigationBar;
 
     public Form(Form other) {
         this(other.uiFile, other.entityClass, other.title);
@@ -86,11 +87,12 @@ public class Form extends QMainWindow implements IForm {
         PyPaPiNavigationBar bar = new PyPaPiNavigationBar("Navigation", this);
         bar.setMovable(true);
         this.addToolBar(bar);
+        this.navigationBar = bar;
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
         this.context.getMapper().toFirst();
         bar.refresh();
     }
-
+    
     private void loadUi(QFile uiFile){
         QMainWindow window = null;
         try {
@@ -305,6 +307,10 @@ public class Form extends QMainWindow implements IForm {
         QTextEdit text = new QTextEdit(credits);
         layout.addWidget(text);
         info.show();
+    }
+    
+    public void dialogize(){
+        this.navigationBar.hide();
     }
     
     private String capitalize(String s) {

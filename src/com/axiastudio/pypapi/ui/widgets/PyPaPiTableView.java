@@ -166,6 +166,7 @@ public class PyPaPiTableView extends QTableView{
             if( workspace != null ){
                 workspace.addSubWindow(form);
             }
+            form.dialogize();
             form.show();
         }
     }

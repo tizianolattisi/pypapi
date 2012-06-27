@@ -27,5 +27,5 @@ public interface IForm {
     void init();
 
     void init(Store store);
-    
+
 }
