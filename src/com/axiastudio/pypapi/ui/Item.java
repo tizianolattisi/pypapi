@@ -60,6 +60,7 @@ public class Item {
         }
         String name = (String) nameObject;
         Method getter = Resolver.getterFromFieldName(this.getClass(), name);
+        // TODO: java.lang.reflect.InvocationTargetException
         result = getter.invoke(this);
         return result;
     }
