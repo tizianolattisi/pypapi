@@ -59,6 +59,9 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     private void tryToSelect(String s){
+        if( s == null ){
+            return;
+        }
         Integer idx=null;
         Boolean gotcha=false;
         for(int i=0; i<this.lookupStore.size(); i++){
