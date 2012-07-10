@@ -55,6 +55,7 @@ public class UIInspector {
     private void register(QMainWindow win){
         EntityBehavior behavior = new EntityBehavior(this.entityClassName);
         List<Column> criteria = new ArrayList();
+        List<Column> privates = new ArrayList();
         List<Column> searchColumns = new ArrayList();
         List children = win.findChildren();
         for (int i=0; i<children.size(); i++){
@@ -88,6 +89,13 @@ public class UIInspector {
                     criteria.add(column);
                 }
             }
+            // private dynamic property
+            Object privateProperty = child.property("private");
+            if (privateProperty != null){
+                if ((Boolean) privateProperty){
+                    privates.add(column);
+                }
+            }
         }
         // search columns
         Object searchColumnsProperty = win.property("searchcolumns");
@@ -102,6 +110,7 @@ public class UIInspector {
             }
         }
         behavior.setCriteria(criteria);
+        behavior.setPrivates(privates);
         behavior.setSearchColumns(searchColumns);
         Register.registerUtility(behavior, IEntityBehavior.class, this.entityClassName);
     }

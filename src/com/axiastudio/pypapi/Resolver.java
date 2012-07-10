@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi;
 
 import com.axiastudio.pypapi.db.Adapter;
+import com.axiastudio.pypapi.db.Private;
 import com.axiastudio.pypapi.db.Validator;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -105,7 +106,11 @@ public class Resolver {
     public static List<Method> validatorsFromClass(Class klass){
         return Resolver.annotatedFromClass(klass, Validator.class);
     }
-    
+
+    public static List<Method> privatesFromClass(Class klass){
+        return Resolver.annotatedFromClass(klass, Private.class);
+    }
+
     /**
      * Return tha list of annotated method of a class
      * 

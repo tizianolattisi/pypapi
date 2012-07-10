@@ -32,9 +32,9 @@ import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +49,7 @@ public class Form extends QMainWindow implements IForm {
     protected String title;
     private Context context;
     private HashMap<String, QObject> widgets;
+    private HashMap<String, String> stylesheets = new HashMap();;
     private List<Column> columns;
     private List<Column> entities;
     private PyPaPiNavigationBar navigationBar;
@@ -66,7 +67,6 @@ public class Form extends QMainWindow implements IForm {
         this.uiFile = uiFile;
         this.title = title;
         QFile file = Util.ui2jui(new QFile(uiFile));
-        //QFile file = new QFile(uiFile);
         this.loadUi(file);
     }
     
@@ -281,6 +281,34 @@ public class Form extends QMainWindow implements IForm {
         int idx = this.context.getMapper().currentIndex() + 1;
         int tot = this.context.getModel().rowCount();
         this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
+        
+        Boolean isPrivate = false;
+        Method privateM = (Method) Register.queryPrivate(this.entityClass);
+        if( privateM != null ){
+            try {
+                isPrivate = (Boolean) privateM.invoke(null, this.context.getCurrentEntity());
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Form.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Form.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Form.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.context.getRootClass().getName());
+            for( Column column: behavior.getPrivates() ){
+                QWidget widget = (QWidget) this.widgets.get(column.getName());
+                if( isPrivate ){
+                    widget.setEnabled(false);
+                    if( !this.stylesheets.containsKey(column.getName()) ){
+                        this.stylesheets.put(column.getName(), widget.styleSheet());
+                    }
+                    widget.setStyleSheet("color: gray; background: gray");
+                } else {
+                    widget.setEnabled(true);
+                    widget.setStyleSheet(this.stylesheets.get(column.getName()));
+                }
+            }
+        }
     }
 
     public Context getContext() {

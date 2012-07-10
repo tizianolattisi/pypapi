@@ -43,6 +43,7 @@ public class Register {
     private static HashMap adapters = new HashMap();
     private static HashMap relations = new HashMap();
     private static HashMap validators = new HashMap();
+    private static HashMap privates = new HashMap();
 
     /**
      * Registers the unnamed utility for the given interface.
@@ -235,6 +236,43 @@ public class Register {
      */
     public static Object queryValidator(Class klass){
         return Register.validators.get(klass);
+    }
+    
+    /**
+     * Registers privates from a list of methods.
+     * 
+     * @param methods The list of methods
+     */
+    public static void registerPrivates(List<Method> methods){
+        for(Method privateMethod: methods){
+            Class<?>[] parameterTypes = privateMethod.getParameterTypes();
+            Class<?> forClass = null;
+            if( parameterTypes.length == 1){
+                forClass = parameterTypes[0];
+            }
+            if( forClass != null ){
+                Register.registerPrivate(privateMethod, forClass);
+            }
+        }
+    }
+
+    /**
+     * Registers a private for a class.
+     * 
+     * @param privateM The validator itself
+     * @param klass The class
+     */
+    public static void registerPrivate(Object privateM, Class klass){
+        Register.privates.put(klass, privateM);
+    }
+
+    /**
+     * Query the validator for a class.
+     * 
+     * @param klass The class
+     */
+    public static Object queryPrivate(Class klass){
+        return Register.privates.get(klass);
     }
     
     /**

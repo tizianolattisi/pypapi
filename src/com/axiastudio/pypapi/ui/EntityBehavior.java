@@ -33,6 +33,7 @@ public class EntityBehavior implements IEntityBehavior {
     
     private String className;
     private List<Column> criteria;
+    private List<Column> privates;
     private List<Column> searchColumns;
     private HashMap<String, String> validators = new HashMap<String, String>();
     
@@ -62,6 +63,14 @@ public class EntityBehavior implements IEntityBehavior {
     @Override
     public void setCriteria(List<Column> criteria) {
         this.criteria = criteria;
+    }
+
+    public List<Column> getPrivates() {
+        return privates;
+    }
+
+    public void setPrivates(List<Column> privates) {
+        this.privates = privates;
     }
 
     /**
