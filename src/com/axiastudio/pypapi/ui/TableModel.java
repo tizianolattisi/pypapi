@@ -195,6 +195,7 @@ public class TableModel extends QAbstractTableModel {
     public void replaceEntity(int row, Object entity){
         this.store.remove(row);
         this.store.add(row, entity);
+        this.purgeItemCache(entity);
     }
     
     public void purgeItemCache(){

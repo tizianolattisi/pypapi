@@ -219,9 +219,29 @@ public class Controller implements IController {
     @Override
     public Object refresh(Object entity){
         EntityManager em = this.getEntityManager();
-        Object merged = em.merge(entity);
-        em.refresh(merged);
-        return merged;
+        Long i=null;
+        try {
+            Method getId = entity.getClass().getMethod("getId");
+            i = (Long) getId.invoke(entity);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if( i != null ){
+            em.detach(entity);
+            Object merged = em.find(this.entityClass, i);
+            em.merge(merged);
+            return merged;
+        } else {
+            return entity;
+        }
     }
     
     public String getEntityName() {

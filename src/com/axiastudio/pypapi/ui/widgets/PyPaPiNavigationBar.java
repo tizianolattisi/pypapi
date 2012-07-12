@@ -66,6 +66,10 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/disk.png",
                 "Save current element", this.parentForm.getContext(),
                 new QKeySequence(QKeySequence.StandardKey.Save));
+        this.insertButton("refreshElement", "Refresh",
+                "classpath:com/axiastudio/pypapi/ui/resources/toolbar/arrow_refresh.png",
+                "Refresh current element", this.parentForm.getContext(),
+                new QKeySequence(QKeySequence.StandardKey.Refresh));
         this.insertButton("search", "Search",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png",
                 "Search elements", this.parentForm.getContext(),
@@ -103,6 +107,8 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
             } else if ("insertElement".equals(objName)) {
                 action.setEnabled(!isDirty);
             } else if ("deleteElement".equals(objName)) {
+                action.setEnabled(!isDirty);
+            } else if ("refreshElement".equals(objName)) {
                 action.setEnabled(!isDirty);
             }
         }

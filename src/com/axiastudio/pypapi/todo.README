@@ -8,8 +8,6 @@ Road to 0.2
 
 * Delete of an entity (NavigationBar)
 
-* Refresh button
-
 * PickerDialog filter
 
 * PickerDialog selection with double click
@@ -18,6 +16,7 @@ Road to 0.2
 
 * Dialogize a QMainWindow (for info row)
 
+* Cancel new insertion
 
 
 Road to?
