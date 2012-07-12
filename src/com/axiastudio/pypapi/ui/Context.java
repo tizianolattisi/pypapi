@@ -26,6 +26,7 @@ import com.trolltech.qt.gui.QWidget;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -209,13 +210,21 @@ public final class Context extends QObject {
         Validation val = c.commit(this.primaryDc.currentEntity);
         if( val.getResponse() == false ){
             Util.warningBox(this.parent, "Error", val.getMessage());
-            this.cancelChanges();
+            this.refresh();
         } else {
             this.isDirty = false;
+            this.primaryDc.currentEntity = val.getEntity();
+            this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);
+            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+            this.mapper.revert();
         }
     }
 
     public void cancelChanges(){
+        this.refresh();
+    }
+    
+    public void refresh(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         this.primaryDc.currentEntity = c.refresh(this.primaryDc.currentEntity);
         this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);

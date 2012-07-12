@@ -24,6 +24,7 @@ public class Validation {
     
     private Boolean response=true;
     private String message=null;
+    private Object entity=null;
 
     public Validation(Boolean res, String mes) {
         this.response = res;
@@ -51,6 +52,14 @@ public class Validation {
 
     public void setResponse(Boolean response) {
         this.response = response;
+    }
+
+    public Object getEntity() {
+        return entity;
+    }
+
+    public void setEntity(Object entity) {
+        this.entity = entity;
     }
     
 }

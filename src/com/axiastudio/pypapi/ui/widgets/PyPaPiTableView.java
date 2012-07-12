@@ -148,6 +148,9 @@ public class PyPaPiTableView extends QTableView{
                 entity = Resolver.entityFromReference(entity, (String) reference);
             }
             Form form = Util.formFromEntity(entity);
+            if( form == null ){
+                return;
+            }
             QMdiArea workspace = Util.findParentMdiArea(this);
             if( workspace != null ){
                 workspace.addSubWindow(form);
@@ -162,6 +165,9 @@ public class PyPaPiTableView extends QTableView{
         for (QModelIndex idx: rows){
             Object entity = model.getEntityByRow(idx.row());
             Form form = Util.formFromEntity(entity);
+            if( form == null ){
+                return;
+            }
             QMdiArea workspace = Util.findParentMdiArea(this);
             if( workspace != null ){
                 workspace.addSubWindow(form);

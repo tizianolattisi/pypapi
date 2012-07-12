@@ -207,7 +207,9 @@ public class TableModel extends QAbstractTableModel {
 
     public void purgeItemCache(Object entity, Column column){
         HashMap entityHM = (HashMap) this.cache.get(entity);
-        entityHM.remove(column);
+        if( entityHM != null ){
+            entityHM.remove(column);
+        }
     }
 
     /*

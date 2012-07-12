@@ -87,7 +87,7 @@ public class Controller implements IController {
         store = new Store(result);
         return store;
     }
-    
+
     @Override
     public Store createFullStore(){
         if( this.entityClass == null ){
@@ -181,13 +181,32 @@ public class Controller implements IController {
         if( val.getResponse() == true ){
             EntityManager em = this.getEntityManager();
             em.getTransaction().begin();
-            em.merge(entity);
+            Object merged = em.merge(entity);
             em.getTransaction().commit();
+            try {
+                // TODO: refresh entity
+                Method getId = merged.getClass().getMethod("getId");
+                Long i = (Long) getId.invoke(merged);
+                em.detach(merged);
+                merged = em.find(this.entityClass, i);
+                em.merge(merged);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            val.setEntity(merged);
             em.close();
         }
         return val;
     }
-
+    
     @Override
     public void delete(Object entity) {
         EntityManager em = this.getEntityManager();
@@ -200,10 +219,8 @@ public class Controller implements IController {
     @Override
     public Object refresh(Object entity){
         EntityManager em = this.getEntityManager();
-        em.getTransaction().begin();
         Object merged = em.merge(entity);
         em.refresh(merged);
-        em.getTransaction().commit();
         return merged;
     }
     

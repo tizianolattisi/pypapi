@@ -70,6 +70,9 @@ public class Util {
         Object entity = store.get(0);
         String name = entity.getClass().getName();
         Class<? extends Form> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
+        if (formClass == null ){
+            return null;
+        }
         String uiFile = (String) Register.queryUtility(IUIFile.class, name);
         Class factory = (Class) Register.queryUtility(IFactory.class, name);
         try {
