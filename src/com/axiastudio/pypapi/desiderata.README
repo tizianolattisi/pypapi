@@ -1,27 +1,6 @@
 To do list
 ==========
 
-Road to 0.2
-===========
-
-* Delete of detail row (PyPaPiTableView)
-
-* Delete of an entity (NavigationBar)
-
-* PickerDialog filter
-
-* PickerDialog selection with double click
-
-* Multiple selection in PickerDialog
-
-* Dialogize a QMainWindow (for info row)
-
-* Cancel new insertion
-
-
-Road to?
-========
-
 New Store
 ---------
 
