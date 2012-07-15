@@ -111,6 +111,7 @@ public class PickerDialog extends QDialog {
         this.buttonAccept = new QToolButton(this);
         this.buttonAccept.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/accept.png"));
         this.buttonAccept.clicked.connect(this, "accept()");
+        this.tableView.doubleClicked.connect(this, "accept()");
         QHBoxLayout buttonLayout = new QHBoxLayout();
         buttonLayout.setSpacing(4);
         buttonLayout.addWidget(this.filterLineEdit);
