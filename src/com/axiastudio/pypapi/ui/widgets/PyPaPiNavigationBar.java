@@ -60,7 +60,7 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
                 new QKeySequence(QKeySequence.StandardKey.Delete));
         this.insertButton("cancelChanges", "Cancel",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png",
-                "Discard currente changes", this.parentForm.getContext(),
+                "Discard current changes", this.parentForm.getContext(),
                 new QKeySequence("Escape")); // XXX: does not work?
         this.insertButton("commitChanges", "Save",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/disk.png",
