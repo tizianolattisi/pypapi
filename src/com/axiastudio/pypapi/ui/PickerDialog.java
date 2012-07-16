@@ -19,10 +19,7 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
-import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,6 +95,7 @@ public class PickerDialog extends QDialog {
         this.tableView.installEventFilter(this);
         this.layout.addWidget(this.tableView, 1);
         this.filterLineEdit = new QLineEdit();
+        this.filterLineEdit.textChanged.connect(this, "applyFilter(String)");
         QLabel filterLabel = new QLabel();
         filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
         this.searchLogLabel = new QLabel();
@@ -174,7 +172,25 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
-        
+    }
+    
+    private void applyFilter(String text){
+        TableModel model = (TableModel) this.tableView.model();
+        if(text.length()==0){
+            for(int i=0; i<model.rowCount(); i++){
+                this.tableView.setRowHidden(i, false);
+            }
+        } else {
+            for(int i=0; i<model.rowCount(); i++){
+                Boolean toHide=true;
+                for(int j=0; j<model.columnCount(); j++){
+                    if( toHide==true && model.data(i, j).toString().toUpperCase().contains(text.toUpperCase()) ){
+                        toHide=false;
+                    }
+                }
+                this.tableView.setRowHidden(i, toHide);
+            }
+        }
     }
     
     private void selectRows(QItemSelection selected, QItemSelection deselected){
