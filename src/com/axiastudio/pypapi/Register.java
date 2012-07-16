@@ -19,7 +19,7 @@ package com.axiastudio.pypapi;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.IFactory;
-import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Window;
 import com.axiastudio.pypapi.ui.IForm;
 import com.axiastudio.pypapi.ui.IUIFile;
 import com.axiastudio.pypapi.ui.UIInspector;
@@ -315,7 +315,7 @@ public class Register {
     }
 
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory){
-        Register.registerForm(emf, ui, factory, Form.class, "");
+        Register.registerForm(emf, ui, factory, Window.class, "");
     }        
 
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass){

@@ -38,13 +38,13 @@ import java.util.logging.Logger;
  */
 public class Util {
     
-    public static Form formFromName(String formName){
-        Form form=null;
-        Class<? extends Form> formClass = (Class) Register.queryUtility(IForm.class, formName);
+    public static Window formFromName(String formName){
+        Window form=null;
+        Class<? extends Window> formClass = (Class) Register.queryUtility(IForm.class, formName);
         String uiFile = (String) Register.queryUtility(IUIFile.class, formName);
         Class factory = (Class) Register.queryUtility(IFactory.class, formName);
         try {
-            Constructor<? extends Form> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
+            Constructor<? extends Window> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
             try {
                 form = constructor.newInstance(new Object[]{uiFile, factory, ""});
             } catch (InstantiationException ex) {
@@ -65,18 +65,18 @@ public class Util {
         return form;
     }
     
-    public static Form formFromStore(Store store){
-        Form form=null;
+    public static Window formFromStore(Store store){
+        Window form=null;
         Object entity = store.get(0);
         String name = entity.getClass().getName();
-        Class<? extends Form> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
+        Class<? extends Window> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
         if (formClass == null ){
             return null;
         }
         String uiFile = (String) Register.queryUtility(IUIFile.class, name);
         Class factory = (Class) Register.queryUtility(IFactory.class, name);
         try {
-            Constructor<? extends Form> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
+            Constructor<? extends Window> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
             try {
                 form = constructor.newInstance(new Object[]{uiFile, factory, ""});
             } catch (InstantiationException ex) {
@@ -101,7 +101,7 @@ public class Util {
         }
     }
     
-    public static Form formFromEntity(Object entity){
+    public static Window formFromEntity(Object entity){
         List entities = new ArrayList();
         entities.add(entity);
         Store store = new Store(entities);

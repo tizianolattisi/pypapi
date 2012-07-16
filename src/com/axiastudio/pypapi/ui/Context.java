@@ -46,13 +46,13 @@ public final class Context extends QObject {
     private Boolean atBof=true;
     private Boolean atEof=true;
     private Context primaryDc;
-    private QWidget parent;
+    private IForm parent;
 
-    public Context(QWidget parent, Class rootClass, String name, List columns){
+    public Context(IForm parent, Class rootClass, String name, List columns){
         this(parent, rootClass, name, columns, null);
     }
 
-    public Context(QWidget parent, Class rootClass, String name, List columns, Store store){
+    public Context(IForm parent, Class rootClass, String name, List columns, Store store){
         Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
         this.parent = parent;
         this.rootClass = rootClass;
@@ -79,7 +79,7 @@ public final class Context extends QObject {
         if(".".equals(this.name)){
             this.primaryDc = this;
         } else {
-            this.primaryDc = (Context) Register.queryRelation(this.parent, ".");
+            this.primaryDc = (Context) Register.queryRelation((QWidget) this.parent, ".");
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
         }
         this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
@@ -211,7 +211,7 @@ public final class Context extends QObject {
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         Validation val = c.commit(this.primaryDc.currentEntity);
         if( val.getResponse() == false ){
-            Util.warningBox(this.parent, "Error", val.getMessage());
+            Util.warningBox((QWidget) this.parent, "Error", val.getMessage());
             this.refreshElement();
         } else {
             this.isDirty = false;
@@ -237,7 +237,7 @@ public final class Context extends QObject {
     
     public void search(){
         Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
-        PickerDialog pd = new PickerDialog(this.parent, controller);
+        PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
         int res = pd.exec();
         if ( res == 1 ){
             this.model.replaceRows(pd.getSelection());

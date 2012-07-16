@@ -16,7 +16,7 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Window;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QKeySequence;
 
@@ -26,7 +26,7 @@ import com.trolltech.qt.gui.QKeySequence;
  */
 public class PyPaPiNavigationBar extends PyPaPiToolBar {
 
-    public PyPaPiNavigationBar(String title, Form parent){
+    public PyPaPiNavigationBar(String title, Window parent){
         super(title, parent);
         this.configButtons();
         this.parentForm.getContext().getModel().dataChanged.connect(this, "refresh()");

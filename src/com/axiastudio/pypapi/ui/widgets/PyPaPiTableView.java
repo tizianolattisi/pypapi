@@ -20,7 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Window;
 import com.axiastudio.pypapi.ui.PickerDialog;
 import com.axiastudio.pypapi.ui.TableModel;
 import com.axiastudio.pypapi.ui.Util;
@@ -149,7 +149,7 @@ public class PyPaPiTableView extends QTableView{
             if ( reference != null ){
                 entity = Resolver.entityFromReference(entity, (String) reference);
             }
-            Form form = Util.formFromEntity(entity);
+            Window form = Util.formFromEntity(entity);
             if( form == null ){
                 return;
             }
@@ -166,7 +166,7 @@ public class PyPaPiTableView extends QTableView{
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         for (QModelIndex idx: rows){
             Object entity = model.getEntityByRow(idx.row());
-            Form form = Util.formFromEntity(entity);
+            Window form = Util.formFromEntity(entity);
             if( form == null ){
                 return;
             }
@@ -174,7 +174,6 @@ public class PyPaPiTableView extends QTableView{
             if( workspace != null ){
                 workspace.addSubWindow(form);
             }
-            form.dialogize();
             form.show();
         }
     }

@@ -125,7 +125,7 @@ public class PyPaPiEntityPicker extends QLineEdit{
             return;
         }
         Object entity = item.get();
-        Form newForm = Util.formFromEntity(entity);
+        Window newForm = Util.formFromEntity(entity);
         newForm.show();
     }
     

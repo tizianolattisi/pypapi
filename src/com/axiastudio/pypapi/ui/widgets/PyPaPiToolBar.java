@@ -16,7 +16,7 @@
  */
 package com.axiastudio.pypapi.ui.widgets;
 
-import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Window;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QIcon;
@@ -31,10 +31,10 @@ import java.util.Map;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class PyPaPiToolBar extends QToolBar {
-    protected final Form parentForm;
+    protected final Window parentForm;
     protected Map<String, QAction> actions = new HashMap<String, QAction>();
 
-    public PyPaPiToolBar(String title, Form parent) {
+    public PyPaPiToolBar(String title, Window parent) {
         this.parentForm = parent;
 
     }

@@ -21,7 +21,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
 import com.axiastudio.pypapi.demo.entities.*;
-import com.axiastudio.pypapi.ui.Form;
+import com.axiastudio.pypapi.ui.Window;
 import com.axiastudio.pypapi.ui.Util;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,7 +95,7 @@ public class Demo {
         Register.registerAdapters(Resolver.adaptersFromClass(Book.class));
         
         // Query and show the form
-        Form form = Util.formFromName(Person.class.getName());
+        Window form = Util.formFromName(Person.class.getName());
         form.show();
         int exec = app.exec();
         

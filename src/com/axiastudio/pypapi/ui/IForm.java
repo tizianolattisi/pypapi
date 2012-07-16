@@ -17,6 +17,9 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.db.Store;
+import com.trolltech.qt.core.QObject;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -27,5 +30,23 @@ public interface IForm {
     void init();
 
     void init(Store store);
+    
+    public Context getContext();
+    
+    public void setContext(Context context);
+    
+    List findChildren();
+    
+    public void setColumns(List<Column> columns);
+    
+    public void setEntities(List<Column> entities);
+    
+    public void setWidgets(HashMap<String, QObject> widgets);
+    
+    public List<Column> getColumns();
+    
+    public List<Column> getEntities();
+    
+    public HashMap<String, QObject> getWidgets();
 
 }
