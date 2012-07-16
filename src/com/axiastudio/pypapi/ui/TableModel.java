@@ -235,6 +235,18 @@ public class TableModel extends QAbstractTableModel {
         return true;
     }
 
+    @Override
+    public boolean removeRows(int row, int count, QModelIndex parent){
+        int first = row;
+        int last = row + count - 1;
+        this.beginRemoveRows(parent, first, last);
+        for( int i=last; i>=first; i--){
+            this.store.remove(i);
+        }
+        this.endRemoveRows();
+        return true;
+    }
+    
     public boolean isEditable() {
         return editable;
     }
