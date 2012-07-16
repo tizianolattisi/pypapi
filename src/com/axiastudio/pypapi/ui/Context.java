@@ -246,10 +246,10 @@ public final class Context extends QObject {
     }
     
     public void getDirty(){
-        // XXX: it's the right way?
-        QModelIndex index = this.getModel().index(0, 0);
+        int idx = this.mapper.currentIndex();
+        QModelIndex index = this.getModel().index(idx, 0);
         this.getModel().dataChanged.emit(index, index);
-        this.mapper.currentIndexChanged.emit(0);
+        this.mapper.currentIndexChanged.emit(idx);
     }
     
     public TableModel getModel() {
