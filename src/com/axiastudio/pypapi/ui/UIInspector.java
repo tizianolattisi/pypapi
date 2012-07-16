@@ -30,6 +30,10 @@ import java.util.logging.Logger;
 
 /**
  *
+ * UIInspector is a utility that parses the ui file generated with Qt Designer,
+ * extracts and registers the dynamic properties (such "lookup", "search",
+ * "validator", "private") in a EntityBehaviour object.
+ * 
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class UIInspector {

@@ -64,6 +64,13 @@ Apply to: SVW and LVW
 Determine if a field should be used as criteria field in the search form.
 
 
+Private (Boolean) dynamic property
+==================================
+Apply to: SVW and LVW
+The widget is blinded if the entity is private. The entity is private when a
+method for this type of entity, with @Private annotation, returns true.
+
+
 SearchColumns (String) dynamic property
 ===========================================
 Apply to: QMainWindow
@@ -85,6 +92,9 @@ QTableView and PyPaPiTableView can display a list of objects rappresenting a
 detail of the parent object. With the property "columns" we can select the
 columns to show in the detail table. These columns should be comma separated
 value, without double quotes.
+You can alter the default layout of the column:
+<columnname> the column should expand itself
+>columnname< the column should collapse to minimum size
 
 
 Headers (String) dynamic property

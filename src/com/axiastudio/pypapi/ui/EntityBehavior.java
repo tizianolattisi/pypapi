@@ -28,6 +28,7 @@ import java.util.Set;
  * form's design. Thru these properties the framework can determine the
  * behaviors of the object, such the selection's path, the lookup's column, and
  * the search criteria.
+ * 
  */
 public class EntityBehavior implements IEntityBehavior {
     
