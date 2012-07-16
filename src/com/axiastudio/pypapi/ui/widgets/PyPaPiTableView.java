@@ -194,8 +194,8 @@ public class PyPaPiTableView extends QTableView{
             PickerDialog pd = new PickerDialog(this, controller);
             int res = pd.exec();
             if ( res == 1 ){
-                if( pd.getSelection().size()>0 ){
-                    Object entity = pd.getSelection().get(0);
+                for( int i=0; i<pd.getSelection().size(); i++ ){
+                    Object entity = pd.getSelection().get(i);
                     Object adapted = null;
                     Class<?> classFrom = entity.getClass();
                     Class<?> classTo = collectionClass;
@@ -217,7 +217,7 @@ public class PyPaPiTableView extends QTableView{
                             }
                         }
                     }
-                        
+
                     if( adapter != null ){
                         try {
                             adapted = adapter.invoke(null, entity);
