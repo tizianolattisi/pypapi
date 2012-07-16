@@ -52,11 +52,11 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
                 new QKeySequence(QKeySequence.StandardKey.MoveToEndOfDocument)); // XXX ctrl+pg
         this.insertButton("insertElement", "Insert",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/add.png",
-                "Discard currente changes", this.parentForm.getContext(),
+                "Create a new element", this.parentForm.getContext(),
                 new QKeySequence(QKeySequence.StandardKey.New));
         this.insertButton("deleteElement", "Delete",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/delete.png",
-                "Discard currente changes", this.parentForm.getContext(),
+                "Delete current element", this.parentForm.getContext(),
                 new QKeySequence(QKeySequence.StandardKey.Delete));
         this.insertButton("cancelChanges", "Cancel",
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png",
