@@ -51,10 +51,6 @@ public class Window extends QMainWindow implements IForm {
     private List<Column> entities;
     private PyPaPiNavigationBar navigationBar;
 
-    public Window(Window other) {
-        this(other.uiFile, other.entityClass, other.title);
-    }
-
     public Window(String uiFile, Class entityClass) {
         this(uiFile, entityClass, "");
     }
@@ -76,7 +72,6 @@ public class Window extends QMainWindow implements IForm {
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
         configurator.configure(store);
-        
         PyPaPiNavigationBar bar = new PyPaPiNavigationBar("Navigation", this);
         bar.setMovable(true);
         this.addToolBar(bar);
@@ -200,6 +195,7 @@ public class Window extends QMainWindow implements IForm {
         return widgets;
     }
 
+    @Override
     public void setContext(Context context) {
         this.context = context;
     }

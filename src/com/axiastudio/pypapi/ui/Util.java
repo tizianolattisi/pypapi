@@ -65,18 +65,18 @@ public class Util {
         return form;
     }
     
-    public static Window formFromStore(Store store){
-        Window form=null;
+    public static IForm formFromStore(Store store){
+        IForm form=null;
         Object entity = store.get(0);
         String name = entity.getClass().getName();
-        Class<? extends Window> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
+        Class<? extends IForm> formClass = (Class) Register.queryUtility(IForm.class, entity.getClass().getName());
         if (formClass == null ){
             return null;
         }
         String uiFile = (String) Register.queryUtility(IUIFile.class, name);
         Class factory = (Class) Register.queryUtility(IFactory.class, name);
         try {
-            Constructor<? extends Window> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
+            Constructor<? extends IForm> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
             try {
                 form = constructor.newInstance(new Object[]{uiFile, factory, ""});
             } catch (InstantiationException ex) {
@@ -101,7 +101,7 @@ public class Util {
         }
     }
     
-    public static Window formFromEntity(Object entity){
+    public static IForm formFromEntity(Object entity){
         List entities = new ArrayList();
         entities.add(entity);
         Store store = new Store(entities);
@@ -180,7 +180,7 @@ public class Util {
      */
     public static QWidget findParentForm(QWidget widget){
         QWidget out=widget;
-        while(!QMainWindow.class.isInstance(out)){
+        while(!IForm.class.isInstance(out)){
             out = out.parentWidget();
         }
         return out;

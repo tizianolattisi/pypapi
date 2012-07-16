@@ -31,6 +31,8 @@ public interface IForm {
 
     void init(Store store);
     
+    public void show();
+    
     public Context getContext();
     
     public void setContext(Context context);

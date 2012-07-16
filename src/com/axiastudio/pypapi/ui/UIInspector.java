@@ -22,7 +22,7 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.QHeaderView;
-import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,10 +44,10 @@ public class UIInspector {
 
     public UIInspector(String uiFile, String entityClassName) {
         this.entityClassName = entityClassName;
-        QMainWindow window = null;
+        QWidget window = null;
         QFile file = Util.ui2jui(new QFile(uiFile));
         try {
-            window = (QMainWindow) QUiLoader.load(file);
+            window = QUiLoader.load(file);
         } catch (QUiLoaderException ex) {
             Logger.getLogger(UIInspector.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -56,7 +56,7 @@ public class UIInspector {
         }
     }
     
-    private void register(QMainWindow win){
+    private void register(QWidget win){
         EntityBehavior behavior = new EntityBehavior(this.entityClassName);
         List<Column> criteria = new ArrayList();
         List<Column> privates = new ArrayList();

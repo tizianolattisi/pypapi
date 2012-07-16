@@ -21,6 +21,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Database;
 import com.axiastudio.pypapi.demo.entities.*;
+import com.axiastudio.pypapi.ui.Dialog;
 import com.axiastudio.pypapi.ui.Window;
 import com.axiastudio.pypapi.ui.Util;
 import java.util.ArrayList;
@@ -87,7 +88,8 @@ public class Demo {
         // Loan
         Register.registerForm(db.getEntityManagerFactory(),
                             "classpath:com/axiastudio/pypapi/demo/forms/loan.ui",
-                            Loan.class);
+                            Loan.class,
+                            Dialog.class);
         
         // Adapter
         // note: you can comment the line because the framework can inspect and

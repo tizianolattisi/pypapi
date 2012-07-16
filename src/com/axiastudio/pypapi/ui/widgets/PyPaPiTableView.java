@@ -20,10 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.ui.Window;
-import com.axiastudio.pypapi.ui.PickerDialog;
-import com.axiastudio.pypapi.ui.TableModel;
-import com.axiastudio.pypapi.ui.Util;
+import com.axiastudio.pypapi.ui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
@@ -149,13 +146,13 @@ public class PyPaPiTableView extends QTableView{
             if ( reference != null ){
                 entity = Resolver.entityFromReference(entity, (String) reference);
             }
-            Window form = Util.formFromEntity(entity);
+            IForm form = Util.formFromEntity(entity);
             if( form == null ){
                 return;
             }
             QMdiArea workspace = Util.findParentMdiArea(this);
             if( workspace != null ){
-                workspace.addSubWindow(form);
+                workspace.addSubWindow((QMainWindow) form);
             }
             form.show();
         }
@@ -166,15 +163,14 @@ public class PyPaPiTableView extends QTableView{
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         for (QModelIndex idx: rows){
             Object entity = model.getEntityByRow(idx.row());
-            Window form = Util.formFromEntity(entity);
+            IForm form = Util.formFromEntity(entity);
             if( form == null ){
                 return;
             }
-            QMdiArea workspace = Util.findParentMdiArea(this);
-            if( workspace != null ){
-                workspace.addSubWindow(form);
-            }
+            ((QDialog) form).setModal(true);
             form.show();
+            IForm parent = (IForm) Util.findParentForm(this);
+            parent.getContext().getDirty();
         }
     }
     
