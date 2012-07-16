@@ -198,16 +198,13 @@ public final class Context extends QObject {
 
     public void deleteElement(){
         QModelIndex idx=null;
-        Boolean res = Util.questionBox(this.parent, "Delete element", "Sure you want to delete this element?");
-        if( res == true ){
-            Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-            c.delete(this.primaryDc.currentEntity);
-            int row = this.mapper.currentIndex();
-            this.mapper.toPrevious();
-            this.model.removeRows(row, 1, idx);
-            this.isDirty = false;
-            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
-        }
+        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
+        c.delete(this.primaryDc.currentEntity);
+        int row = this.mapper.currentIndex();
+        this.mapper.toPrevious();
+        this.model.removeRows(row, 1, idx);
+        this.isDirty = false;
+        this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
     }
 
     public void commitChanges(){

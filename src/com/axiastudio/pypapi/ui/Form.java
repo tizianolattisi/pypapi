@@ -315,6 +315,14 @@ public class Form extends QMainWindow implements IForm {
         return context;
     }
     
+    public void deleteElement(){
+        Boolean res = Util.questionBox(this, "Delete element", "Sure you want to delete this element?");
+        if( res == true ){
+            this.context.deleteElement();
+        }
+
+    }
+    
     private void information() {
         QDialog info = new QDialog(this);
         QVBoxLayout layout = new QVBoxLayout(info);
