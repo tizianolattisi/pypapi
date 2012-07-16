@@ -28,6 +28,8 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -178,7 +180,16 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionDel(){
-        // TODO: action del
+        TableModel model = (TableModel) this.model();
+        List<QModelIndex> rows = this.selectionModel().selectedRows();
+        List<Integer> selectedRows = new ArrayList();
+        for( QModelIndex idx: rows ){
+            selectedRows.add(idx.row());
+        }
+        Collections.sort(selectedRows, Collections.reverseOrder());
+        for( Integer row: selectedRows ){
+            model.removeRows(row, 1, null);
+        }
     }
     
     private void actionAdd(){
