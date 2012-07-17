@@ -45,7 +45,7 @@ public class Demo {
         Book book = new Book();
         book.setTitle("Anna Karenina");
         book.setDescription("description...");
-        book.setGenre(Genre.REFERENCE);
+        book.setGenre(Genre.ROMANCE);
 
         Person person = new Person();
         person.setName("Tiziano");
@@ -78,8 +78,8 @@ public class Demo {
         Application app = new Application(args);
 
         // Book
-        Register.registerForm(db.getEntityManagerFactory(),
-                            "classpath:com/axiastudio/pypapi/demo/forms/book.ui",
+        Register.registerForm(db.getEntityManagerFactory(), null,
+                            //"classpath:com/axiastudio/pypapi/demo/forms/book.ui",
                             Book.class);
         // Person
         Register.registerForm(db.getEntityManagerFactory(),

@@ -22,6 +22,7 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,12 @@ public class UIInspector {
     private List<Column> columns = new ArrayList();
     private List<Column> entities = new ArrayList();;
 
+    public UIInspector(Class factory, String entityClassName) {
+        this.entityClassName = entityClassName;
+        QMainWindow window = AutoLayout.createWindowLayout(factory);
+        this.register(window);
+    }
+    
     public UIInspector(String uiFile, String entityClassName) {
         this.entityClassName = entityClassName;
         QWidget window = null;

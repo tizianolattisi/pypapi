@@ -333,7 +333,11 @@ public class Register {
      * 
      */
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass, String title){
-        UIInspector inspector = new UIInspector(ui, factory.getName());
+        if( ui != null ){
+            UIInspector inspector = new UIInspector(ui, factory.getName());
+        } else {
+            UIInspector inspector = new UIInspector(factory, factory.getName());
+        }
         Controller controller = new Controller(emf, factory);
         Register.registerUtility(controller, IController.class, factory.getName());
         Register.registerUtility(formClass, IForm.class, factory.getName());

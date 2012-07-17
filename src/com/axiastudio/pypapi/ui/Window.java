@@ -59,8 +59,12 @@ public class Window extends QMainWindow implements IForm {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
         this.title = title;
-        QFile file = Util.ui2jui(new QFile(uiFile));
-        this.loadUi(file);
+        if( uiFile != null ){
+            QFile file = Util.ui2jui(new QFile(uiFile));
+            this.loadUi(file);
+        } else {
+            this.autoLayout();
+        }
     }
     
     @Override
@@ -94,7 +98,13 @@ public class Window extends QMainWindow implements IForm {
         this.setCentralWidget(window.centralWidget());
     }
 
-
+    private void autoLayout(){
+        QMainWindow window = AutoLayout.createWindowLayout(this.entityClass);
+        for( QByteArray name: window.dynamicPropertyNames()){
+            this.setProperty(name.toString(), window.property(name.toString()));
+        }
+        this.setCentralWidget(window.centralWidget());
+    }
     
     protected void indexChanged(int row){
         int idx = this.context.getMapper().currentIndex() + 1;
