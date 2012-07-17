@@ -59,7 +59,7 @@ public final class Context extends QObject {
         this.name = name;
 
         this.model = this.createModel(store);
-        this.mapper = new QDataWidgetMapper(this);
+        this.mapper = new QDataWidgetMapper(this); // XXX: this? maybe this.parent?
         this.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit);
         this.mapper.setModel(this.model);
         this.model.setColumns(columns);
@@ -93,7 +93,7 @@ public final class Context extends QObject {
 
         /* resolve entity class */
         if(".".equals(this.name)){
-            Database db = (Database) Register.queryUtility(IDatabase.class);
+            //Database db = (Database) Register.queryUtility(IDatabase.class);
             Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
             if( store == null ){
                 store = controller.createFullStore();
