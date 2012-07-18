@@ -18,9 +18,12 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
 import com.trolltech.qt.core.Qt;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,13 +49,13 @@ public class Item {
         this.value = value;
     }
 
-    public Object get(int role) throws Exception {
+    public Object get(int role) {
         /*
          * Get to the value corresponding to the requested role
          * (like DisplayRole, EditRole, etc) thru the correct getter method.
          */
 
-        Object result;
+        Object result=null;
 
         Object nameObject = ITEM_ROLES.get(role);
         if( nameObject == null){
@@ -60,8 +63,17 @@ public class Item {
         }
         String name = (String) nameObject;
         Method getter = Resolver.getterFromFieldName(this.getClass(), name);
-        // TODO: java.lang.reflect.InvocationTargetException
-        result = getter.invoke(this);
+        try {
+            // TODO: java.lang.reflect.InvocationTargetException
+            result = getter.invoke(this);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            String msg = "Unable to invoke getter for attribute '" + column.getName() +"'";
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, msg, ex);
+        }
         return result;
     }
 
