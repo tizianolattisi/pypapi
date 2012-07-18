@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
+import com.axiastudio.pypapi.db.IStoreFactory;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiComboBox;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
@@ -29,9 +30,13 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -117,10 +122,24 @@ public class FormConfigurator {
                 ((PyPaPiEntityPicker) child).setBindColumn(column);
             }
             if (child.getClass().equals(PyPaPiComboBox.class)){
-                Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
-                Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
-                Store lookupStore = controller.createFullStore();
-                column.setLookupStore(lookupStore);
+                Method storeFactory = (Method) Register.queryUtility(IStoreFactory.class, column.getName());
+                Store lookupStore=null;
+                if( storeFactory != null ){
+                    try {
+                        lookupStore = (Store) storeFactory.invoke(this.form);
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
+                    Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
+                    lookupStore = controller.createFullStore();
+                    column.setLookupStore(lookupStore);
+                }
                 ((PyPaPiComboBox) child).setLookupStore(lookupStore);
             }
             // columns and reference for list value widget
