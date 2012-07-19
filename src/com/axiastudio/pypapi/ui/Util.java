@@ -28,6 +28,7 @@ import com.trolltech.qt.gui.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,6 +107,18 @@ public class Util {
         entities.add(entity);
         Store store = new Store(entities);
         return Util.formFromStore(store);
+    }
+    
+    /*
+     * Extract a named column from a list of columns
+     */
+    public static Column columnFromName(Collection<Column> columns, String name){
+        for(Column column: columns){
+            if( column.getName().equals(name) ){
+                return column;
+            }
+        }
+        return null;
     }
     
     public static QFile ui2jui(QFile ui){
