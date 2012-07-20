@@ -138,8 +138,8 @@ public class FormConfigurator {
                     Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
                     Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
                     lookupStore = controller.createFullStore();
-                    column.setLookupStore(lookupStore);
                 }
+                column.setLookupStore(lookupStore);
                 ((PyPaPiComboBox) child).setLookupStore(lookupStore);
             }
             // columns and reference for list value widget
