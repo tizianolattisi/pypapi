@@ -65,8 +65,7 @@ public class Dialog extends QDialog implements IForm {
         for( QByteArray name: dialog.dynamicPropertyNames()){
             this.setProperty(name.toString(), dialog.property(name.toString()));
         }
-        QLayout layout = dialog.layout();
-        if( layout == null ){
+        if( dialog.layout() == null ){
             Logger.getLogger(Dialog.class.getName()).log(Level.SEVERE, "Dialog UI should have a main layout");
         } else {
             QBoxLayout box=null;
