@@ -58,9 +58,13 @@ public class TableModel extends QAbstractTableModel {
     }
 
     public TableModel(Store store, List columns){
-        if( store == null ) store = new Store(new ArrayList());
+        if( store == null ) {
+            store = new Store(new ArrayList());
+        }
         this.store = store;
-        if (columns != null) this.setColumns(columns);
+        if (columns != null) {
+            this.setColumns(columns);
+        }
         this.cache = new HashMap();
     }
 
@@ -107,7 +111,9 @@ public class TableModel extends QAbstractTableModel {
     public Object data(QModelIndex qmi, int role) {
         Object value = new QVariant();
         Item item = null;
-        if(qmi == null) return value;
+        if(qmi == null) {
+            return value;
+        }
         try {
             item = (Item) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
         } catch (Exception ex) {
@@ -125,7 +131,9 @@ public class TableModel extends QAbstractTableModel {
     @Override
     public boolean setData(QModelIndex qmi, Object value, int role){
         ItemEditable item = null;
-        if(qmi == null) return false;
+        if(qmi == null) {
+            return false;
+        }
         try {
             item = (ItemEditable) this.get(qmi.row(), (Column) this.columns.get(qmi.column()));
         } catch (Exception ex) {
@@ -135,7 +143,9 @@ public class TableModel extends QAbstractTableModel {
             Object oldValue = item.get(role);
             if (oldValue == null || !oldValue.equals(value)){
                 boolean res = item.set(role, value);
-            } else return true;
+            } else {
+                return true;
+            }
         } catch (Exception ex) {
             Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
