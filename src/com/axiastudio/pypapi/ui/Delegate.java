@@ -20,6 +20,8 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.gui.*;
 import java.util.List;
 
@@ -28,21 +30,18 @@ import java.util.List;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class Delegate extends QItemDelegate {
-    
-    private List<Column> columns;
 
     /*
      * The PyPaPi Delegate need a QTablewView as parent
      */
-    public Delegate(PyPaPiTableView parent) {
+    public Delegate(QTableView parent) {
         super(parent);
-        this.columns = (List) Register.queryRelation(parent, "columns");
     }
 
     @Override
     public QWidget createEditor(QWidget qw, QStyleOptionViewItem qsovi, QModelIndex qmi) {
         Object data = qmi.data();
-        Column column = this.columns.get(qmi.column());
+        Column column = ((TableModel) qmi.model()).getColumns().get(qmi.column());
         if( column.getEditorType() == CellEditorType.STRING ){
             QLineEdit lineEdit = new QLineEdit(qw);
             return lineEdit;
@@ -52,7 +51,7 @@ public class Delegate extends QItemDelegate {
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             return super.createEditor(qw, qsovi, qmi);
         } else if( column.getEditorType() == CellEditorType.DATE ){
-
+            
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
             // TODO: QComboBox from Enum
             //QComboBox cb = new QComboBox(qw);
@@ -70,7 +69,7 @@ public class Delegate extends QItemDelegate {
 
     @Override
     public void setModelData(QWidget qw, QAbstractItemModel qaim, QModelIndex qmi) {
-        Column column = this.columns.get(qmi.column());
+        Column column = ((TableModel) qmi.model()).getColumns().get(qmi.column());
         if( column.getEditorType() == CellEditorType.STRING ){
             String value = ((QLineEdit) qw).text();
             ((TableModel) qaim).setData(qmi, value);
