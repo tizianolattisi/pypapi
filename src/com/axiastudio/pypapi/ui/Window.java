@@ -71,7 +71,7 @@ public class Window extends QMainWindow implements IForm {
     public void init(){
         this.init(null);
     }
-        
+
     @Override
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
