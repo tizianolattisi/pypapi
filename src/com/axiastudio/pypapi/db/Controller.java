@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.db;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.ui.CellEditorType;
 import com.axiastudio.pypapi.ui.Column;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -77,10 +78,18 @@ public class Controller implements IController {
         CriteriaQuery<Object> select = cq.select(from);
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
-            String value = (String) criteria.get(column);
-            // TODO: % and * should be whildchars
-            Predicate predicate = cb.like(from.get(column.getName().toLowerCase()), value);
-            cq = cq.where(predicate);
+            Predicate predicate=null;
+            if( column.getEditorType().equals(CellEditorType.STRING) ){
+                // TODO: % and * should be whildchars
+                String value = (String) criteria.get(column);
+                predicate = cb.like(from.get(column.getName().toLowerCase()), value);
+            } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
+                Boolean value = (Boolean) criteria.get(column);
+                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+            }
+            if( predicate != null ){
+                cq = cq.where(predicate);
+            }
         }
         TypedQuery<Object> tq = em.createQuery(cq);
         List<Object> result = tq.getResultList();

@@ -21,8 +21,11 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
+import com.trolltech.qt.gui.QCheckBox;
 import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +100,13 @@ public class UIInspector {
             Object searchProperty = child.property("search");
             if (searchProperty != null){
                 if ((Boolean) searchProperty){
+                    if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
+                        column.setEditorType(CellEditorType.STRING);
+                    } else if(QCheckBox.class.isInstance(child)){
+                        column.setEditorType(CellEditorType.BOOLEAN);
+                    } else {
+                        column.setEditorType(CellEditorType.UNKNOW);
+                    }
                     criteria.add(column);
                 }
             }

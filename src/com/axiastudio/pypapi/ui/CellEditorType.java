@@ -21,5 +21,5 @@ package com.axiastudio.pypapi.ui;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public enum CellEditorType {
-    STRING, INTEGER, BOOLEAN, DATE, CHOICE, LOOKUP
+    UNKNOW, STRING, INTEGER, BOOLEAN, DATE, CHOICE, LOOKUP
 }

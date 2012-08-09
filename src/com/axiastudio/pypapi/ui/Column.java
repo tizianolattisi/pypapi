@@ -126,6 +126,10 @@ public class Column {
         return editorType;
     }
 
+    public void setEditorType(CellEditorType editorType) {
+        this.editorType = editorType;
+    }
+
     public Integer getResizeModeValue() {
         return resizeModeValue;
     }

@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class PickerDialog extends QDialog {
     private QToolButton buttonAccept;
     private Boolean isCriteria;
     private HashMap criteriaWidgets;
+    private HashMap filters;
 
     public PickerDialog(Controller controller) {
         this(null, controller);
@@ -58,6 +60,7 @@ public class PickerDialog extends QDialog {
         this.controller = controller;
         this.selection = new ArrayList();
         this.criteriaWidgets = new HashMap();
+        this.filters = new HashMap();
         this.init();
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> criteria = behavior.getCriteria();
@@ -135,14 +138,27 @@ public class PickerDialog extends QDialog {
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
             // TODO: different types of search widget depending on the data type
-            QLineEdit line = new QLineEdit();
-            this.criteriaWidgets.put(c, line);
-            criteriaLayout.addWidget(line);
+            QWidget widget=null;
+            if( c.getEditorType().equals(CellEditorType.STRING) ){
+                widget = new QLineEdit();
+            } else if( c.getEditorType().equals(CellEditorType.BOOLEAN) ){
+                widget = new QCheckBox();
+                ((QCheckBox) widget).setTristate(true);
+                ((QCheckBox) widget).setCheckState(CheckState.PartiallyChecked);
+            }
+            if( widget != null ){
+                this.criteriaWidgets.put(c, widget);
+                criteriaLayout.addWidget(widget);
             
-            grid.addLayout(criteriaLayout, i, 1);
+                grid.addLayout(criteriaLayout, i, 1);
+            }
         }
         this.layout.addLayout(grid);
     }        
+    
+    public void addFilter(Column column, String value){
+        this.filters.put(column, value);
+    }
     
     public final void executeSearch(){
         Store supersetStore=null;
@@ -156,13 +172,20 @@ public class PickerDialog extends QDialog {
             for (Column criteriaColumn: criteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(criteriaColumn);
                 // TODO: criteria with widgets other than QLIneEdit
-                if (widget.getClass() == QLineEdit.class){
+                if( QLineEdit.class.isInstance(widget) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
                         criteriaMap.put(criteriaColumn, value);
                     }
+                } else if ( QCheckBox.class.isInstance(widget) ){
+                    CheckState checkState = ((QCheckBox) widget).checkState();
+                    if( !checkState.equals(CheckState.PartiallyChecked) ){
+                        Boolean state = checkState.equals(CheckState.Checked) && true || false;
+                        criteriaMap.put(criteriaColumn, state);
+                    }
                 }
             }
+            criteriaMap.putAll(this.filters);
             supersetStore = this.controller.createCriteriaStore(criteriaMap);
         }
         TableModel model = new TableModel(supersetStore, columns);
