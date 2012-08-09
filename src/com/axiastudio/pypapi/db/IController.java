@@ -26,6 +26,10 @@ public interface IController {
 
     Store createFullStore();
 
+    Store createStore();
+
+    Store createStore(int limit);
+    
     Store createCriteriaStore(HashMap criteria);
     
     Validation commit(Object entity);

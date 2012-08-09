@@ -89,7 +89,12 @@ public class Controller implements IController {
     }
 
     @Override
-    public Store createFullStore(){
+    public Store createStore() {
+        return this.createStore(-1);
+    }
+
+    @Override
+    public Store createStore(int limit) {
         if( this.entityClass == null ){
             return null;
         }
@@ -98,12 +103,20 @@ public class Controller implements IController {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             cq.select(cq.from(this.entityClass));
             Query q = em.createQuery(cq);
+            if( limit > 0 ){
+                q = q.setMaxResults(limit);
+            }
             List entities = q.getResultList();
             Store store = new Store(entities);
             return store;
         } finally {
             em.close();
         }
+    }
+
+    @Override
+    public Store createFullStore(){
+        return this.createStore(-1);
     }
 
     /*
