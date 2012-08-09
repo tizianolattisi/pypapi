@@ -19,6 +19,7 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QDate;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
@@ -90,5 +91,21 @@ public class Delegate extends QItemDelegate {
         super.updateEditorGeometry(qw, qsovi, qmi);
     }
 
-    
+    @Override
+    public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
+        Column column = ((TableModel) index.model()).getColumns().get(index.column()); 
+        if( column.getEditorType() == CellEditorType.DATE ){
+            QAbstractItemModel model = index.model();
+            QDate date = (QDate) model.data(index, Qt.ItemDataRole.DisplayRole);
+            if( date != null ){
+                Alignment flags = Qt.AlignmentFlag.createQFlags();
+                flags.set(Qt.AlignmentFlag.AlignVCenter);
+                flags.set(Qt.AlignmentFlag.AlignCenter);
+                painter.drawText(option.rect(), flags.value(), date.toString("dd/MM/yyyy"));
+            }
+        } else {
+            super.paint(painter, option, index);
+        }
+    }
+
 }

@@ -39,6 +39,13 @@ public class DateItemField extends ItemField {
     }
 
     @Override
+    public Object getDisplay() {
+        return this.getEdit();
+    }
+    
+    
+    
+    @Override
     public Object getEdit() {
         QDate date;
         if( this.value == null ){
