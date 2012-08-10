@@ -212,27 +212,29 @@ public class PickerDialog extends QDialog {
                     QComboBox comboBox1 = (QComboBox) widget.layout().itemAt(1).widget();
                     QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
                     QDate date = dateEdit.date();
-                    Integer n = comboBox1.currentIndex() + 1;
-                    Integer idx = comboBox2.currentIndex();
-                    Integer days = null;
-                    if( idx == 0 ) {
-                        days = n;
-                    } else if( idx == 1 ) {
-                        days = 7 * n;
-                    } else if( idx == 2 ) {
-                        days = 30 * n; // XXX
-                    } else if( idx == 3 ) {
-                        days = 365 * n; // XXX
+                    if( !date.equals(dateEdit.minimumDate()) ){
+                        Integer n = comboBox1.currentIndex() + 1;
+                        Integer idx = comboBox2.currentIndex();
+                        Integer days = null;
+                        if( idx == 0 ) {
+                            days = n;
+                        } else if( idx == 1 ) {
+                            days = 7 * n;
+                        } else if( idx == 2 ) {
+                            days = 30 * n; // XXX
+                        } else if( idx == 3 ) {
+                            days = 365 * n; // XXX
+                        }
+                        int year = date.year();
+                        int month = date.month();
+                        int day = date.day();
+                        GregorianCalendar gc = new GregorianCalendar(date.year(),
+                                                        date.month()-1, date.day());
+                        List values = new ArrayList();
+                        values.add(gc);
+                        values.add(days);
+                        criteriaMap.put(column, values);
                     }
-                    int year = date.year();
-                    int month = date.month();
-                    int day = date.day();
-                    GregorianCalendar gc = new GregorianCalendar(date.year(),
-                                                    date.month()-1, date.day());
-                    List values = new ArrayList();
-                    values.add(gc);
-                    values.add(days);
-                    criteriaMap.put(column, values);
                 }
             }
             criteriaMap.putAll(this.filters);
