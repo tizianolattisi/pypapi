@@ -24,7 +24,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +88,21 @@ public class Controller implements IController {
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+            } else if( column.getEditorType().equals(CellEditorType.DATE) ){
+                // TODO: complete...
+                List values = (List) criteria.get(column);
+                GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
+                GregorianCalendar gcEnd = new GregorianCalendar();
+                gcEnd.set(Calendar.YEAR, gcStart.get(Calendar.YEAR));
+                gcEnd.set(Calendar.MONTH, gcStart.get(Calendar.MONTH));
+                gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
+                Integer d = (Integer) values.get(1);
+                gcEnd.add(Calendar.DAY_OF_MONTH, d);
+                predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
+                        cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
+                /*
+                predicate = cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime());
+                */
             }
             if( predicate != null ){
                 cq = cq.where(predicate);

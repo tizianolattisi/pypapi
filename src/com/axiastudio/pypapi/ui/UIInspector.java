@@ -22,6 +22,7 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.QCheckBox;
+import com.trolltech.qt.gui.QDateTimeEdit;
 import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QMainWindow;
@@ -104,6 +105,8 @@ public class UIInspector {
                         column.setEditorType(CellEditorType.STRING);
                     } else if(QCheckBox.class.isInstance(child)){
                         column.setEditorType(CellEditorType.BOOLEAN);
+                    } else if(QDateTimeEdit.class.isInstance(child)){
+                        column.setEditorType(CellEditorType.DATE);
                     } else {
                         column.setEditorType(CellEditorType.UNKNOW);
                     }

@@ -19,10 +19,12 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -133,21 +135,43 @@ public class PickerDialog extends QDialog {
     private void addCriteria(List<Column> criteria){
         QGridLayout grid = new QGridLayout();
         for (int i=0; i<criteria.size(); i++){
-            Column c = criteria.get(i);
-            QLabel criteriaLabel = new QLabel(c.getLabel());
+            Column column = criteria.get(i);
+            QLabel criteriaLabel = new QLabel(column.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
             // TODO: different types of search widget depending on the data type
             QWidget widget=null;
-            if( c.getEditorType().equals(CellEditorType.STRING) ){
+            if( column.getEditorType().equals(CellEditorType.STRING) ){
                 widget = new QLineEdit();
-            } else if( c.getEditorType().equals(CellEditorType.BOOLEAN) ){
+            } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 widget = new QCheckBox();
                 ((QCheckBox) widget).setTristate(true);
                 ((QCheckBox) widget).setCheckState(CheckState.PartiallyChecked);
+            } else if( column.getEditorType().equals(CellEditorType.DATE) ){
+                widget = new QWidget();
+                QHBoxLayout hbox= new QHBoxLayout();
+                PyPaPiDateEdit dateEdit = new PyPaPiDateEdit();
+                dateEdit.setCalendarPopup(true);
+                dateEdit.setDate(dateEdit.minimumDate());
+                hbox.addWidget(dateEdit);
+                QComboBox comboBox1 = new QComboBox();
+                comboBox1.addItem("1");
+                comboBox1.addItem("2");
+                comboBox1.addItem("3");
+                comboBox1.addItem("4");
+                comboBox1.addItem("5");
+                comboBox1.addItem("6");
+                hbox.addWidget(comboBox1);
+                QComboBox comboBox2 = new QComboBox();
+                comboBox2.addItem("days");
+                comboBox2.addItem("weeks");
+                comboBox2.addItem("months");
+                comboBox2.addItem("years");
+                hbox.addWidget(comboBox2);
+                widget.setLayout(hbox);
             }
             if( widget != null ){
-                this.criteriaWidgets.put(c, widget);
+                this.criteriaWidgets.put(column, widget);
                 criteriaLayout.addWidget(widget);
             
                 grid.addLayout(criteriaLayout, i, 1);
@@ -169,20 +193,46 @@ public class PickerDialog extends QDialog {
         } else {
             List<Column> criteria = behavior.getCriteria();
             HashMap criteriaMap = new HashMap();
-            for (Column criteriaColumn: criteria){
-                QWidget widget = (QWidget) this.criteriaWidgets.get(criteriaColumn);
+            for (Column column: criteria){
+                QWidget widget = (QWidget) this.criteriaWidgets.get(column);
                 // TODO: criteria with widgets other than QLIneEdit
-                if( QLineEdit.class.isInstance(widget) ){
+                if( column.getEditorType().equals(CellEditorType.STRING) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
-                        criteriaMap.put(criteriaColumn, value);
+                        criteriaMap.put(column, value);
                     }
-                } else if ( QCheckBox.class.isInstance(widget) ){
+                } else if ( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                     CheckState checkState = ((QCheckBox) widget).checkState();
                     if( !checkState.equals(CheckState.PartiallyChecked) ){
                         Boolean state = checkState.equals(CheckState.Checked) && true || false;
-                        criteriaMap.put(criteriaColumn, state);
+                        criteriaMap.put(column, state);
                     }
+                } else if ( column.getEditorType().equals(CellEditorType.DATE) ){
+                    PyPaPiDateEdit dateEdit = (PyPaPiDateEdit) widget.layout().itemAt(0).widget();
+                    QComboBox comboBox1 = (QComboBox) widget.layout().itemAt(1).widget();
+                    QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
+                    QDate date = dateEdit.date();
+                    Integer n = comboBox1.currentIndex() + 1;
+                    Integer idx = comboBox2.currentIndex();
+                    Integer days = null;
+                    if( idx == 0 ) {
+                        days = n;
+                    } else if( idx == 1 ) {
+                        days = 7 * n;
+                    } else if( idx == 2 ) {
+                        days = 30 * n; // XXX
+                    } else if( idx == 3 ) {
+                        days = 365 * n; // XXX
+                    }
+                    int year = date.year();
+                    int month = date.month();
+                    int day = date.day();
+                    GregorianCalendar gc = new GregorianCalendar(date.year(),
+                                                    date.month()-1, date.day());
+                    List values = new ArrayList();
+                    values.add(gc);
+                    values.add(days);
+                    criteriaMap.put(column, values);
                 }
             }
             criteriaMap.putAll(this.filters);
