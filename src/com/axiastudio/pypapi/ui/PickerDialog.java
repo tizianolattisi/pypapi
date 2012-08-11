@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
@@ -169,6 +170,16 @@ public class PickerDialog extends QDialog {
                 comboBox2.addItem("years");
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                widget = new QComboBox();
+                Class klass = this.controller.getEntityClass();
+                Class entityClass = Resolver.entityClassFromReference(klass, column.getName());
+                for( Object object:  entityClass.getEnumConstants() ){
+                    String key = object.toString();
+                    ((QComboBox) widget).addItem(key, object);
+                }
+                ((QComboBox) widget).addItem("-", null);
+                ((QComboBox) widget).setCurrentIndex(((QComboBox) widget).count()-1);
             }
             if( widget != null ){
                 this.criteriaWidgets.put(column, widget);
@@ -234,6 +245,12 @@ public class PickerDialog extends QDialog {
                         values.add(gc);
                         values.add(days);
                         criteriaMap.put(column, values);
+                    }
+                } else if ( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                    int idx = ((QComboBox) widget).currentIndex();
+                    Object data = ((QComboBox) widget).itemData(idx);
+                    if( data != null ){
+                        criteriaMap.put(column, data);
                     }
                 }
             }

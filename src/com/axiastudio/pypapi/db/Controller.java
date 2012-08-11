@@ -100,9 +100,9 @@ public class Controller implements IController {
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
                 predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
                         cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
-                /*
-                predicate = cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime());
-                */
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                Enum value = (Enum) criteria.get(column);
+                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             }
             if( predicate != null ){
                 cq = cq.where(predicate);
@@ -297,6 +297,10 @@ public class Controller implements IController {
             return null;
         }
         return this.entityClass.getName();
+    }
+
+    public Class getEntityClass() {
+        return entityClass;
     }
     
     
