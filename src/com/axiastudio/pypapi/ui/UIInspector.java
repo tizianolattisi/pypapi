@@ -27,6 +27,7 @@ import com.trolltech.qt.gui.QDateTimeEdit;
 import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
@@ -106,6 +107,8 @@ public class UIInspector {
                         column.setEditorType(CellEditorType.STRING);
                     } else if(QCheckBox.class.isInstance(child)){
                         column.setEditorType(CellEditorType.BOOLEAN);
+                    } else if(QSpinBox.class.isInstance(child)){
+                        column.setEditorType(CellEditorType.INTEGER);
                     } else if(QDateTimeEdit.class.isInstance(child)){
                         column.setEditorType(CellEditorType.DATE);
                     } else if(QComboBox.class.isInstance(child)){

@@ -148,6 +148,9 @@ public class PickerDialog extends QDialog {
                 widget = new QCheckBox();
                 ((QCheckBox) widget).setTristate(true);
                 ((QCheckBox) widget).setCheckState(CheckState.PartiallyChecked);
+            } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
+                widget = new QSpinBox();
+                ((QSpinBox) widget).setRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
             } else if( column.getEditorType().equals(CellEditorType.DATE) ){
                 widget = new QWidget();
                 QHBoxLayout hbox= new QHBoxLayout();
@@ -217,6 +220,11 @@ public class PickerDialog extends QDialog {
                     if( !checkState.equals(CheckState.PartiallyChecked) ){
                         Boolean state = checkState.equals(CheckState.Checked) && true || false;
                         criteriaMap.put(column, state);
+                    }
+                } else if ( column.getEditorType().equals(CellEditorType.INTEGER) ){
+                    Integer value = ((QSpinBox) widget).value();
+                    if( value != 0 ){
+                        criteriaMap.put(column, value);
                     }
                 } else if ( column.getEditorType().equals(CellEditorType.DATE) ){
                     PyPaPiDateEdit dateEdit = (PyPaPiDateEdit) widget.layout().itemAt(0).widget();

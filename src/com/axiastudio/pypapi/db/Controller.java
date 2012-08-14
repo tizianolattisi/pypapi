@@ -85,6 +85,9 @@ public class Controller implements IController {
                 // TODO: % and * should be whildchars
                 String value = (String) criteria.get(column);
                 predicate = cb.like(from.get(column.getName().toLowerCase()), value);
+            } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
+                Integer value = (Integer) criteria.get(column);
+                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
