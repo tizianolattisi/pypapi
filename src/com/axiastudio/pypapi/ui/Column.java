@@ -84,6 +84,10 @@ public class Column {
             IntegerItemField item = new IntegerItemField(this, result, setter, entity);
             this.editorType = CellEditorType.INTEGER;
             return item;
+        } else if( returnType == Double.class ){
+            DoubleItemField item = new DoubleItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.DOUBLE;
+            return item;
         } else if( returnType == Boolean.class ){
             BooleanItemField item = new BooleanItemField(this, result, setter, entity);
             this.editorType = CellEditorType.BOOLEAN;
