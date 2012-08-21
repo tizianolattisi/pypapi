@@ -16,13 +16,12 @@
  */
 package com.axiastudio.pypapi.db;
 
+import com.axiastudio.pypapi.Register;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import com.axiastudio.pypapi.Register;
 
 
 /**
@@ -39,13 +38,21 @@ public class Database implements IDatabase {
 
     @Override
     public void open(String persistenceUnit) {
+        this.open(persistenceUnit, null);
+    }
+    
+    @Override
+    public void open(String persistenceUnit, Map properties) {
         Register.registerUtility(this, IDatabase.class);
         try {
-            this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
+            if( properties == null ){
+                this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
+            } else {
+                this.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit, properties);
+            }
         } catch (Exception ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     
 }

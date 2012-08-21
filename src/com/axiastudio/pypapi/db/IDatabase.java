@@ -16,6 +16,8 @@
  */
 package com.axiastudio.pypapi.db;
 
+import java.util.Map;
+
 
 /**
  *
@@ -23,4 +25,5 @@ package com.axiastudio.pypapi.db;
  */
 public interface IDatabase {
     void open(String persistenceUnit);
+    void open(String persistenceUnit, Map properties);
 }
