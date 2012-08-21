@@ -64,7 +64,6 @@ public class Item {
         String name = (String) nameObject;
         Method getter = Resolver.getterFromFieldName(this.getClass(), name);
         try {
-            // TODO: java.lang.reflect.InvocationTargetException
             result = getter.invoke(this);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
