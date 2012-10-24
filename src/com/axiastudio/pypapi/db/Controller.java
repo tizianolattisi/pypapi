@@ -104,7 +104,7 @@ public class Controller implements IController {
                 predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
                         cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                Enum value = (Enum) criteria.get(column);
+                Object value = criteria.get(column);
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             }
             if( predicate != null ){

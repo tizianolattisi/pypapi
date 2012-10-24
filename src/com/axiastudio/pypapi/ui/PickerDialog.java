@@ -19,6 +19,7 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
@@ -28,6 +29,55 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+
+
+
+/**
+ *
+ * @author Tiziano Lattisi <tiziano at axiastudio.it>
+ */
+class EntitySelectorUtility {
+    private final Class klass;
+    private final QWidget parent;
+    private Object selected=null;
+    private final QLabel label;
+    private final QToolButton clearButton;
+    
+    public EntitySelectorUtility(Class entityClass, QWidget parent, QLabel label, QToolButton clearButton){
+        this.klass = entityClass;
+        this.parent = parent;
+        this.label = label;
+        this.clearButton = clearButton;
+    }
+    
+    public Object select(){
+        Controller controller = (Controller) Register.queryUtility(IController.class, this.klass.getName(), true);
+        PickerDialog pd = new PickerDialog(this.parent, controller);
+        int res = pd.exec();
+        Object entity = null;
+        if ( res == 1 ){
+            for( int i=0; i<pd.getSelection().size(); i++ ){
+                entity = pd.getSelection().get(i);
+                this.selected = entity;
+                this.label.setText(entity.toString());
+                this.clearButton.setEnabled(true);
+            }
+        }
+        return entity;
+    }
+    
+    public void clear(){
+        this.selected = null;
+        this.label.setText("-");
+        this.clearButton.setEnabled(false);
+    }
+
+    public Object getSelected() {
+        return selected;
+    }
+    
+    
+}
 
 /**
  *
@@ -53,6 +103,7 @@ public class PickerDialog extends QDialog {
     private Boolean isCriteria;
     private HashMap criteriaWidgets;
     private HashMap filters;
+    private HashMap<String, EntitySelectorUtility> entitySelectorUtilities;
 
     public PickerDialog(Controller controller) {
         this(null, controller);
@@ -62,6 +113,7 @@ public class PickerDialog extends QDialog {
         super(parent);
         this.controller = controller;
         this.selection = new ArrayList();
+        this.entitySelectorUtilities = new HashMap();
         this.criteriaWidgets = new HashMap();
         this.filters = new HashMap();
         this.init();
@@ -174,15 +226,34 @@ public class PickerDialog extends QDialog {
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                widget = new QComboBox();
                 Class klass = this.controller.getEntityClass();
                 Class entityClass = Resolver.entityClassFromReference(klass, column.getName());
-                for( Object object:  entityClass.getEnumConstants() ){
-                    String key = object.toString();
-                    ((QComboBox) widget).addItem(key, object);
+                if( entityClass.isEnum() ){
+                    widget = new QComboBox();
+                    for( Object object:  entityClass.getEnumConstants() ){
+                        String key = object.toString();
+                        ((QComboBox) widget).addItem(key, object);
+                    }
+                    ((QComboBox) widget).addItem("-", null);
+                    ((QComboBox) widget).setCurrentIndex(((QComboBox) widget).count()-1);
+                } else {
+                    widget = new QWidget();
+                    QHBoxLayout hbox= new QHBoxLayout();
+                    QLabel label = new QLabel("select");
+                    hbox.addWidget(label);
+                    QToolButton button = new QToolButton();
+                    button.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
+                    hbox.addWidget(button);
+                    QToolButton button2 = new QToolButton();
+                    button2.setEnabled(false);
+                    button2.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
+                    hbox.addWidget(button2);
+                    EntitySelectorUtility esu = new EntitySelectorUtility(entityClass, this, label, button2);
+                    this.entitySelectorUtilities.put(column.getName(), esu);
+                    button.clicked.connect(esu, "select()");
+                    button2.clicked.connect(esu, "clear()");
+                    widget.setLayout(hbox);
                 }
-                ((QComboBox) widget).addItem("-", null);
-                ((QComboBox) widget).setCurrentIndex(((QComboBox) widget).count()-1);
             }
             if( widget != null ){
                 this.criteriaWidgets.put(column, widget);
@@ -255,8 +326,13 @@ public class PickerDialog extends QDialog {
                         criteriaMap.put(column, values);
                     }
                 } else if ( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                    int idx = ((QComboBox) widget).currentIndex();
-                    Object data = ((QComboBox) widget).itemData(idx);
+                    Object data;
+                    if( widget.getClass().equals(QComboBox.class )){
+                        int idx = ((QComboBox) widget).currentIndex();
+                        data = ((QComboBox) widget).itemData(idx);
+                    } else {
+                        data = this.entitySelectorUtilities.get(column.getName()).getSelected();
+                    }
                     if( data != null ){
                         criteriaMap.put(column, data);
                     }
