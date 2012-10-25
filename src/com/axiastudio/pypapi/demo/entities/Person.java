@@ -23,7 +23,7 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
@@ -43,15 +43,15 @@ public class Person implements Serializable {
     public Person() {
     }
 
-    public Person(Integer id) {
+    public Person(Long id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -78,8 +78,8 @@ public class Demo {
         Application app = new Application(args);
 
         // Book
-        Register.registerForm(db.getEntityManagerFactory(), null,
-                            //"classpath:com/axiastudio/pypapi/demo/forms/book.ui",
+        Register.registerForm(db.getEntityManagerFactory(),
+                            "classpath:com/axiastudio/pypapi/demo/forms/book.ui",
                             Book.class);
         // Person
         Register.registerForm(db.getEntityManagerFactory(),
