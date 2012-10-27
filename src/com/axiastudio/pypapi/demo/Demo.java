@@ -76,6 +76,7 @@ public class Demo {
             
         /* start demo */
         Application app = new Application(args);
+        app.setLanguage("en");
 
         // Book
         Register.registerForm(db.getEntityManagerFactory(),

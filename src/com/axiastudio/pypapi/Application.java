@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi;
 
+import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
 
 /**
@@ -29,6 +30,12 @@ public class Application extends QApplication {
     
     public Application(String[] args){
         super(args);
+    }
+    
+    public void setLanguage(String lang){
+        QTranslator translator = new QTranslator(this);
+        translator.load("classpath:com/axiastudio/pypapi/lang/"+lang+".qm");
+        QApplication.installTranslator(translator);
     }
 
     public String getCustomApplicationCredits() {
