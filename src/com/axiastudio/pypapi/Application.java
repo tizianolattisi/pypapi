@@ -34,7 +34,7 @@ public class Application extends QApplication {
     
     public void setLanguage(String lang){
         QTranslator translator = new QTranslator(this);
-        translator.load("classpath:com/axiastudio/pypapi/lang/"+lang+".qm");
+        translator.load("classpath:com/axiastudio/pypapi/lang/pypapi_"+lang+".qm");
         QApplication.installTranslator(translator);
     }
 

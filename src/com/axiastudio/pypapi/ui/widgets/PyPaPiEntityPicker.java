@@ -64,14 +64,14 @@ public class PyPaPiEntityPicker extends QLineEdit{
         this.toolBar.setIconSize(new QSize(10, 10));
         this.toolBar.hide();
 
-        this.actionSelect = new QAction("Select", this);
+        this.actionSelect = new QAction(tr("SELECT"), this);
         QIcon iconSelect = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/link.png");
         this.actionSelect.setIcon(iconSelect);
         this.menuPopup.addAction(actionSelect);
         this.toolBar.addAction(actionSelect);
         this.actionSelect.triggered.connect(this, "actionSelect()");
 
-        this.actionOpen = new QAction("Open", this);
+        this.actionOpen = new QAction(tr("OPEN"), this);
         QIcon iconOpen = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/open.png");
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);

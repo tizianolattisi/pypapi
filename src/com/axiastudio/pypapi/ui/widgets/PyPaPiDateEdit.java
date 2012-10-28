@@ -43,7 +43,7 @@ public class PyPaPiDateEdit extends QDateEdit {
         this.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu);
         this.customContextMenuRequested.connect(this, "contextMenu(QPoint)");
         this.menuPopup = new QMenu(this);
-        this.actionNull = new QAction("Set to null", this);
+        this.actionNull = new QAction(tr("SET_TO_NULL"), this);
         QIcon iconNull = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png");
         this.actionNull.setIcon(iconNull);
         this.menuPopup.addAction(actionNull);

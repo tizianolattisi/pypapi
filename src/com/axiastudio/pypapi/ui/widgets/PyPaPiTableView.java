@@ -77,28 +77,28 @@ public class PyPaPiTableView extends QTableView{
         this.toolBar.move(1, 22);
         this.toolBar.hide();
 
-        this.actionInfo = new QAction("Info", this);
+        this.actionInfo = new QAction(tr("INFO"), this);
         QIcon iconInfo = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/information.png");
         this.actionInfo.setIcon(iconInfo);
         this.menuPopup.addAction(actionInfo);
         this.toolBar.addAction(actionInfo);
         this.actionInfo.triggered.connect(this, "actionInfo()");
 
-        this.actionOpen = new QAction("Open", this);
+        this.actionOpen = new QAction(tr("OPEN"), this);
         QIcon iconOpen = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/open.png");
         this.actionOpen.setIcon(iconOpen);
         this.menuPopup.addAction(actionOpen);
         this.toolBar.addAction(actionOpen);
         this.actionOpen.triggered.connect(this, "actionOpen()");
 
-        this.actionAdd = new QAction("Add", this);
+        this.actionAdd = new QAction(tr("ADD"), this);
         QIcon iconAdd = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/add.png");
         this.actionAdd.setIcon(iconAdd);
         this.menuPopup.addAction(this.actionAdd);
         this.toolBar.addAction(this.actionAdd);
         this.actionAdd.triggered.connect(this, "actionAdd()");
 
-        this.actionDel = new QAction("Delete", this);
+        this.actionDel = new QAction(tr("DELETE"), this);
         QIcon iconDel = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/delete.png");
         this.actionDel.setIcon(iconDel);
         this.menuPopup.addAction(actionDel);

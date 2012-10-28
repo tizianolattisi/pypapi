@@ -141,7 +141,7 @@ public class PickerDialog extends QDialog {
     }
     
     private void init(){
-        this.setWindowTitle("Research and selection");
+        this.setWindowTitle(tr("RESEARCH_AND_SELECTION"));
         this.layout = new QVBoxLayout(this);
         this.layout.setSpacing(4);
         this.tableView = new QTableView();
@@ -219,10 +219,10 @@ public class PickerDialog extends QDialog {
                 comboBox1.addItem("6");
                 hbox.addWidget(comboBox1);
                 QComboBox comboBox2 = new QComboBox();
-                comboBox2.addItem("days");
-                comboBox2.addItem("weeks");
-                comboBox2.addItem("months");
-                comboBox2.addItem("years");
+                comboBox2.addItem(tr("DAYS"));
+                comboBox2.addItem(tr("WEEKS"));
+                comboBox2.addItem(tr("MONTHS"));
+                comboBox2.addItem(tr("YEARS"));
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
@@ -239,7 +239,7 @@ public class PickerDialog extends QDialog {
                 } else {
                     widget = new QWidget();
                     QHBoxLayout hbox= new QHBoxLayout();
-                    QLabel label = new QLabel("select");
+                    QLabel label = new QLabel(tr("SELECT"));
                     hbox.addWidget(label);
                     QToolButton button = new QToolButton();
                     button.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));

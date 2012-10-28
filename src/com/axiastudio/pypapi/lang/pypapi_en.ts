@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en">
+<TS version="2.0" language="en_US">
+<context>
+    <name>com.axiastudio.pypapi.ui.PickerDialog</name>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="144"/>
+        <source>RESEARCH_AND_SELECTION</source>
+        <translation>Research and selection</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="222"/>
+        <source>DAYS</source>
+        <translation>days</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="223"/>
+        <source>WEEKS</source>
+        <translation>weeks</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="224"/>
+        <source>MONTHS</source>
+        <translation>months</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="225"/>
+        <source>YEARS</source>
+        <translation>years</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="242"/>
+        <source>SELECT</source>
+        <translation>select</translation>
+    </message>
+</context>
+<context>
+    <name>com.axiastudio.pypapi.ui.Window</name>
+    <message>
+        <location filename="../ui/Window.java" line="79"/>
+        <source>NAVIGATION</source>
+        <translation>Navigation</translation>
+    </message>
+    <message>
+        <location filename="../ui/Window.java" line="149"/>
+        <source>DELETE_ELEMENT_REQUEST</source>
+        <translation>Delete element request</translation>
+    </message>
+    <message>
+        <location filename="../ui/Window.java" line="149"/>
+        <source>DELETE_ELEMENT_REQUEST_DESCRIPTION</source>
+        <translation>Do you want to delete the current element?</translation>
+    </message>
+</context>
 <context>
     <name>com.axiastudio.pypapi.ui.widgets.PyPaPiNavigationBar</name>
     <message>
@@ -112,6 +163,29 @@
         <location filename="../ui/widgets/PyPaPiNavigationBar.java" line="79"/>
         <source>INFORMATION_DESCRIPTION</source>
         <translation>Information on this application</translation>
+    </message>
+</context>
+<context>
+    <name>com.axiastudio.pypapi.ui.widgets.PyPaPiTableView</name>
+    <message>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="80"/>
+        <source>INFO</source>
+        <translation>Info</translation>
+    </message>
+    <message>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="87"/>
+        <source>OPEN</source>
+        <translation>Open</translation>
+    </message>
+    <message>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="94"/>
+        <source>ADD</source>
+        <translation>Add</translation>
+    </message>
+    <message>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="101"/>
+        <source>DELETE</source>
+        <translation>Delete</translation>
     </message>
 </context>
 </TS>

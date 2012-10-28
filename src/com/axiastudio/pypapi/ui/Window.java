@@ -76,7 +76,7 @@ public class Window extends QMainWindow implements IForm {
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
         configurator.configure(store);
-        PyPaPiNavigationBar bar = new PyPaPiNavigationBar("Navigation", this);
+        PyPaPiNavigationBar bar = new PyPaPiNavigationBar(tr("NAVIGATION"), this);
         bar.setMovable(true);
         this.addToolBar(bar);
         this.navigationBar = bar;
@@ -109,7 +109,7 @@ public class Window extends QMainWindow implements IForm {
     protected void indexChanged(int row){
         int idx = this.context.getMapper().currentIndex() + 1;
         int tot = this.context.getModel().rowCount();
-        this.setWindowTitle(this.title + " (" + idx + " of " + tot +")");
+        this.setWindowTitle(this.title + " (" + idx + " of " + tot +")"); //TODO: translate
         
         Boolean isPrivate = false;
         Method privateM = (Method) Register.queryPrivate(this.entityClass);
@@ -146,7 +146,7 @@ public class Window extends QMainWindow implements IForm {
     }
     
     public void deleteElement(){
-        Boolean res = Util.questionBox(this, "Delete element", "Sure you want to delete this element?");
+        Boolean res = Util.questionBox(this, tr("DELETE_ELEMENT_REQUEST"), tr("DELETE_ELEMENT_REQUEST_DESCRIPTION"));// "Sure you want to delete this element?");
         if( res == true ){
             this.context.deleteElement();
         }
