@@ -73,6 +73,7 @@ public class UIInspector {
         EntityBehavior behavior = new EntityBehavior(this.entityClassName);
         List<Column> criteria = new ArrayList();
         List<Column> privates = new ArrayList();
+        List<Column> exports = new ArrayList();
         List<Column> searchColumns = new ArrayList();
         List children = win.findChildren();
         for (int i=0; i<children.size(); i++){
@@ -126,6 +127,13 @@ public class UIInspector {
                     privates.add(column);
                 }
             }
+            // private dynamic property
+            Object exportProperty = child.property("export");
+            if (exportProperty != null){
+                if ((Boolean) exportProperty){
+                    exports.add(column);
+                }
+            }
         }
         // search columns
         Object searchColumnsProperty = win.property("searchcolumns");
@@ -141,6 +149,7 @@ public class UIInspector {
         }
         behavior.setCriteria(criteria);
         behavior.setPrivates(privates);
+        behavior.setExports(exports);
         behavior.setSearchColumns(searchColumns);
         Register.registerUtility(behavior, IEntityBehavior.class, this.entityClassName);
     }

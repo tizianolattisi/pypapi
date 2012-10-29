@@ -4,34 +4,49 @@
 <context>
     <name>com.axiastudio.pypapi.ui.PickerDialog</name>
     <message>
-        <location filename="../ui/PickerDialog.java" line="144"/>
+        <location filename="../ui/PickerDialog.java" line="146"/>
         <source>RESEARCH_AND_SELECTION</source>
         <translation>Research and selection</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="222"/>
+        <location filename="../ui/PickerDialog.java" line="228"/>
         <source>DAYS</source>
         <translation>days</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="223"/>
+        <location filename="../ui/PickerDialog.java" line="229"/>
         <source>WEEKS</source>
         <translation>weeks</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="224"/>
+        <location filename="../ui/PickerDialog.java" line="230"/>
         <source>MONTHS</source>
         <translation>months</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="225"/>
+        <location filename="../ui/PickerDialog.java" line="231"/>
         <source>YEARS</source>
         <translation>years</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="242"/>
+        <location filename="../ui/PickerDialog.java" line="248"/>
         <source>SELECT</source>
         <translation>select</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="363"/>
+        <source>EXPORT_CSV_FILE</source>
+        <translation>Export CSV file</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="369"/>
+        <source>CSV_EXPORTED</source>
+        <translation>File CSV exported</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="369"/>
+        <source>CSV_EXPORTED_DESCRIPTION</source>
+        <translation>The CSV file is exported correctly</translation>
     </message>
 </context>
 <context>

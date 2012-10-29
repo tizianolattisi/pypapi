@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QByteArray;
@@ -25,10 +26,13 @@ import com.trolltech.qt.core.QTemporaryFile;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
 import com.trolltech.qt.gui.*;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,6 +154,10 @@ public class Util {
         StandardButton res = QMessageBox.warning(parent, title, description);
     }
 
+    public static void informationBox(QWidget parent, String title, String description){
+        StandardButton res = QMessageBox.information(parent, title, description);
+    }
+    
     public static Boolean questionBox(QWidget parent, String title, String description){
         int res = QMessageBox.question(parent, title, description, 
                 QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No);
@@ -211,6 +219,50 @@ public class Util {
             return (QMdiArea) out;
         }
         return null;
+    }
+    
+    /*
+     * Export a list of entities in a csv content
+     */
+    public static String exportToCvs(List entities, List<Column> columns, Class entityClass){
+        List<Method> methods = new ArrayList();
+        String out = "";
+        for( Column column: columns ){
+            Method method = Resolver.getterFromFieldName(entityClass, column.getName());
+            methods.add(method);
+        }
+        for( Object entity: entities ){
+            String row = "";
+            for( Method method: methods ){
+                Object value=null;
+                Class<?> returnType = method.getReturnType();
+                try {
+                    value = method.invoke(entity);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
+                    Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                if( String.class == returnType ){
+                    row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
+                } else if( Boolean.class == returnType ) {
+                    Boolean b = (Boolean) value;
+                    row += b.toString().toUpperCase();
+                } else if( returnType.isEnum() ) {
+                    row += ",\"" + value.toString() + "\"";
+                } else if( Date.class == returnType ) {
+                    row += ",\"" + value.toString() + "\"";
+                } else if( Serializable.class.isAssignableFrom(returnType) ) {
+                    row += ",\"" + value.toString() + "\"";
+                } else {
+                    row += "," + value.toString();
+                }
+            }
+            out += "\n" + row.substring(1);
+        }
+        return out;
     }
     
 } 

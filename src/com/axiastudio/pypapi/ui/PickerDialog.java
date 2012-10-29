@@ -100,6 +100,7 @@ public class PickerDialog extends QDialog {
     private QToolButton buttonSearch;
     private QToolButton buttonCancel;
     private QToolButton buttonAccept;
+    private QToolButton buttonExport;
     private Boolean isCriteria;
     private HashMap criteriaWidgets;
     private HashMap filters;
@@ -124,6 +125,7 @@ public class PickerDialog extends QDialog {
             if (criteria.size()>0){
                 this.addCriteria(criteria);
                 this.buttonAccept.setEnabled(false);
+                this.buttonExport.setEnabled(false);
                 this.isCriteria = true;
             }
         } else {
@@ -168,6 +170,9 @@ public class PickerDialog extends QDialog {
         this.buttonAccept.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/accept.png"));
         this.buttonAccept.clicked.connect(this, "accept()");
         this.tableView.doubleClicked.connect(this, "accept()");
+        this.buttonExport = new QToolButton(this);
+        this.buttonExport.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/export.png"));
+        this.buttonExport.clicked.connect(this, "export()");
         QHBoxLayout buttonLayout = new QHBoxLayout();
         buttonLayout.setSpacing(4);
         buttonLayout.addWidget(this.filterLineEdit);
@@ -176,6 +181,7 @@ public class PickerDialog extends QDialog {
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer);
         buttonLayout.addWidget(this.buttonSearch);
+        buttonLayout.addWidget(this.buttonExport);
         QSpacerItem spacer2 = new QSpacerItem(40, 20, QSizePolicy.Policy.Minimum,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer2);
@@ -350,6 +356,22 @@ public class PickerDialog extends QDialog {
                 "selectRows(QItemSelection, QItemSelection)");
     }
     
+    public final void export(){
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
+        List<Column> columns = behavior.getExports();
+        String content = Util.exportToCvs(this.selection, columns, this.controller.getEntityClass());
+        String saveFileName = QFileDialog.getSaveFileName(this, tr("EXPORT_CSV_FILE"), ".", new QFileDialog.Filter("CSV file (*.csv)"));
+        if( saveFileName != null ){
+            QFile csvFile = new QFile(saveFileName);
+            if( csvFile.open(new QFile.OpenMode(QFile.OpenModeFlag.WriteOnly, QFile.OpenModeFlag.Unbuffered)) ){
+                if( csvFile.write(new QByteArray(content)) > 0 ){
+                    csvFile.close();
+                    Util.informationBox(this, tr("CSV_EXPORTED"), tr("CSV_EXPORTED_DESCRIPTION"));
+                }
+            }
+        }
+    }
+    
     private void applyFilter(String text){
         TableModel model = (TableModel) this.tableView.model();
         if(text.length()==0){
@@ -389,8 +411,9 @@ public class PickerDialog extends QDialog {
         for (Integer idx: deselectedIndexes){
             boolean res = this.selection.remove(model.getEntityByRow(idx));
         }
-        this.buttonAccept.setEnabled(this.selection.size()>0);
-
+        Boolean isSelection = this.selection.size()>0;
+        this.buttonAccept.setEnabled(isSelection);
+        this.buttonExport.setEnabled(isSelection);
     }
     
     public List getSelection() {

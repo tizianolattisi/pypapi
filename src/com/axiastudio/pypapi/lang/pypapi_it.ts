@@ -4,34 +4,49 @@
 <context>
     <name>com.axiastudio.pypapi.ui.PickerDialog</name>
     <message>
-        <location filename="../ui/PickerDialog.java" line="144"/>
+        <location filename="../ui/PickerDialog.java" line="146"/>
         <source>RESEARCH_AND_SELECTION</source>
         <translation>Ricerca e selezione</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="222"/>
+        <location filename="../ui/PickerDialog.java" line="228"/>
         <source>DAYS</source>
         <translation>giorni</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="223"/>
+        <location filename="../ui/PickerDialog.java" line="229"/>
         <source>WEEKS</source>
         <translation>settimane</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="224"/>
+        <location filename="../ui/PickerDialog.java" line="230"/>
         <source>MONTHS</source>
         <translation>mesi</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="225"/>
+        <location filename="../ui/PickerDialog.java" line="231"/>
         <source>YEARS</source>
         <translation>anni</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="242"/>
+        <location filename="../ui/PickerDialog.java" line="248"/>
         <source>SELECT</source>
         <translation>seleziona</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="363"/>
+        <source>EXPORT_CSV_FILE</source>
+        <translation>Esporta file CSV</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="369"/>
+        <source>CSV_EXPORTED</source>
+        <translation>File CSV esportato</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="369"/>
+        <source>CSV_EXPORTED_DESCRIPTION</source>
+        <translation>Il file CSV è stato esportato correttamente</translation>
     </message>
 </context>
 <context>
