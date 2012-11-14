@@ -167,16 +167,17 @@ public class PyPaPiTableView extends QTableView{
             if( form == null ){
                 return;
             }
-            if( QDialog.class.isInstance(form) ){
-                ((QDialog) form).setModal(true);
-                IForm parent = (IForm) Util.findParentForm(this);
-                parent.getContext().getDirty();
+            if( Dialog.class.isInstance(form) ){
+                ((Dialog) form).setModal(true);                
             } else {
                 QMdiArea workspace = Util.findParentMdiArea(this);
                 if( workspace != null ){
                     workspace.addSubWindow((QMainWindow) form);
                 }
             }
+            IForm parent = (IForm) Util.findParentForm(this);
+            // when the form's data is changed, get the parent's data dirty
+            form.getContext().getModel().dataChanged.connect(parent.getContext().getModel().dataChanged);
             form.show();
         }
     }
