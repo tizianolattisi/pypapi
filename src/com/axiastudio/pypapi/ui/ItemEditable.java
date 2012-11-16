@@ -75,13 +75,7 @@ public class ItemEditable extends Item {
         return true;
     }
 
-    public Object getEdit(){
-        Object result = this.value;
-        if( result == null ){
-            result = "";
-        }
-        return result;
-    }
+
     
     public boolean setEdit(Object objValue){
         boolean res = this.set(objValue);

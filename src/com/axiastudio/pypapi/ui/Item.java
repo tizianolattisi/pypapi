@@ -90,6 +90,14 @@ public class Item {
         return result;
     }
     
+        public Object getEdit(){
+        Object result = this.value;
+        if( result == null ){
+            result = "";
+        }
+        return result;
+    }
+        
     public Qt.CheckState getCheckstate(){
         return null;
     }
