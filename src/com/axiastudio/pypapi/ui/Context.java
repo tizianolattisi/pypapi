@@ -201,10 +201,19 @@ public final class Context extends QObject {
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         c.delete(this.primaryDc.currentEntity);
         int row = this.mapper.currentIndex();
-        this.mapper.toPrevious();
-        this.model.removeRows(row, 1, idx);
-        this.isDirty = false;
-        this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+        if( this.mapper.model().rowCount() > 1 ){
+            if( !this.atBof ){
+                this.mapper.toPrevious();
+            } else {
+                this.mapper.toNext();
+            }
+            this.model.removeRows(row, 1, idx);
+            this.isDirty = false;
+            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+        } else {
+            this.model.removeRows(row, 1, idx);
+            this.insertElement();
+        }
     }
 
     public void commitChanges(){
@@ -223,7 +232,16 @@ public final class Context extends QObject {
     }
 
     public void cancelChanges(){
-        this.refreshElement();
+        if( this.primaryDc.currentEntity.hashCode() == 0){
+            QModelIndex idx=null;
+            int row = this.mapper.currentIndex();
+            this.mapper.toPrevious();
+            this.model.removeRows(row, 1, idx);
+            this.isDirty = false;
+            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+        } else {
+            this.refreshElement();
+        }
     }
     
     public void refreshElement(){
