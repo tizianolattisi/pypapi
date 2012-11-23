@@ -62,6 +62,7 @@ public class PyPaPiTableView extends QTableView{
         this.setSelectionBehavior(SelectionBehavior.SelectRows);
         this.setSortingEnabled(true);
         this.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.Interactive);
+        this.verticalHeader().setFixedWidth(30);
         this.verticalHeader().hide();
         this.initializeMenu();
 
@@ -119,12 +120,14 @@ public class PyPaPiTableView extends QTableView{
             this.selectionModel().selectionChanged.connect(this, "refreshButtons()");
             this.refreshConnected = true;
         }
+        this.verticalHeader().show();
         this.refreshButtons();
         this.toolBar.show();
     }
 
     @Override
     protected void leaveEvent(QEvent event){
+        this.verticalHeader().hide();
         this.toolBar.hide();
     }
 

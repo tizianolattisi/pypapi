@@ -40,11 +40,18 @@ public class TableModel extends QAbstractTableModel {
     private HashMap cache;
     private Context contextHandle;
     private boolean editable=true;
+    private boolean showRowNumber=false;
 
     @Override
     public Object headerData(int i, Orientation orntn, int i1) {
-        if( i1 == Qt.ItemDataRole.DisplayRole && orntn == Qt.Orientation.Horizontal ){
-            return this.columns.get(i).getLabel();
+        if( i1 == Qt.ItemDataRole.DisplayRole ){
+            if( orntn == Qt.Orientation.Horizontal  ){
+                return this.columns.get(i).getLabel();
+            } else if ( orntn == Qt.Orientation.Vertical  ){
+                if( !this.showRowNumber ){
+                    return "";
+                }
+            }
         }
         return super.headerData(i, orntn, i1);
     }
@@ -263,6 +270,14 @@ public class TableModel extends QAbstractTableModel {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public boolean isShowRowNumber() {
+        return showRowNumber;
+    }
+
+    public void setShowRowNumber(boolean showRowNumber) {
+        this.showRowNumber = showRowNumber;
     }
     
     
