@@ -19,6 +19,7 @@ package com.axiastudio.pypapi;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.IFactory;
+import com.axiastudio.pypapi.plugins.IPlugin;
 import com.axiastudio.pypapi.ui.IForm;
 import com.axiastudio.pypapi.ui.IUIFile;
 import com.axiastudio.pypapi.ui.UIInspector;
@@ -44,6 +45,7 @@ public class Register {
     private static HashMap relations = new HashMap();
     private static HashMap validators = new HashMap();
     private static HashMap privates = new HashMap();
+    private static HashMap plugins = new HashMap();
 
     /**
      * Registers the unnamed utility for the given interface.
@@ -314,6 +316,40 @@ public class Register {
         return related;
     }
 
+    /**
+     * Registers a plugin for the form.
+     * 
+     * @param plugin The plugin.
+     * @param factory The class of the form.
+     */
+    public static void registerPlugin(IPlugin plugin, Class factory){
+        List<IPlugin>  factoryPlugins;
+        Object hmObject = Register.plugins.get(factory);
+        if( hmObject != null ){
+            factoryPlugins = (List<IPlugin>) hmObject;
+        } else {
+            factoryPlugins = new ArrayList();
+        }
+        factoryPlugins.add(plugin);
+        Register.plugins.put(factory, factoryPlugins);
+    }
+    
+    /**
+     * Query the the list of plugins on the given form.
+     * 
+     * @param factory The class of the form
+     * @return  The list of plugins
+     * 
+     */
+    public static Object queryPlugins(Class factory){
+        List<IPlugin> get = (List<IPlugin>) Register.plugins.get(factory);
+        if( get == null ){
+            return new ArrayList();
+        }
+        return get;
+    }
+    
+    
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory){
         Register.registerForm(emf, ui, factory, Window.class, "");
     }        

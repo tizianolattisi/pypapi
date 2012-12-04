@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Application;
 import com.axiastudio.pypapi.Consts;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.plugins.IPlugin;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiNavigationBar;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
@@ -76,10 +77,16 @@ public class Window extends QMainWindow implements IForm {
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
         configurator.configure(store);
+        // standard navigation bar
         PyPaPiNavigationBar bar = new PyPaPiNavigationBar(tr("NAVIGATION"), this);
         bar.setMovable(true);
         this.addToolBar(bar);
         this.navigationBar = bar;
+        // plugins
+        List<IPlugin> plugins = (List<IPlugin>) Register.queryPlugins(this.getClass());
+        for( IPlugin plugin: plugins ){
+            plugin.install(this);
+        }
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
         this.context.getMapper().toFirst();
         bar.refresh();
