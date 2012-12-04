@@ -40,22 +40,22 @@ public class PyPaPiToolBar extends QToolBar {
     }
 
     protected QAction insertButton(String actionName, String text, String iconName,
-                                String toolTip, QObject agent){
+                                String toolTip, Object agent){
         return this.insertButton(actionName, text, iconName, toolTip, agent, null, null);
     }
 
     protected QAction insertButton(String actionName, String text, String iconName,
-                                String toolTip, QObject agent, StandardKey shortcut){
+                                String toolTip, Object agent, StandardKey shortcut){
         return this.insertButton(actionName, text, iconName, toolTip, agent, null, shortcut);
     }
 
     protected QAction insertButton(String actionName, String text, String iconName,
-                                String toolTip, QObject agent, QKeySequence shortcut){
+                                String toolTip, Object agent, QKeySequence shortcut){
         return this.insertButton(actionName, text, iconName, toolTip, agent, shortcut, null);
     }
 
     private QAction insertButton(String actionName, String text, String iconName,
-                                String toolTip, QObject agent, QKeySequence qks, StandardKey sk){
+                                String toolTip, Object agent, QKeySequence qks, StandardKey sk){
         QAction action = new QAction(this.parentForm);
         QIcon icon = new QIcon(iconName);
         action.setObjectName(actionName);
