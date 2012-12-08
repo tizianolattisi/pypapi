@@ -72,23 +72,16 @@
 
     -->
     <target name="-pre-init">
-        <exec outputproperty="version.number" executable="git">
-            <arg value="tag" />
-        </exec>
         <tstamp>
             <format property="NOW" pattern="yyyy-MM-dd HH:mm:ss z" />
         </tstamp>
-        <exec outputproperty="git.version" executable="git">
-            <arg value="rev-parse" />
-            <arg value="HEAD" />
-        </exec>
-        <property name="dist.jar" value="dist/PyPaPi-${version.number}.jar"/>
+        <property name="dist.jar" value="dist/PyPaPi.jar"/>
         <manifest file="MANIFEST.MF">
             <attribute name="Specification-Title" value="${application.title}" />
-            <attribute name="Specification-Version" value="${version.num}" />
+            <attribute name="Specification-Version" value="0.2" />
             <attribute name="Specification-Vendor" value="${application.vendor}" />
             <attribute name="Implementation-Title" value="${implementation.title}" />
-            <attribute name="Implementation-Version" value="${git.version}" />
+            <attribute name="Implementation-Version" value="0.2" />
             <attribute name="Implementation-Date" value="${NOW}" />
             <attribute name="Implementation-Vendor" value="${application.vendor}" />
         </manifest>
