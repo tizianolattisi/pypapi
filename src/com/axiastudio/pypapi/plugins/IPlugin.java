@@ -16,14 +16,15 @@
  */
 package com.axiastudio.pypapi.plugins;
 
-import com.axiastudio.pypapi.ui.Window;
+import com.trolltech.qt.gui.QWidget;
 
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public interface IPlugin {
-    
-    void install(Window window);
+                
+    void install(QWidget parent);
+    String getName();
     
 }
