@@ -65,9 +65,7 @@ public class Item {
         Method getter = Resolver.getterFromFieldName(this.getClass(), name);
         try {
             result = getter.invoke(this);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalAccessException | IllegalArgumentException ex) {
             Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
             String msg = "Unable to invoke getter for attribute '" + column.getName() +"'";
@@ -90,7 +88,7 @@ public class Item {
         return result;
     }
     
-        public Object getEdit(){
+    public Object getEdit(){
         Object result = this.value;
         if( result == null ){
             result = "";

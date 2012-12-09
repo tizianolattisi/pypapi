@@ -238,11 +238,7 @@ public class PyPaPiTableView extends QTableView{
                     if( adapter != null ){
                         try {
                             adapted = adapter.invoke(null, entity);
-                        } catch (IllegalAccessException ex) {
-                            Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IllegalArgumentException ex) {
-                            Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InvocationTargetException ex) {
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                             Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
@@ -251,13 +247,7 @@ public class PyPaPiTableView extends QTableView{
                             try {
                                 adapted = classTo.newInstance();
                                 setters.get(0).invoke(adapted, entity);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-                                Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InstantiationException ex) {
-                                Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalAccessException ex) {
+                            } catch (IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
                                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
@@ -276,9 +266,7 @@ public class PyPaPiTableView extends QTableView{
             try {
                 Object notAdapted = collectionClass.newInstance();
                 model.getContextHandle().insertElement(notAdapted);
-            } catch (InstantiationException ex) {
-                Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
+            } catch (InstantiationException | IllegalAccessException ex) {
                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
             }
 
