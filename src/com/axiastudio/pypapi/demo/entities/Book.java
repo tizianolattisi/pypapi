@@ -16,7 +16,7 @@
  */
 package com.axiastudio.pypapi.demo.entities;
 
-import com.axiastudio.pypapi.db.Adapter;
+import com.axiastudio.pypapi.annotations.Adapter;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;

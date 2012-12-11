@@ -43,7 +43,7 @@ public class Register {
     private static HashMap utilities = new HashMap();
     private static HashMap adapters = new HashMap();
     private static HashMap relations = new HashMap();
-    private static HashMap validators = new HashMap();
+    private static HashMap callbacks = new HashMap();
     private static HashMap privates = new HashMap();
     private static HashMap plugins = new HashMap();
 
@@ -204,31 +204,31 @@ public class Register {
     }
 
     /**
-     * Registers validators from a list of methods.
+     * Registers callbacks from a list of methods.
      * 
      * @param methods The list of methods
      */
-    public static void registerValidators(List<Method> methods){
-        for(Method validator: methods){
-            Class<?>[] parameterTypes = validator.getParameterTypes();
+    public static void registerCallbacks(List<Method> methods){
+        for(Method callback: methods){
+            Class<?>[] parameterTypes = callback.getParameterTypes();
             Class<?> forClass = null;
             if( parameterTypes.length == 1){
                 forClass = parameterTypes[0];
             }
             if( forClass != null ){
-                Register.registerValidator(validator, forClass);
+                Register.registerCallback(callback, forClass);
             }
         }
     }
 
     /**
-     * Registers a validator for a class.
+     * Registers a callback for a class.
      * 
-     * @param validator The validator itself
+     * @param callback The callback itself
      * @param klass The class
      */
-    public static void registerValidator(Object validator, Class klass){
-        Register.validators.put(klass, validator);
+    public static void registerCallback(Object callback, Class klass){
+        Register.callbacks.put(klass, callback);
     }
 
     /**
@@ -237,9 +237,9 @@ public class Register {
      * @param klass The class
      */
     public static Object queryValidator(Class klass){
-        return Register.validators.get(klass);
+        return Register.callbacks.get(klass);
     }
-    
+
     /**
      * Registers privates from a list of methods.
      * 
