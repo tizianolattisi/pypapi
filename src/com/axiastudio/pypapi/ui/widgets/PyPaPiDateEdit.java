@@ -27,6 +27,7 @@ public class PyPaPiDateEdit extends QDateEdit {
     private QMenu menuPopup;
     private QAction actionNull;
     private Boolean isNull;
+    private Boolean isInitiallyEnabled=null;
     
     static final String NULLSTYLE="color: white";
 
@@ -63,6 +64,10 @@ public class PyPaPiDateEdit extends QDateEdit {
     
     
     private void updateStyleSheet(){
+        if( this.isInitiallyEnabled == null){
+            // XXX: here, because at creation time it's ever enabled.
+            this.isInitiallyEnabled = this.isEnabled();
+        }
         QDate date = this.date();
         String style;
         if( this.date().equals(this.minimumDate())){
@@ -70,13 +75,18 @@ public class PyPaPiDateEdit extends QDateEdit {
             this.setEnabled(false);
         } else {
             style = "";
-            this.setEnabled(true);
+            if( this.isInitiallyEnabled ){
+                this.setEnabled(true);
+            }
         }
         this.setStyleSheet(style);
     }
 
     @Override
     public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( this.isInitiallyEnabled == null || this.isInitiallyEnabled == false ){
+            return super.eventFilter(qo, qevent);
+        }
         if( this.date().equals(this.minimumDate()) ){
             if( qevent.type() == QEvent.Type.MouseButtonPress ){
                 this.setDate(QDate.currentDate());
