@@ -16,6 +16,8 @@
  */
 package com.axiastudio.pypapi;
 
+import com.axiastudio.pypapi.annotations.Callback;
+import com.axiastudio.pypapi.annotations.CallbackType;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.IFactory;
@@ -43,7 +45,7 @@ public class Register {
     private static HashMap utilities = new HashMap();
     private static HashMap adapters = new HashMap();
     private static HashMap relations = new HashMap();
-    private static HashMap callbacks = new HashMap();
+    private static HashMap<Class, HashMap> callbacks = new HashMap();
     private static HashMap privates = new HashMap();
     private static HashMap plugins = new HashMap();
 
@@ -215,8 +217,9 @@ public class Register {
             if( parameterTypes.length == 1){
                 forClass = parameterTypes[0];
             }
+            CallbackType type = callback.getAnnotation(Callback.class).type();
             if( forClass != null ){
-                Register.registerCallback(callback, forClass);
+                Register.registerCallback(callback, forClass, type);
             }
         }
     }
@@ -226,18 +229,27 @@ public class Register {
      * 
      * @param callback The callback itself
      * @param klass The class
+     * @param type The callback type (before create, after create, etc)
      */
-    public static void registerCallback(Object callback, Class klass){
-        Register.callbacks.put(klass, callback);
+    public static void registerCallback(Object callback, Class klass, CallbackType type){
+        HashMap classCallbacks = Register.callbacks.get(klass);
+        if( classCallbacks == null ){
+            HashMap<CallbackType, Method> hm = new HashMap();
+            Register.callbacks.put(klass, hm);
+            classCallbacks = hm;
+        }
+        classCallbacks.put(type, callback);
     }
 
     /**
-     * Query the validator for a class.
+     * Query the callback for a class.
      * 
      * @param klass The class
      */
-    public static Object queryValidator(Class klass){
-        return Register.callbacks.get(klass);
+    public static Method queryCallback(Class klass, CallbackType type){
+        HashMap classCallbacks = Register.callbacks.get(klass);
+        Method callback = (Method) classCallbacks.get(type);
+        return callback;
     }
 
     /**

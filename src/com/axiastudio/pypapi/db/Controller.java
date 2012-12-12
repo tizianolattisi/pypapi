@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.db;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
+import com.axiastudio.pypapi.annotations.CallbackType;
 import com.axiastudio.pypapi.ui.CellEditorType;
 import com.axiastudio.pypapi.ui.Column;
 import java.lang.annotation.Annotation;
@@ -195,7 +196,7 @@ public class Controller implements IController {
     public Validation commit(Object entity){
         // XXX: if no CascadeType.ALL?
         this.parentize(entity);
-        Method validator = (Method) Register.queryValidator(entity.getClass());
+        Method validator = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
         Validation val = new Validation(true);
         if( validator != null ){
             try {
