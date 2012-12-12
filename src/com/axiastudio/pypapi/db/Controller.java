@@ -196,16 +196,18 @@ public class Controller implements IController {
     public Validation commit(Object entity){
         // XXX: if no CascadeType.ALL?
         this.parentize(entity);
-        Method validator = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
-        Validation val = new Validation(true);
-        if( validator != null ){
+        
+        // BEFORECOMMIT
+        Method beforeCommit = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
+        Validation beforeValidation = new Validation(true);
+        if( beforeCommit != null ){
             try {
-                val = (Validation) validator.invoke(null, entity);
+                beforeValidation = (Validation) beforeCommit.invoke(null, entity);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if( val.getResponse() == true ){
+        if( beforeValidation.getResponse() == true ){
             EntityManager em = this.getEntityManager();
             em.getTransaction().begin();
             Object merged = em.merge(entity);
@@ -220,10 +222,25 @@ public class Controller implements IController {
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-            val.setEntity(merged);
+            beforeValidation.setEntity(merged);
             em.close();
+            
+            // AFTER COMMIT
+
+            Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
+            Validation afterValidation = new Validation(true);
+            if( afterCommit != null ){
+                try {
+                    afterValidation = (Validation) afterCommit.invoke(null, merged);
+                    afterValidation.setEntity(merged);
+                    return afterValidation;
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
         }
-        return val;
+        return beforeValidation;
     }
     
     @Override
