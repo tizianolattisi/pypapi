@@ -248,7 +248,10 @@ public class Register {
      */
     public static Method queryCallback(Class klass, CallbackType type){
         HashMap classCallbacks = Register.callbacks.get(klass);
-        Method callback = (Method) classCallbacks.get(type);
+        Method callback=null;
+        if( classCallbacks != null ){
+            callback = (Method) classCallbacks.get(type);
+        }
         return callback;
     }
 
