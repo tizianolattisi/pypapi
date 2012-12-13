@@ -43,9 +43,6 @@ public class LookupItemField extends ItemField {
         Object lookupped = null;
         Method m = null;
         Object result = super.get();
-        if( result == null ){
-            return null;
-        }
         return this.column.getLookupStore().indexOf(result);
     }
 
