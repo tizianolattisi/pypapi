@@ -121,7 +121,7 @@ public class Resolver {
      * Find the getter method of a Serializable from the field name.
      * 
      * @param entityClass The Serializable class
-     * @param fieldName The name of the field
+     * @param name The name of the field
      * @return  The accessory getter method
      * 
      */    
@@ -140,7 +140,7 @@ public class Resolver {
      * Find the setter method of a Serializable from the field name.
      * 
      * @param entityClass The Serializable class
-     * @param fieldName The name of the field
+     * @param name The name of the field
      * @param valueType The value type of the field
      * @return  The accessory setter method
      * 
@@ -164,7 +164,7 @@ public class Resolver {
      * Find the setter method of a Serializable from the field name.
      * 
      * @param entityClass The Serializable class
-     * @param fieldName The name of the field
+     * @param name The name of the field
      * @return  The accessory setter method
      * 
      */        
