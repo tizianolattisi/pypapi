@@ -85,6 +85,17 @@ public class PyPaPiComboBox extends QComboBox {
         }
     }
 
+    /*
+     *  Select the corresponding object in the store
+     */
+    public boolean select(Object object) {
+        int i = this.lookupStore.indexOf(object);
+        this.setCurrentIndex(i);
+        this.setEditable(false);
+        this.setFocus();
+        return true;
+    }
+    
     @Override
     public boolean eventFilter(QObject qo, QEvent qevent) {
         if( qevent.type() == QEvent.Type.MouseButtonPress ){
