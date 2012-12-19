@@ -215,6 +215,9 @@ public class Util {
             Method method = Resolver.getterFromFieldName(entityClass, column.getName());
             methods.add(method);
         }
+        if( methods.size() == 0 ){
+            return null;
+        }
         for( Object entity: entities ){
             String row = "";
             for( Method method: methods ){
