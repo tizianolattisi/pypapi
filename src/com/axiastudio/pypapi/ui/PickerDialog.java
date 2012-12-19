@@ -25,10 +25,13 @@ import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -101,6 +104,7 @@ public class PickerDialog extends QDialog {
     private QToolButton buttonCancel;
     private QToolButton buttonAccept;
     private QToolButton buttonExport;
+    private QToolButton buttonQuickInsert;
     private Boolean isCriteria;
     private HashMap criteriaWidgets;
     private HashMap filters;
@@ -118,6 +122,7 @@ public class PickerDialog extends QDialog {
         this.criteriaWidgets = new HashMap();
         this.filters = new HashMap();
         this.init();
+        this.buttonQuickInsert.setEnabled(false);
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> criteria = behavior.getCriteria();
         this.isCriteria = false;
@@ -173,6 +178,9 @@ public class PickerDialog extends QDialog {
         this.buttonExport = new QToolButton(this);
         this.buttonExport.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/export.png"));
         this.buttonExport.clicked.connect(this, "export()");
+        this.buttonQuickInsert = new QToolButton(this);
+        this.buttonQuickInsert.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/add.png"));
+        this.buttonQuickInsert.clicked.connect(this, "quickInsert()");
         QHBoxLayout buttonLayout = new QHBoxLayout();
         buttonLayout.setSpacing(4);
         buttonLayout.addWidget(this.filterLineEdit);
@@ -185,6 +193,10 @@ public class PickerDialog extends QDialog {
         QSpacerItem spacer2 = new QSpacerItem(40, 20, QSizePolicy.Policy.Minimum,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer2);
+        buttonLayout.addWidget(this.buttonQuickInsert);
+        QSpacerItem spacer3 = new QSpacerItem(40, 20, QSizePolicy.Policy.Minimum,
+                QSizePolicy.Policy.Minimum);
+        buttonLayout.addItem(spacer3);
         buttonLayout.addWidget(this.buttonCancel);
         buttonLayout.addWidget(this.buttonAccept);
         this.layout.addLayout(buttonLayout);
@@ -354,12 +366,17 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
+        this.buttonQuickInsert.setEnabled(supersetStore.size() == 0);
     }
     
     public final void export(){
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> columns = behavior.getExports();
         String content = Util.exportToCvs(this.selection, columns, this.controller.getEntityClass());
+        if( content == null ){
+            QMessageBox.information(this, tr("Export error"), tr("No fields defined for export to CSV"));
+            return;
+        }
         String saveFileName = QFileDialog.getSaveFileName(this, tr("EXPORT_CSV_FILE"), ".", new QFileDialog.Filter("CSV file (*.csv)"));
         if( saveFileName != null ){
             QFile csvFile = new QFile(saveFileName);
@@ -369,6 +386,21 @@ public class PickerDialog extends QDialog {
                     Util.informationBox(this, tr("CSV_EXPORTED"), tr("CSV_EXPORTED_DESCRIPTION"));
                 }
             }
+        }
+    }
+    
+    private void quickInsert(){
+        try {
+            Class klass = (Class) Register.queryUtility(IQuickInsertDialog.class, this.controller.getClassName());
+            IQuickInsertDialog form = (IQuickInsertDialog) klass.getDeclaredConstructor(QWidget.class).newInstance(this);
+            int res = form.exec();
+            if( res == 1 ){
+                this.selection.clear();
+                this.selection.add(form.getEntity());
+                this.accept();
+            }
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+            Logger.getLogger(PickerDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
