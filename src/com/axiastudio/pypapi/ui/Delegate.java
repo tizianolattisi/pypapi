@@ -50,7 +50,9 @@ public class Delegate extends QItemDelegate {
             QSpinBox spinBox = new QSpinBox(qw);
             return spinBox;
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
-            return super.createEditor(qw, qsovi, qmi);
+            QCheckBox checkBox = new QCheckBox(qw);
+            return checkBox;
+            //return super.createEditor(qw, qsovi, qmi);
         } else if( column.getEditorType() == CellEditorType.DATE ){
             
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
@@ -81,6 +83,14 @@ public class Delegate extends QItemDelegate {
             super.setModelData(qw, qaim, qmi);
         } else if( column.getEditorType() == CellEditorType.DATE ){
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
+            Qt.CheckState checkState = ((QCheckBox) qw).checkState();
+            Boolean value = null;
+            if(checkState == Qt.CheckState.Checked){
+                value = true;
+            } else if (checkState == Qt.CheckState.Unchecked) {
+                value = false;
+            }
+            ((TableModel) qaim).setData(qmi, value);
         } else if( column.getEditorType() == CellEditorType.LOOKUP ){
         }
         //super.setModelData(qw, qaim, qmi);

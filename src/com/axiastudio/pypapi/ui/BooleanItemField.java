@@ -56,6 +56,16 @@ public class BooleanItemField extends ItemField {
     }
     
     
+    public Boolean setCheckstate(Object checkState){
+        Boolean boolValue = null;
+        if( checkState == Qt.CheckState.Checked ){
+            boolValue = true;
+        } else if( checkState == Qt.CheckState.Unchecked ){
+            boolValue = false;
+        }
+        return this.set(boolValue);
+    }
+
     public Boolean setCheckstate(Boolean objValue){
         return this.set(objValue);
     }
