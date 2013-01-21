@@ -61,8 +61,13 @@ public class Window extends QMainWindow implements IForm {
         this.uiFile = uiFile;
         this.title = title;
         if( uiFile != null ){
-            QFile file = Util.ui2jui(new QFile(uiFile));
-            this.loadUi(file);
+            QFile qFile = new QFile(uiFile);
+            if( qFile.exists() ){
+                QFile file = Util.ui2jui(qFile);
+                this.loadUi(file);
+            } else {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, "{0} file is not present.", uiFile);
+            }
         } else {
             this.autoLayout();
         }
