@@ -16,7 +16,7 @@
  */
 package com.axiastudio.pypapi;
 
-import com.axiastudio.pypapi.db.Adapter;
+import com.axiastudio.pypapi.annotations.Adapter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

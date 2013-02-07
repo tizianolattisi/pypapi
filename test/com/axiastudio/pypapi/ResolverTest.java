@@ -16,7 +16,7 @@
  */
 package com.axiastudio.pypapi;
 
-import com.axiastudio.pypapi.db.Adapter;
+import com.axiastudio.pypapi.annotations.Adapter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,7 +109,7 @@ public class ResolverTest {
     @Test
     public void testAdaptersFromEntityClass() throws NoSuchMethodException{
         Method method = EntityClass.class.getMethod("classAdapter", EntityClass.class);
-        assert Resolver.adaptersFromEntityClass(EntityClass.class).contains(method);
+        assert Resolver.adaptersFromClass(EntityClass.class).contains(method);
     }
     
     @Test
