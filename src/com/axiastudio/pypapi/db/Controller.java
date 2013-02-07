@@ -78,7 +78,6 @@ public class Controller implements IController {
         CriteriaQuery<Object> cq = cb.createQuery();
         Class<?> returnType = this.entityClass;
         Root from = cq.from(returnType);
-        CriteriaQuery<Object> select = cq.select(from);
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             Predicate predicate=null;
@@ -93,7 +92,6 @@ public class Controller implements IController {
                 Boolean value = (Boolean) criteria.get(column);
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             } else if( column.getEditorType().equals(CellEditorType.DATE) ){
-                // TODO: complete...
                 List values = (List) criteria.get(column);
                 GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
                 GregorianCalendar gcEnd = new GregorianCalendar();
