@@ -93,7 +93,7 @@ public class Column {
             this.editorType = CellEditorType.BOOLEAN;
             return item;
         } else if( returnType == Date.class ){
-            DateItemField item = new DateItemField(this, result, setter, entity);
+            DateTimeItemField item = new DateTimeItemField(this, result, setter, entity);
             this.editorType = CellEditorType.DATE;
             return item;
         } else if( returnType.isEnum() ) {

@@ -22,11 +22,8 @@ import com.trolltech.qt.gui.*;
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
- * 
- * XXX: unused!
- * 
  */
-public class PyPaPiDateEdit extends QDateEdit {
+public class PyPaPiDateTimeEdit extends QDateTimeEdit {
     private QMenu menuPopup;
     private QAction actionNull;
     private Boolean isNull;
@@ -34,12 +31,12 @@ public class PyPaPiDateEdit extends QDateEdit {
     
     static final String NULLSTYLE="color: white";
 
-    public PyPaPiDateEdit(QWidget parent) {
+    public PyPaPiDateTimeEdit(QWidget parent) {
         super(parent);
         this.init();
     }
     
-    public PyPaPiDateEdit() {
+    public PyPaPiDateTimeEdit() {
         this(null);
     }
 
@@ -60,7 +57,7 @@ public class PyPaPiDateEdit extends QDateEdit {
         this.setStyleSheet("");
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
         if(action.equals(this.actionNull)){
-            this.setDate(this.minimumDate());
+            this.setDateTime(this.minimumDateTime());
             this.setStyleSheet(NULLSTYLE);
         }
     }
@@ -72,7 +69,7 @@ public class PyPaPiDateEdit extends QDateEdit {
             this.isInitiallyEnabled = this.isEnabled();
         }
         String style;
-        if( this.date().equals(this.minimumDate())){
+        if( this.dateTime().equals(this.minimumDateTime())){
             style = NULLSTYLE;
             this.setEnabled(false);
         } else {
@@ -89,9 +86,9 @@ public class PyPaPiDateEdit extends QDateEdit {
         if( this.isInitiallyEnabled == null || this.isInitiallyEnabled == false ){
             return super.eventFilter(qo, qevent);
         }
-        if( this.date().equals(this.minimumDate()) ){
+        if( this.dateTime().equals(this.minimumDateTime()) ){
             if( qevent.type() == QEvent.Type.MouseButtonPress ){
-                this.setDate(QDate.currentDate());
+                this.setDateTime(QDateTime.currentDateTime());
                 this.setFocus();
                 this.updateStyleSheet();
                 return true;
@@ -100,7 +97,7 @@ public class PyPaPiDateEdit extends QDateEdit {
             if( qevent.type() == QEvent.Type.KeyPress ){
                 QKeyEvent qkevent = (QKeyEvent) qevent;
                 if ( qkevent.key() == Qt.Key.Key_Delete.value() ){
-                    this.setDate(this.minimumDate());
+                    this.setDateTime(this.minimumDateTime());
                     this.updateStyleSheet();
                     return true;
                 }
