@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QDate;
+import com.trolltech.qt.core.QDateTime;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
@@ -106,12 +107,20 @@ public class Delegate extends QItemDelegate {
         Column column = ((TableModel) index.model()).getColumns().get(index.column()); 
         if( column.getEditorType() == CellEditorType.DATE ){
             QAbstractItemModel model = index.model();
-            QDate date = (QDate) model.data(index, Qt.ItemDataRole.DisplayRole);
-            if( date != null ){
+            Object data = model.data(index, Qt.ItemDataRole.DisplayRole);
+            String out=null;
+            if( data instanceof QDate ){
+                QDate date = (QDate) model.data(index, Qt.ItemDataRole.DisplayRole);
+                out = date.toString("dd/MM/yyyy");
+            } else if( data instanceof QDate ){
+                QDateTime date = (QDateTime) model.data(index, Qt.ItemDataRole.DisplayRole);
+                out = date.toString("dd/MM/yyyy HH:mm");
+            }
+            if( out != null ){
                 Alignment flags = Qt.AlignmentFlag.createQFlags();
                 flags.set(Qt.AlignmentFlag.AlignVCenter);
                 flags.set(Qt.AlignmentFlag.AlignCenter);
-                painter.drawText(option.rect(), flags.value(), date.toString("dd/MM/yyyy"));
+                painter.drawText(option.rect(), flags.value(), out);
             }
         } else {
             super.paint(painter, option, index);
