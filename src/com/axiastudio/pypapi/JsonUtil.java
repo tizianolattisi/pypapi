@@ -16,11 +16,14 @@
  */
 package com.axiastudio.pypapi;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,6 +68,32 @@ public class JsonUtil {
         } catch (IOException ex) {
             Logger.getLogger(JsonUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static void jsonToPojo(Object object, Map map){
+        String json = JsonUtil.mapToJson(map);
+        JsonUtil.jsonToPojo(object, json);
+    }
+
+    
+    public static Map<String, Object> jsonToMap(String json){
+        Map<String, Object> map=null;
+        try {
+            map = JsonUtil.mapper.readValue(json, Map.class);
+        } catch (IOException ex) {
+            Logger.getLogger(JsonUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return map;
+    }
+    
+    public static String mapToJson(Map<String, Object> map){
+        String json=null;
+        try {
+            json = JsonUtil.mapper.writeValueAsString(map);
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(JsonUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return json;
     }
     
 }
