@@ -133,6 +133,9 @@ public class FormConfigurator {
                 } else {
                     Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
                     Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
+                    if( controller == null ){
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, "Unable to get controller for {0}", entityClassFromReference.getName());
+                    }
                     lookupStore = controller.createFullStore();
                 }
                 column.setLookupStore(lookupStore);
