@@ -293,15 +293,7 @@ public class Controller implements IController {
     @Override
     public Object get(Long id) {
         EntityManager em = this.getEntityManager();
-        
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Object> cq = cb.createQuery();
-        Class<?> returnType = this.entityClass;
-        Root from = cq.from(returnType);
-        Predicate predicate = cb.equal(from.get("id"), id);
-        cq = cq.where(predicate);
-        TypedQuery<Object> tq = em.createQuery(cq);
-        Object entity = tq.getSingleResult();
+        Object entity = em.find(this.getEntityClass(), id);
         return entity;
     }
     
