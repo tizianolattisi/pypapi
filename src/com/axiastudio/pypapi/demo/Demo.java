@@ -73,7 +73,7 @@ public class Demo {
         em.persist(person);
         em.getTransaction().commit();
         em.close();
-            
+        
         /* start demo */
         Application app = new Application(args);
         app.setLanguage("en");

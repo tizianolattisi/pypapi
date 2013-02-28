@@ -31,7 +31,7 @@ public class Store<T> implements List {
             list = new ArrayList();
         }
         this.list = list;
-    }
+        }
 
     @Override
     public int size(){
