@@ -89,6 +89,7 @@ public class Register {
      * 
      */
     public static Object queryUtility(Class iface){
+        // TODO: returns the interface type?
         return Register.queryUtility(iface, ".");
     }
 
@@ -350,7 +351,7 @@ public class Register {
     }
     
     /**
-     * Query the the list of plugins on the given form.
+     * Query the list of plugins on the given form.
      * 
      * @param factory The class of the form
      * @return  The list of plugins
@@ -364,6 +365,23 @@ public class Register {
         return get;
     }
     
+        /**
+     * Query the plugin on the given form, for the given pluginName.
+     * 
+     * @param factory The class of the form
+     * @param pluginName The name of the plugin
+     * @return  The list of plugins
+     * 
+     */
+    public static Object queryPlugin(Class factory, String pluginName){
+        List<IPlugin> iPlugins = (List<IPlugin>) Register.plugins.get(factory);
+        for( IPlugin plugin: iPlugins ){
+            if( plugin.getName().equals(pluginName) ){
+                return plugin;
+            }
+        }
+        return null;
+    }
     
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory){
         Register.registerForm(emf, ui, factory, Window.class, "");
