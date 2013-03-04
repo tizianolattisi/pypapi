@@ -24,7 +24,7 @@ import com.trolltech.qt.gui.QWidget;
  */
 public interface IPlugin {
                 
+    void install(QWidget parent, Boolean addToolbar);
     void install(QWidget parent);
     String getName();
-    
 }
