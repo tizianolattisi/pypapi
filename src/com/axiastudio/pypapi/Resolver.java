@@ -44,7 +44,15 @@ public class Resolver {
             reference.substring(1);
             Method m = parent.getClass().getMethod(getterName);
             referenced = m.invoke(parent);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         return referenced;
@@ -55,7 +63,9 @@ public class Resolver {
         Method method = null;
         try {
             method = parent.getDeclaredMethod(methodName);
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();
@@ -70,7 +80,9 @@ public class Resolver {
         Method entityMethod = null;
         try {
             entityMethod = parent.getDeclaredMethod(methodName);
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         Class entityClass = (Class) entityMethod.getGenericReturnType();
@@ -130,7 +142,9 @@ public class Resolver {
         Method getter = null;
         try {
             getter = entityClass.getMethod(getterName);
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         return getter;
@@ -154,7 +168,9 @@ public class Resolver {
         }
         try {
             setter = entityClass.getMethod(setterName, valueType);
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
         }
         return setter;

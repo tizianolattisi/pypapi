@@ -181,7 +181,9 @@ public final class Context extends QObject {
             Class cls = (Class) Register.queryUtility(IFactory.class, entityName);
             try {
                 entity = cls.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
+            } catch (InstantiationException ex) {
+                Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
                 Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {

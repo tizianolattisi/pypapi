@@ -127,7 +127,11 @@ public class FormConfigurator {
                 if( storeFactory != null ){
                     try {
                         lookupStore = (Store) storeFactory.invoke(this.form);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
                         Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {

@@ -138,13 +138,10 @@ public class Jpa2Test {
         TypedQuery<Book> tq = em.createQuery(cq);
         List<Book> books = tq.getResultList();
         for( Book book: books ){
-            switch (book.getDescription()) {
-                case "Anna Karenina":
-                    assert "ROMANCE".equals(book.getGenre().toString());
-                    break;
-                case "Pro JPA":
-                    assert "REFERENCE".equals(book.getGenre().toString());
-                    break;
+            if( "Anna Karenina".equals(book.getDescription())){
+                assert "ROMANCE".equals(book.getGenre().toString());
+            } else if ( "Pro JPA".endsWith(book.getGenre().toString())){
+                assert "REFERENCE".equals(book.getGenre().toString());
             }
         }
     }

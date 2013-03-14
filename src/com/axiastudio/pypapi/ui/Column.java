@@ -66,7 +66,11 @@ public class Column {
         Object result=null;
         try {
             result = getter.invoke(entity);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
             Logger.getLogger(Column.class.getName()).log(Level.SEVERE, null, ex);
         }
         

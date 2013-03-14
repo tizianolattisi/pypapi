@@ -37,7 +37,7 @@ public class EntityBehavior implements IEntityBehavior {
     private List<Column> privates;
     private List<Column> exports;
     private List<Column> searchColumns;
-    private HashMap<String, String> validators = new HashMap<>();
+    private HashMap<String, String> validators = new HashMap();
     
     public EntityBehavior(String className){
         this.className = className;

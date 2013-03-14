@@ -52,10 +52,18 @@ public class Util {
             Constructor<? extends Window> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
             try {
                 form = constructor.newInstance(new Object[]{uiFile, factory, ""});
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (InstantiationException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
                 Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
         }
         form.init(); // XXX: full store
@@ -76,10 +84,18 @@ public class Util {
             Constructor<? extends IForm> constructor = formClass.getConstructor(new Class[]{String.class, Class.class, String.class});
             try {
                 form = constructor.newInstance(new Object[]{uiFile, factory, ""});
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (InstantiationException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
                 Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
         }
         if( form != null ){
@@ -225,7 +241,11 @@ public class Util {
                 Class<?> returnType = method.getReturnType();
                 try {
                     value = method.invoke(entity);
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvocationTargetException ex) {
                     Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 if( String.class == returnType ){

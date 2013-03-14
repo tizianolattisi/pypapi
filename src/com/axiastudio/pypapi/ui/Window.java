@@ -128,7 +128,11 @@ public class Window extends QMainWindow implements IForm {
         if( privateM != null ){
             try {
                 isPrivate = (Boolean) privateM.invoke(null, this.context.getCurrentEntity());
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
                 Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
             }
             EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.context.getRootClass().getName());

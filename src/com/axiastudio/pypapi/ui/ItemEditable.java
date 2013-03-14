@@ -65,7 +65,11 @@ public class ItemEditable extends Item {
         }
         try {
             Object res = this.setterMethod.invoke(this.entity, objValue);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(ItemEditable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(ItemEditable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
             Logger.getLogger(ItemEditable.class.getName()).log(Level.SEVERE, null, ex);
         }
         return true;
