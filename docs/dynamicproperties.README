@@ -64,6 +64,13 @@ Apply to: SVW and LVW
 Determine if a field should be used as criteria field in the search form.
 
 
+Export (Boolean) dynamic property
+=================================
+Apply to: SVW
+The column marked with the "export" property are included in the output
+of the export feature of the PickerDialog.
+
+
 Private (Boolean) dynamic property
 ==================================
 Apply to: SVW and LVW
