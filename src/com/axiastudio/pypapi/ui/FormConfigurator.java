@@ -179,6 +179,12 @@ public class FormConfigurator {
                 PyPaPiTableView ptv = (PyPaPiTableView) child;
                 ptv.setItemDelegate(new Delegate(ptv));
             }
+            // Set min and max in QDoubleSpinBox as numeric(15, 2)
+            if( child.getClass().equals(QDoubleSpinBox.class)){
+                QDoubleSpinBox doubleSpinBox = (QDoubleSpinBox) child;
+                doubleSpinBox.setMinimum(-9999999999999.99d);
+                doubleSpinBox.setMaximum(9999999999999.99d);
+            }
         }
         this.form.setColumns(columns);
         this.form.setEntities(entities);
