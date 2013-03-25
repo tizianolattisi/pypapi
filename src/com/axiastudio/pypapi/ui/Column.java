@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Store;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -91,6 +92,10 @@ public class Column {
         } else if( returnType == Double.class ){
             DoubleItemField item = new DoubleItemField(this, result, setter, entity);
             this.editorType = CellEditorType.DOUBLE;
+            return item;
+        } else if( returnType == BigDecimal.class ){
+            DecimalItemField item = new DecimalItemField(this, result, setter, entity);
+            this.editorType = CellEditorType.DECIMAL;
             return item;
         } else if( returnType == Boolean.class ){
             BooleanItemField item = new BooleanItemField(this, result, setter, entity);

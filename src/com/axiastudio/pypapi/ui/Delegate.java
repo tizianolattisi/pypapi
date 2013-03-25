@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.gui.*;
+import java.math.BigDecimal;
 
 /**
  *
@@ -47,6 +48,9 @@ public class Delegate extends QItemDelegate {
         } else if( column.getEditorType() == CellEditorType.INTEGER ){
             QSpinBox spinBox = new QSpinBox(qw);
             return spinBox;
+        } else if( column.getEditorType() == CellEditorType.DOUBLE || column.getEditorType() == CellEditorType.DECIMAL ){
+            QDoubleSpinBox doubleSpinBox = new QDoubleSpinBox(qw);
+            return doubleSpinBox;
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             QCheckBox checkBox = new QCheckBox(qw);
             return checkBox;
@@ -76,6 +80,10 @@ public class Delegate extends QItemDelegate {
             ((TableModel) qaim).setData(qmi, value);
         } else if( column.getEditorType() == CellEditorType.INTEGER ){
             Integer value = ((QSpinBox) qw).value();
+            ((TableModel) qaim).setData(qmi, value);
+        } else if( column.getEditorType() == CellEditorType.DOUBLE || column.getEditorType() == CellEditorType.DECIMAL ){
+            Double doubleValue = ((QDoubleSpinBox) qw).value();
+            BigDecimal value = BigDecimal.valueOf(doubleValue);
             ((TableModel) qaim).setData(qmi, value);
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             super.setModelData(qw, qaim, qmi);
