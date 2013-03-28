@@ -31,11 +31,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -68,7 +68,7 @@ public class Controller implements IController {
     }
     
     @Override
-    public Store createCriteriaStore(HashMap criteria){
+    public Store createCriteriaStore(Map criteria){
         if( this.entityClass == null ){
             return null;
         }
@@ -107,8 +107,13 @@ public class Controller implements IController {
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             }
             if( predicate != null ){
+                // BUG: the new predicate hide the old...
                 cq = cq.where(predicate);
             }
+        }
+        Method method = (Method) Register.queryUtility(ICriteriaFactory.class, this.getClassName());
+        if( method != null ){
+            // XXX: append new predicate
         }
         TypedQuery<Object> tq = em.createQuery(cq);
         List<Object> result = tq.getResultList();
@@ -116,11 +121,14 @@ public class Controller implements IController {
         return store;
     }
 
+    /*
     @Override
     public Store createStore() {
         return this.createStore(-1);
     }
+    * */
 
+    /*
     @Override
     public Store createStore(int limit) {
         if( this.entityClass == null ){
@@ -141,10 +149,12 @@ public class Controller implements IController {
             em.close();
         }
     }
+    * */
 
     @Override
     public Store createFullStore(){
-        return this.createStore(-1);
+        Map<Column, Object> criteriaMap = new HashMap();
+        return this.createCriteriaStore(criteriaMap);
     }
 
     /*

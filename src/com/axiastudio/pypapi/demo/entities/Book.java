@@ -42,6 +42,8 @@ public class Book implements Serializable {
     @Column(name="genre")
     @Enumerated(EnumType.STRING)
     private Genre genre;
+    @Column(name="year")
+    private Integer year;
     
     public Book() {
     }
@@ -80,6 +82,14 @@ public class Book implements Serializable {
 
     public void setGenre(Genre genre) {
         this.genre = genre;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     @Override

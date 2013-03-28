@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 AXIA Studio (http://www.axiastudio.com)
+ * Copyright (C) 2013 AXIA Studio (http://www.axiastudio.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -11,34 +11,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Afffero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axiastudio.pypapi.db;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *
- * @author Tiziano Lattisi <tiziano at axiastudio.it>
+ * @author AXIA Studio (http://www.axiastudio.com)
  */
-public interface IController {
-
-    Store createFullStore();
-
-    //Store createStore();
-
-    //Store createStore(int limit);
-    
-    Store createCriteriaStore(Map criteria);
-    
-    Validation commit(Object entity);
-    
-    void delete(Object entity);
-
-    Object refresh(Object entity);
-    
-    Object get(Long id);
-    
+public interface ICriteriaFactory {
+    /* placeholder */
 }
