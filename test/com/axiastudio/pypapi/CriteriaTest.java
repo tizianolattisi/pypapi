@@ -33,6 +33,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,10 +55,12 @@ public class CriteriaTest {
     
     @BeforeClass
     public static void setUpClass() {
-        emf = Persistence.createEntityManagerFactory("DemoPU");
+        Map properties = new HashMap();
+        //properties.put("eclipselink.logging.level", "FINE");
+        emf = Persistence.createEntityManagerFactory("DemoPU", properties);
         try {
             // register predicate provider
-            Method provider = PredicateProvider.class.getMethod("bookPredicateProvider", CriteriaQuery.class, CriteriaBuilder.class);
+            Method provider = PredicateProvider.class.getMethod("bookPredicateProvider", CriteriaQuery.class, CriteriaBuilder.class, Root.class);
             Register.registerUtility(provider, ICriteriaFactory.class, Book.class.getName());
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(CriteriaTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,9 +131,9 @@ public class CriteriaTest {
     public void testCriteria() {
         this.insertTestData();
         Map<Column, Object> criteriaMap = new HashMap();
-        Column genre = new Column("year", "year", "year");
-        genre.setEditorType(CellEditorType.INTEGER);
-        criteriaMap.put(genre, 2003);
+        Column year = new Column("year", "year", "year");
+        year.setEditorType(CellEditorType.INTEGER);
+        criteriaMap.put(year, 2003);
         Store store = this.bookController.createCriteriaStore(criteriaMap);
         assert store.toArray().length == 1;
     }

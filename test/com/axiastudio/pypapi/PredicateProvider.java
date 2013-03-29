@@ -31,12 +31,11 @@ import javax.persistence.criteria.Root;
  */
 public class PredicateProvider {
     
-    public static Predicate bookPredicateProvider(CriteriaQuery cq, CriteriaBuilder cb) {
-        // filter out reference books
-        Class<?> returnType = Book.class;
-        Root from = cq.from(returnType);
+    public static Predicate bookPredicateProvider(CriteriaQuery cq, CriteriaBuilder cb, Root from) {
+
         Predicate predicate = cb.notEqual(from.get(Book_.genre), Genre.REFERENCE);
         return predicate;
+
     }
     
 }

@@ -115,7 +115,7 @@ public class Controller implements IController {
         Method method = (Method) Register.queryUtility(ICriteriaFactory.class, this.getClassName());
         if( method != null ){
             try {
-                Predicate predicate = (Predicate) method.invoke(null, cq, cb);
+                Predicate predicate = (Predicate) method.invoke(null, cq, cb, from);
                 if( predicate != null ){
                     predicates.add(predicate);
                 }
