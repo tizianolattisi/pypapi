@@ -25,6 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -78,6 +79,7 @@ public class Controller implements IController {
         CriteriaQuery<Object> cq = cb.createQuery();
         Class<?> returnType = this.entityClass;
         Root from = cq.from(returnType);
+        List<Predicate> predicates = new ArrayList();
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             Predicate predicate=null;
@@ -107,13 +109,26 @@ public class Controller implements IController {
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
             }
             if( predicate != null ){
-                // BUG: the new predicate hide the old...
-                cq = cq.where(predicate);
+                predicates.add(predicate);
             }
         }
         Method method = (Method) Register.queryUtility(ICriteriaFactory.class, this.getClassName());
         if( method != null ){
-            // XXX: append new predicate
+            try {
+                Predicate predicate = (Predicate) method.invoke(null, cq, cb);
+                if( predicate != null ){
+                    predicates.add(predicate);
+                }
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        if( predicates.size()>0 ){
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
         TypedQuery<Object> tq = em.createQuery(cq);
         List<Object> result = tq.getResultList();
@@ -345,3 +360,4 @@ public class Controller implements IController {
     
     
 }
+    
