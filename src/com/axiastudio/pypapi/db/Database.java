@@ -32,6 +32,13 @@ public class Database implements IDatabase {
 
     private EntityManagerFactory entityManagerFactory;
 
+    public Database() {
+    }
+    
+    public Database(String persistenceUnit) {
+        this.open(persistenceUnit);
+    }
+
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
     }
