@@ -143,7 +143,13 @@ public class FormConfigurator {
                     lookupStore = controller.createFullStore();
                 }
                 column.setLookupStore(lookupStore);
-                ((PyPaPiComboBox) child).setLookupStore(lookupStore);
+                // is not null?
+                Boolean notnull = false;
+                Object nullableProperty = child.property("notnull");
+                if ( nullableProperty != null){
+                    notnull = (Boolean) nullableProperty;
+                }
+                ((PyPaPiComboBox) child).setLookupStore(lookupStore, notnull);
             }
             // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){

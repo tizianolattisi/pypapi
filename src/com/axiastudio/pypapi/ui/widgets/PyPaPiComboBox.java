@@ -30,6 +30,7 @@ import com.trolltech.qt.gui.QWidget;
 public class PyPaPiComboBox extends QComboBox {
     
     private Store lookupStore;
+    private static final String ND = "n.d."; 
 
     public PyPaPiComboBox(QWidget qw) {
         super(qw);
@@ -42,10 +43,20 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     public void setLookupStore(Store lookupStore) {
+        this.setLookupStore(lookupStore, Boolean.TRUE);
+    }
+
+    public void setLookupStore(Store lookupStore, Boolean notnull) {
         this.lookupStore = lookupStore;
+        if( !notnull ){
+            this.lookupStore.add(null);
+        }
         for(int i=0; i<lookupStore.size(); i++){
             Object object = lookupStore.get(i);
-            String key = object.toString();
+            String key = ND;
+            if( object != null ){
+                key = object.toString();
+            }
             this.addItem(key, object);
         }
         this.installEventFilter(this);
@@ -66,7 +77,10 @@ public class PyPaPiComboBox extends QComboBox {
         Boolean gotcha=false;
         for(int i=0; i<this.lookupStore.size(); i++){
             Object object = this.lookupStore.get(i);
-            String key = object.toString();
+            String key = ND;
+            if( object != null ){
+                key = object.toString();
+            }
             if( key.toLowerCase().contains(s.toLowerCase()) ){
                 if( idx == null){
                     idx = i;

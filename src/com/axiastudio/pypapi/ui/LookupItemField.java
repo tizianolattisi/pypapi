@@ -40,8 +40,6 @@ public class LookupItemField extends ItemField {
         /*
          * Lookup item uses a lookup property to display itself.
          */
-        Object lookupped = null;
-        Method m = null;
         Object result = super.get();
         return this.column.getLookupStore().indexOf(result);
     }
