@@ -60,7 +60,7 @@ public class CriteriaTest {
         emf = Persistence.createEntityManagerFactory("DemoPU", properties);
         try {
             // register predicate provider
-            Method provider = PredicateProvider.class.getMethod("bookPredicateProvider", CriteriaQuery.class, CriteriaBuilder.class, Root.class);
+            Method provider = PredicateProvider.class.getMethod("bookPredicateProvider", CriteriaBuilder.class, Root.class);
             Register.registerUtility(provider, ICriteriaFactory.class, Book.class.getName());
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(CriteriaTest.class.getName()).log(Level.SEVERE, null, ex);

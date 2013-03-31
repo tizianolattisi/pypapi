@@ -16,12 +16,9 @@
  */
 package com.axiastudio.pypapi;
 
-import com.axiastudio.pypapi.demo.entities.Book;
 import com.axiastudio.pypapi.demo.entities.Book_;
 import com.axiastudio.pypapi.demo.entities.Genre;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -31,7 +28,7 @@ import javax.persistence.criteria.Root;
  */
 public class PredicateProvider {
     
-    public static Predicate bookPredicateProvider(CriteriaQuery cq, CriteriaBuilder cb, Root from) {
+    public static Predicate bookPredicateProvider(CriteriaBuilder cb, Root from) {
 
         Predicate predicate = cb.notEqual(from.get(Book_.genre), Genre.REFERENCE);
         return predicate;
