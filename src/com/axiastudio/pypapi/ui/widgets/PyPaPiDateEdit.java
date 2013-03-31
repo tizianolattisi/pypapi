@@ -90,14 +90,14 @@ public class PyPaPiDateEdit extends QDateEdit {
             return super.eventFilter(qo, qevent);
         }
         if( this.date().equals(this.minimumDate()) ){
-            if( qevent.type() == QEvent.Type.MouseButtonPress ){
+            if( this.isEnabled() && qevent.type() == QEvent.Type.MouseButtonPress ){
                 this.setDate(QDate.currentDate());
                 this.setFocus();
                 this.updateStyleSheet();
                 return true;
             }
         } else {
-            if( qevent.type() == QEvent.Type.KeyPress ){
+            if( this.isEnabled() && qevent.type() == QEvent.Type.KeyPress ){
                 QKeyEvent qkevent = (QKeyEvent) qevent;
                 if ( qkevent.key() == Qt.Key.Key_Delete.value() ){
                     this.setDate(this.minimumDate());

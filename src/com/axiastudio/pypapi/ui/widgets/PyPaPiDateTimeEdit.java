@@ -87,14 +87,14 @@ public class PyPaPiDateTimeEdit extends QDateTimeEdit {
             return super.eventFilter(qo, qevent);
         }
         if( this.dateTime().equals(this.minimumDateTime()) ){
-            if( qevent.type() == QEvent.Type.MouseButtonPress ){
+            if( this.isEnabled() && qevent.type() == QEvent.Type.MouseButtonPress ){
                 this.setDateTime(QDateTime.currentDateTime());
                 this.setFocus();
                 this.updateStyleSheet();
                 return true;
             }
         } else {
-            if( qevent.type() == QEvent.Type.KeyPress ){
+            if( this.isEnabled() && qevent.type() == QEvent.Type.KeyPress ){
                 QKeyEvent qkevent = (QKeyEvent) qevent;
                 if ( qkevent.key() == Qt.Key.Key_Delete.value() ){
                     this.setDateTime(this.minimumDateTime());

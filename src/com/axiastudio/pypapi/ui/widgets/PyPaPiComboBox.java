@@ -98,7 +98,7 @@ public class PyPaPiComboBox extends QComboBox {
     
     @Override
     public boolean eventFilter(QObject qo, QEvent qevent) {
-        if( qevent.type() == QEvent.Type.MouseButtonPress ){
+        if( this.isEnabled() && qevent.type() == QEvent.Type.MouseButtonPress ){
             this.setEditable(true);
             this.setEditText("");
             return true;
