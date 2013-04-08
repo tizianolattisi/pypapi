@@ -1,4 +1,4 @@
-This is PyPaPi version 0.2.
+This is PyPaPi version 0.3.
 
 PyPaPi is a Java and Qt desktop application framework.
 For more informations refer the web site <http://www.pypapi.org>
@@ -8,7 +8,6 @@ INSTALLING PyPaPi
 
 PyPaPi is based on the Qt library Qt Jambi.
 You need to download the correct Jambi libraries for your system
-from the download page <http://code.google.com/p/pypapi/downloads/list>
 and copy them in the lib folder of PyPaPi.
 
 
@@ -21,7 +20,7 @@ Framework, you should execute the command 'java -jar PyPaPi.jar'.
 REFERENCE DOCUMENTATION
 
 The PyPaPi reference documentation is avaiable on the PyPaPi web site
-<http://www.pypapi.org/PyPaPi/Develop.html>.
+<http://www.pypapi.org/>.
 
 For any kind of questions, feel free to contact us by email:
 
@@ -34,4 +33,4 @@ PyPaPi is distribuited under the AGPLv3 license.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-Copyright (C) 2012 AXIA Studio <http://www.axiastudio.com>
+Copyright (C) 2013 AXIA Studio <http://www.axiastudio.com>
