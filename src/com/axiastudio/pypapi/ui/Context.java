@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
 import com.trolltech.qt.gui.QWidget;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -126,22 +127,33 @@ public final class Context extends QObject {
         }
     }
 
+    public void refreshContext(){
+        this.parentIndexChanged(0);
+    }
     /*
      *  When the parent index changed, all the child contexts have to reset
      *  their stores.
      * 
      */
-    private void parentIndexChanged(int row) throws Exception {
-        Method getter = Resolver.getterFromFieldName(this.primaryDc.currentEntity.getClass(), this.name.substring(1));
-        Method setter = Resolver.setterFromFieldName(this.primaryDc.currentEntity.getClass(), this.name.substring(1), Collection.class);
-        List result = (List) getter.invoke(this.primaryDc.currentEntity);
-        if( result == null ){
-            result = new ArrayList();
-            setter.invoke(this.primaryDc.currentEntity, result);
+    private void parentIndexChanged(int row) {
+        try {
+            Method getter = Resolver.getterFromFieldName(this.primaryDc.currentEntity.getClass(), this.name.substring(1));
+            Method setter = Resolver.setterFromFieldName(this.primaryDc.currentEntity.getClass(), this.name.substring(1), Collection.class);
+            List result = (List) getter.invoke(this.primaryDc.currentEntity);
+            if( result == null ){
+                result = new ArrayList();
+                setter.invoke(this.primaryDc.currentEntity, result);
+            }
+            Store store = new Store(result);
+            this.model.setStore(store);
+            this.firstElement();
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Context.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Context.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Context.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Store store = new Store(result);
-        this.model.setStore(store);
-        this.firstElement();
     }
 
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
