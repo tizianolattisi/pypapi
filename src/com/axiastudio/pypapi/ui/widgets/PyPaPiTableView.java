@@ -48,6 +48,7 @@ public class PyPaPiTableView extends QTableView{
     private QMenu menuPopup;
     private QToolBar toolBar;
     private Boolean refreshConnected=false;
+    private Boolean readOnly=false;
 
     public PyPaPiTableView(){
         this(null);
@@ -105,7 +106,7 @@ public class PyPaPiTableView extends QTableView{
         this.menuPopup.addAction(actionDel);
         this.toolBar.addAction(actionDel);
         this.actionDel.triggered.connect(this, "actionDel()");
-
+        
     }
     
 
@@ -127,8 +128,8 @@ public class PyPaPiTableView extends QTableView{
 
     @Override
     protected void leaveEvent(QEvent event){
-        this.verticalHeader().hide();
-        this.toolBar.hide();
+            this.verticalHeader().hide();
+            this.toolBar.hide();
     }
 
     
@@ -137,7 +138,8 @@ public class PyPaPiTableView extends QTableView{
         Boolean selected = !rows.isEmpty();
         this.actionInfo.setEnabled(selected);
         this.actionOpen.setEnabled(selected);
-        this.actionDel.setEnabled(selected);
+        this.actionDel.setEnabled(selected && !this.getReadOnly());
+        this.actionAdd.setEnabled(!this.getReadOnly());
     }
     
     private void actionOpen(){
@@ -286,6 +288,14 @@ public class PyPaPiTableView extends QTableView{
         /* select and open info for the last row */
         this.selectRow(this.model().rowCount()-1);
         this.actionInfo();
+    }
+
+    public Boolean getReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
     }
     
 

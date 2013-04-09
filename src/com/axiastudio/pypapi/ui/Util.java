@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
@@ -266,6 +267,21 @@ public class Util {
             out += "\n" + row.substring(1);
         }
         return out;
+    }
+    
+    public static void setWidgetReadOnly(QWidget widget, Boolean readOnly){
+        if( widget instanceof QTextEdit ){
+            ((QTextEdit) widget).setReadOnly(readOnly);
+        } else if( widget instanceof QLineEdit ){
+            ((QLineEdit) widget).setReadOnly(readOnly);
+        } else if( widget instanceof QComboBox || widget instanceof QCheckBox ||
+                   widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
+                   widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
+            ((QWidget) widget).setEnabled(!readOnly);
+        } else if( widget instanceof PyPaPiTableView ){
+            ((PyPaPiTableView) widget).setReadOnly(readOnly);
+        }
+
     }
     
 } 
