@@ -34,7 +34,7 @@ public class EntityBehavior implements IEntityBehavior {
     
     private String className;
     private List<Column> criteria;
-    private List<Column> privates;
+    private List<String> privates;
     private List<Column> exports;
     private List<Column> searchColumns;
     private HashMap<String, String> validators = new HashMap();
@@ -67,11 +67,11 @@ public class EntityBehavior implements IEntityBehavior {
         this.criteria = criteria;
     }
 
-    public List<Column> getPrivates() {
+    public List<String> getPrivates() {
         return privates;
     }
 
-    public void setPrivates(List<Column> privates) {
+    public void setPrivates(List<String> privates) {
         this.privates = privates;
     }
 

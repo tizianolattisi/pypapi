@@ -46,8 +46,8 @@ public class Window extends QMainWindow implements IForm {
     protected String uiFile;
     protected String title;
     private Context context;
-    private HashMap<String, QObject> widgets;
-    private HashMap<String, String> stylesheets = new HashMap();;
+    private HashMap<String, QObject> widgets = new HashMap();
+    private HashMap<String, String> stylesheets = new HashMap();
     private List<Column> columns;
     private List<Column> entities;
     private PyPaPiNavigationBar navigationBar;
@@ -136,17 +136,17 @@ public class Window extends QMainWindow implements IForm {
                 Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
             }
             EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.context.getRootClass().getName());
-            for( Column column: behavior.getPrivates() ){
-                QWidget widget = (QWidget) this.widgets.get(column.getName());
+            for( String columnName: behavior.getPrivates() ){
+                QWidget widget = (QWidget) this.widgets.get(columnName);
                 if( isPrivate ){
                     widget.setEnabled(false);
-                    if( !this.stylesheets.containsKey(column.getName()) ){
-                        this.stylesheets.put(column.getName(), widget.styleSheet());
+                    if( !this.stylesheets.containsKey(columnName) ){
+                        this.stylesheets.put(columnName, widget.styleSheet());
                     }
                     widget.setStyleSheet("color: gray; background: gray");
                 } else {
                     widget.setEnabled(true);
-                    widget.setStyleSheet(this.stylesheets.get(column.getName()));
+                    widget.setStyleSheet(this.stylesheets.get(columnName));
                 }
             }
         }

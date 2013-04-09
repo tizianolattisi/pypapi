@@ -72,7 +72,7 @@ public class UIInspector {
     private void register(QWidget win){
         EntityBehavior behavior = new EntityBehavior(this.entityClassName);
         List<Column> criteria = new ArrayList();
-        List<Column> privates = new ArrayList();
+        List<String> privates = new ArrayList();
         List<Column> exports = new ArrayList();
         List<Column> searchColumns = new ArrayList();
         List children = win.findChildren();
@@ -124,7 +124,12 @@ public class UIInspector {
             Object privateProperty = child.property("private");
             if (privateProperty != null){
                 if ((Boolean) privateProperty){
-                    privates.add(column);
+                    if (entityProperty != null){
+                        String entityPropertyName = this.capitalize((String) entityProperty);
+                        privates.add(entityPropertyName);
+                    } else if( column != null ){
+                        privates.add(column.getName());
+                    }
                 }
             }
             // private dynamic property
