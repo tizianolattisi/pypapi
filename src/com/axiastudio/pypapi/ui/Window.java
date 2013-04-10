@@ -146,7 +146,9 @@ public class Window extends QMainWindow implements IForm {
                     widget.setStyleSheet("color: gray; background: gray");
                 } else {
                     widget.setEnabled(true);
-                    widget.setStyleSheet(this.stylesheets.get(columnName));
+                    if( this.stylesheets.containsKey(columnName) ){
+                        widget.setStyleSheet(this.stylesheets.get(columnName));
+                    }
                 }
             }
         }
