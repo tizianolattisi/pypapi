@@ -230,7 +230,7 @@ public class Controller implements IController {
     @Override
     public Validation commit(Object entity){
         // XXX: if no CascadeType.ALL?
-        this.parentize(entity);
+        //this.parentize(entity);
         
         // BEFORECOMMIT
         Method beforeCommit = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
@@ -247,10 +247,19 @@ public class Controller implements IController {
             }
         }
         if( beforeValidation.getResponse() == true ){
+            this.parentize(entity);
             EntityManager em = this.getEntityManager();
-            em.getTransaction().begin();
-            Object merged = em.merge(entity);
-            em.getTransaction().commit();
+            Object merged;
+            if( this.getId(entity) == null ){
+                em.getTransaction().begin();
+                em.persist(entity);
+                em.getTransaction().commit();
+                merged = entity;
+            } else {
+                em.getTransaction().begin();
+                merged = em.merge(entity);
+                em.getTransaction().commit();                
+            }
             try {
                 // TODO: refresh entity
                 Method getId = merged.getClass().getMethod("getId");
@@ -356,6 +365,26 @@ public class Controller implements IController {
         EntityManager em = this.getEntityManager();
         Object entity = em.find(this.getEntityClass(), id);
         return entity;
+    }
+    
+    private Long getId(Object entity){
+        Long id=null;
+        Method getId;
+        try {
+            getId = entity.getClass().getMethod("getId");
+            id = (Long) getId.invoke(entity);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return id;
     }
     
     
