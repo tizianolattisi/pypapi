@@ -30,6 +30,8 @@ import java.math.BigDecimal;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class Delegate extends QItemDelegate {
+    
+    private static final Boolean READONLY=true;
 
     /*
      * The PyPaPi Delegate need a QTablewView as parent
@@ -40,6 +42,9 @@ public class Delegate extends QItemDelegate {
 
     @Override
     public QWidget createEditor(QWidget qw, QStyleOptionViewItem qsovi, QModelIndex qmi) {
+        if( this.READONLY ){
+            return null;
+        }
         Object data = qmi.data();
         Column column = ((TableModel) qmi.model()).getColumns().get(qmi.column());
         if( column.getEditorType() == CellEditorType.STRING ){
@@ -54,7 +59,6 @@ public class Delegate extends QItemDelegate {
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             QCheckBox checkBox = new QCheckBox(qw);
             return checkBox;
-            //return super.createEditor(qw, qsovi, qmi);
         } else if( column.getEditorType() == CellEditorType.DATE ){
             
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
@@ -85,10 +89,10 @@ public class Delegate extends QItemDelegate {
             Double doubleValue = ((QDoubleSpinBox) qw).value();
             BigDecimal value = BigDecimal.valueOf(doubleValue);
             ((TableModel) qaim).setData(qmi, value);
-        } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
+        } else if( column.getEditorType() == CellEditorType.CHOICE ){
             super.setModelData(qw, qaim, qmi);
         } else if( column.getEditorType() == CellEditorType.DATE ){
-        } else if( column.getEditorType() == CellEditorType.CHOICE ){
+        } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             Qt.CheckState checkState = ((QCheckBox) qw).checkState();
             Boolean value = null;
             if(checkState == Qt.CheckState.Checked){
