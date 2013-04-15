@@ -183,7 +183,6 @@ public class FormConfigurator {
             // Delegate
             if (child.getClass().equals(PyPaPiTableView.class)){
                 PyPaPiTableView ptv = (PyPaPiTableView) child;
-                ptv.setItemDelegate(new Delegate(ptv));
             }
             // Set min and max in QDoubleSpinBox as numeric(15, 2)
             if( child.getClass().equals(QDoubleSpinBox.class)){

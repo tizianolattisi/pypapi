@@ -34,10 +34,14 @@ public class BooleanItemField extends ItemField {
     @Override
     public Qt.CheckState getCheckstate(){
         Boolean b = (Boolean) this.get();
-        if( b == null || b == false ){
+        if( b == null ){
+            return Qt.CheckState.PartiallyChecked;        
+        } else if( b == true ){
+            return Qt.CheckState.Checked;
+        } else if( b == false ){
             return Qt.CheckState.Unchecked;
         }
-        return Qt.CheckState.Checked;
+        return Qt.CheckState.PartiallyChecked;    
     }
 
     @Override
@@ -58,9 +62,9 @@ public class BooleanItemField extends ItemField {
     
     public Boolean setCheckstate(Object checkState){
         Boolean boolValue = null;
-        if( checkState == Qt.CheckState.Checked ){
+        if( checkState.equals(Qt.CheckState.Checked.value()) ){
             boolValue = true;
-        } else if( checkState == Qt.CheckState.Unchecked ){
+        } else if( checkState.equals(Qt.CheckState.Unchecked.value()) ){
             boolValue = false;
         }
         return this.set(boolValue);

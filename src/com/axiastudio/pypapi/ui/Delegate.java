@@ -31,7 +31,7 @@ import java.math.BigDecimal;
  */
 public class Delegate extends QItemDelegate {
     
-    private static final Boolean READONLY=true;
+    private static final Boolean READONLY=false;
 
     /*
      * The PyPaPi Delegate need a QTablewView as parent
@@ -57,14 +57,11 @@ public class Delegate extends QItemDelegate {
             QDoubleSpinBox doubleSpinBox = new QDoubleSpinBox(qw);
             return doubleSpinBox;
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
-            QCheckBox checkBox = new QCheckBox(qw);
-            return checkBox;
+            return null;
         } else if( column.getEditorType() == CellEditorType.DATE ){
             
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
-            // TODO: QComboBox from Enum
-            //QComboBox cb = new QComboBox(qw);
-            //return cb;
+
         } else if( column.getEditorType() == CellEditorType.LOOKUP ){
             
         }
@@ -90,18 +87,21 @@ public class Delegate extends QItemDelegate {
             BigDecimal value = BigDecimal.valueOf(doubleValue);
             ((TableModel) qaim).setData(qmi, value);
         } else if( column.getEditorType() == CellEditorType.CHOICE ){
-            super.setModelData(qw, qaim, qmi);
+            // disabled
         } else if( column.getEditorType() == CellEditorType.DATE ){
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
+            super.setModelData(qw, qaim, qmi);
+            /*
             Qt.CheckState checkState = ((QCheckBox) qw).checkState();
             Boolean value = null;
             if(checkState == Qt.CheckState.Checked){
                 value = true;
             } else if (checkState == Qt.CheckState.Unchecked) {
                 value = false;
-            }
-            ((TableModel) qaim).setData(qmi, value);
+            }          
+            ((TableModel) qaim).setData(qmi, value);*/
         } else if( column.getEditorType() == CellEditorType.LOOKUP ){
+            // disabled
         }
         //super.setModelData(qw, qaim, qmi);
     }
@@ -111,6 +111,7 @@ public class Delegate extends QItemDelegate {
         super.updateEditorGeometry(qw, qsovi, qmi);
     }
 
+    
     @Override
     public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
         Column column = ((TableModel) index.model()).getColumns().get(index.column()); 
