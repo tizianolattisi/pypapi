@@ -79,13 +79,16 @@ public final class Context extends QObject {
         this.mapper.currentIndexChanged.connect(this, "indexChanged(int)");
         if(".".equals(this.name)){
             this.primaryDc = this;
+            this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
+            this.model.rowsRemoved.connect(primaryDc, "modelRowsRemovedChanged(QModelIndex, int, int)");
+            this.model.rowsInserted.connect(primaryDc, "modelRowsInsertedChanged(QModelIndex, int, int)");
         } else {
             this.primaryDc = (Context) Register.queryRelation((QWidget) this.parent, ".");
             this.primaryDc.mapper.currentIndexChanged.connect(this, "parentIndexChanged(int)");
+            this.model.dataChanged.connect(this.primaryDc.model.dataChanged);
+            this.model.rowsInserted.connect(this.primaryDc.model.rowsInserted);
+            this.model.rowsRemoved.connect(this.primaryDc.model.rowsRemoved);
         }
-        this.model.dataChanged.connect(primaryDc, "modelDataChanged(QModelIndex, QModelIndex)");
-        this.model.rowsRemoved.connect(primaryDc, "modelDataChanged(QModelIndex, int, int)");
-        this.model.rowsInserted.connect(primaryDc, "modelDataChanged(QModelIndex, int, int)");
     }
 
 
@@ -160,7 +163,12 @@ public final class Context extends QObject {
         this.isDirty = true;
     }
 
-    private void modelDataChanged(QModelIndex topLeft, int start, int end){
+    private void modelRowsRemovedChanged(QModelIndex topLeft, int start, int end){
+        this.isDirty = true;
+        this.model.dataChanged.emit(topLeft, topLeft);
+    }
+
+    private void modelRowsInsertedChanged(QModelIndex topLeft, int start, int end){
         this.isDirty = true;
         this.model.dataChanged.emit(topLeft, topLeft);
     }
