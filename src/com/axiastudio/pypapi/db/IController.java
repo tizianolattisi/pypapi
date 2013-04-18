@@ -27,6 +27,8 @@ public interface IController {
 
     Store createFullStore();
 
+    Store createNewStore();
+    
     //Store createStore();
 
     //Store createStore(int limit);

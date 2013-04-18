@@ -171,6 +171,20 @@ public class Controller implements IController {
         Map<Column, Object> criteriaMap = new HashMap();
         return this.createCriteriaStore(criteriaMap);
     }
+    
+    @Override
+    public Store createNewStore(){
+        List<Object> listStore = new ArrayList();
+        try {
+            Object instance = this.entityClass.newInstance();
+            listStore.add(instance);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new Store(listStore);
+    }
 
     /*
      * The parentize method hooks the items of the collections to the parent
