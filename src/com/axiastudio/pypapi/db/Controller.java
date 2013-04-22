@@ -84,9 +84,12 @@ public class Controller implements IController {
             Column column = (Column) k;
             Predicate predicate=null;
             if( column.getEditorType().equals(CellEditorType.STRING) ){
-                // TODO: % and * should be whildchars
                 String value = (String) criteria.get(column);
-                predicate = cb.like(from.get(column.getName().toLowerCase()), value);
+                value = value.replace("*", "%");
+                if( !value.endsWith("%") ){
+                    value += "%";
+                }
+                predicate = cb.like(cb.upper(from.get(column.getName().toLowerCase())), value.toUpperCase());
             } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
                 Integer value = (Integer) criteria.get(column);
                 predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
