@@ -283,8 +283,21 @@ public class PickerDialog extends QDialog {
         this.layout.addLayout(grid);
     }        
     
-    public void addFilter(Column column, String value){
-        this.filters.put(column, value);
+    public void addFilter(Column column, Object value){
+        if( value instanceof String ){
+            // Differential strategy
+            String stringValue = (String) value;
+            if( "true".equals(stringValue) ){
+                column.setEditorType(CellEditorType.BOOLEAN);
+                this.filters.put(column, true);
+            } else if( "false".equals(stringValue) ){
+                column.setEditorType(CellEditorType.BOOLEAN);
+                this.filters.put(column, false);
+            }
+        } else {
+            column.setEditorType(CellEditorType.STRING);
+            this.filters.put(column, value);
+        }
     }
     
     public final void executeSearch(){

@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -178,6 +179,22 @@ public class FormConfigurator {
                 Object referenceProperty = child.property("reference");
                 if (referenceProperty != null){
                     Register.registerRelation((String) referenceProperty, child, "reference");
+                }
+                Object filtersProperty = child.property("filters");
+                if( filtersProperty != null ){
+                    String[] filterPredicates = ((String) filtersProperty).split(",");
+                    Map<Column, Object> filters = new HashMap();
+                    for( String predicate: filterPredicates ){
+                        String[] fieldAndValue = predicate.split("=");
+                        if( fieldAndValue.length == 2 ){
+                            String name = fieldAndValue[0];
+                            String label = name;
+                            String valueString = fieldAndValue[1];
+                            Column filterColumn = new Column(name, label, name, null);
+                            filters.put(filterColumn, valueString);
+                        }
+                    }
+                    Register.registerRelation(filters, child, "filters");
                 }
             }
             // Delegate

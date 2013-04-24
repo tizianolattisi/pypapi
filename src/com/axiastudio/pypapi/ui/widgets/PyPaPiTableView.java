@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -211,6 +212,10 @@ public class PyPaPiTableView extends QTableView{
             String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
             PickerDialog pd = new PickerDialog(this, controller);
+            Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
+            for( Column column: filters.keySet() ){
+                pd.addFilter(column, filters.get(column));
+            }
             int res = pd.exec();
             if ( res == 1 ){
                 for( int i=0; i<pd.getSelection().size(); i++ ){
@@ -219,6 +224,8 @@ public class PyPaPiTableView extends QTableView{
                     Class<?> classFrom = entity.getClass();
                     Class<?> classTo = collectionClass;
 
+                    // TODO: to move in a specific utility
+                    
                     // from class to class
                     Method adapter = (Method) Register.queryAdapter(classFrom, classTo);
                     String fromTo;
