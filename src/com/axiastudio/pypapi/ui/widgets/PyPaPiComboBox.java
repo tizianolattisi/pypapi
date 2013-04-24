@@ -43,7 +43,7 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     public void setLookupStore(Store lookupStore) {
-        this.setLookupStore(lookupStore, Boolean.TRUE);
+        this.setLookupStore(lookupStore, Boolean.FALSE);
     }
 
     public void setLookupStore(Store lookupStore, Boolean notnull) {
