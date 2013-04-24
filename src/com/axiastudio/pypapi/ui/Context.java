@@ -54,7 +54,7 @@ public final class Context extends QObject {
     }
 
     public Context(IForm parent, Class rootClass, String name, List columns, Store store){
-        Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
+        //Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;

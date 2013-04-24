@@ -213,8 +213,10 @@ public class PyPaPiTableView extends QTableView{
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
             PickerDialog pd = new PickerDialog(this, controller);
             Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
-            for( Column column: filters.keySet() ){
-                pd.addFilter(column, filters.get(column));
+            if( filters != null ){
+                for( Column column: filters.keySet() ){
+                    pd.addFilter(column, filters.get(column));
+                }
             }
             int res = pd.exec();
             if ( res == 1 ){
