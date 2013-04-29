@@ -149,6 +149,29 @@ public class Resolver {
         }
         return getter;
     }
+    
+    /**
+     * Return field value form field name
+     * 
+     * @param object The object
+     * @param name The name of the field
+     * @return  The value
+     * 
+     */
+    public static Object valueFromFieldName(Object entity, String name){
+        Method getter = Resolver.getterFromFieldName(entity.getClass(), name);
+        Object value=null;
+        try {
+            value = getter.invoke(entity);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(Resolver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return value;
+    }
 
     /**
      * Find the setter method of a Serializable from the field name.
