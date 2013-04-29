@@ -111,6 +111,10 @@ public class TableModel extends QAbstractTableModel {
 
     @Override
     public int columnCount(QModelIndex qmi) {
+        if( this.columns == null ){
+            String msg = "No columns in table model (maybe you need to promote a TableView?)";
+            Logger.getLogger(TableModel.class.getName()).log(Level.WARNING, msg);
+        }
         return this.columns.size();
     }
 
