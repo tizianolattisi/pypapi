@@ -23,9 +23,7 @@ import com.trolltech.qt.gui.*;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  * 
- * XXX: unused!
- * 
- */
+*/
 public class PyPaPiDateEdit extends QDateEdit {
     private QMenu menuPopup;
     private QAction actionNull;
@@ -81,6 +79,7 @@ public class PyPaPiDateEdit extends QDateEdit {
                 this.setEnabled(true);
             }
         }
+        System.out.println("updateStyleSheet ");
         this.setStyleSheet(style);
     }
 
@@ -90,14 +89,14 @@ public class PyPaPiDateEdit extends QDateEdit {
             return super.eventFilter(qo, qevent);
         }
         if( this.date().equals(this.minimumDate()) ){
-            if( this.isEnabled() && qevent.type() == QEvent.Type.MouseButtonPress ){
+            if( qevent.type() == QEvent.Type.MouseButtonPress ){
                 this.setDate(QDate.currentDate());
                 this.setFocus();
                 this.updateStyleSheet();
                 return true;
             }
         } else {
-            if( this.isEnabled() && qevent.type() == QEvent.Type.KeyPress ){
+            if( qevent.type() == QEvent.Type.KeyPress ){
                 QKeyEvent qkevent = (QKeyEvent) qevent;
                 if ( qkevent.key() == Qt.Key.Key_Delete.value() ){
                     this.setDate(this.minimumDate());
