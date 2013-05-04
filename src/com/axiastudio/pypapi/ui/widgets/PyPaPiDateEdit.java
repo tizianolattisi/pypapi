@@ -30,7 +30,7 @@ public class PyPaPiDateEdit extends QDateEdit {
     private Boolean isNull;
     private Boolean isInitiallyEnabled=null;
     
-    static final String NULLSTYLE="color: white";
+    static final String NULLSTYLE="color: white; background: white;";
 
     public PyPaPiDateEdit(QWidget parent) {
         super(parent);
