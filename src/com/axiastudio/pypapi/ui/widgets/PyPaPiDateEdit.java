@@ -79,7 +79,6 @@ public class PyPaPiDateEdit extends QDateEdit {
                 this.setEnabled(true);
             }
         }
-        System.out.println("updateStyleSheet ");
         this.setStyleSheet(style);
     }
 
