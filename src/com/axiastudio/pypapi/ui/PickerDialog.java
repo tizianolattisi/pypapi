@@ -109,6 +109,7 @@ public class PickerDialog extends QDialog {
     private HashMap criteriaWidgets;
     private HashMap filters;
     private HashMap<String, EntitySelectorUtility> entitySelectorUtilities;
+    private QComboBox comboBoxLimit;
 
     public PickerDialog(Controller controller) {
         this(null, controller);
@@ -202,16 +203,24 @@ public class PickerDialog extends QDialog {
         this.buttonQuickInsert = new QToolButton(this);
         this.buttonQuickInsert.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/add.png"));
         this.buttonQuickInsert.clicked.connect(this, "quickInsert()");
+        this.comboBoxLimit = new QComboBox(this);
+        this.comboBoxLimit.addItem("10");
+        this.comboBoxLimit.addItem("100");
+        this.comboBoxLimit.addItem("1000");
+        this.comboBoxLimit.addItem("no limit");
+        this.comboBoxLimit.setCurrentIndex(2);
         QHBoxLayout buttonLayout = new QHBoxLayout();
         buttonLayout.setSpacing(4);
         buttonLayout.addWidget(this.filterLineEdit);
         buttonLayout.addWidget(filterLabel);
-        QSpacerItem spacer = new QSpacerItem(40, 20, QSizePolicy.Policy.Expanding,
+        QSpacerItem spacer = new QSpacerItem(20, 20, QSizePolicy.Policy.Expanding,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer);
+        buttonLayout.addWidget(new QLabel("max"));
+        buttonLayout.addWidget(this.comboBoxLimit);
         buttonLayout.addWidget(this.buttonSearch);
         buttonLayout.addWidget(this.buttonExport);
-        QSpacerItem spacer2 = new QSpacerItem(40, 20, QSizePolicy.Policy.Minimum,
+        QSpacerItem spacer2 = new QSpacerItem(20, 20, QSizePolicy.Policy.Minimum,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer2);
         buttonLayout.addWidget(this.buttonQuickInsert);
@@ -391,7 +400,11 @@ public class PickerDialog extends QDialog {
                 }
             }
             criteriaMap.putAll(this.filters);
-            supersetStore = this.controller.createCriteriaStore(criteriaMap);
+            Integer limit = 0;
+            if( this.comboBoxLimit.currentIndex() != this.comboBoxLimit.count()-1 ){
+                limit = Integer.parseInt(this.comboBoxLimit.currentText());
+            }
+            supersetStore = this.controller.createCriteriaStore(criteriaMap, limit);
         }
         TableModel model = new TableModel(supersetStore, columns);
         model.setEditable(false);

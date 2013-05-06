@@ -70,6 +70,11 @@ public class Controller implements IController {
     
     @Override
     public Store createCriteriaStore(Map criteria){
+        return this.createCriteriaStore(criteria, 0);
+    }
+
+    @Override
+    public Store createCriteriaStore(Map criteria, Integer limit){
         if( this.entityClass == null ){
             return null;
         }
@@ -134,6 +139,9 @@ public class Controller implements IController {
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
         TypedQuery<Object> tq = em.createQuery(cq);
+        if( limit != 0 ){
+            tq.setMaxResults(limit);
+        }
         List<Object> result = tq.getResultList();
         store = new Store(result);
         em.close();

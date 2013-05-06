@@ -16,7 +16,6 @@
  */
 package com.axiastudio.pypapi.db;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +33,8 @@ public interface IController {
     //Store createStore(int limit);
     
     Store createCriteriaStore(Map criteria);
+
+    Store createCriteriaStore(Map criteria, Integer limit);
     
     Validation commit(Object entity);
     
