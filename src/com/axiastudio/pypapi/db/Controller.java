@@ -136,6 +136,7 @@ public class Controller implements IController {
         TypedQuery<Object> tq = em.createQuery(cq);
         List<Object> result = tq.getResultList();
         store = new Store(result);
+        em.close();
         return store;
     }
 
@@ -327,6 +328,7 @@ public class Controller implements IController {
         Object merged = em.merge(entity);
         em.remove(merged);
         em.getTransaction().commit();
+        em.close();
     }
             
     @Override
@@ -351,8 +353,10 @@ public class Controller implements IController {
             em.detach(entity);
             Object merged = em.find(this.entityClass, i);
             em.merge(merged);
+            em.close();
             return merged;
         } else {
+            em.close();
             return entity;
         }
     }

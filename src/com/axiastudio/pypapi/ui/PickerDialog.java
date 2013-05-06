@@ -146,7 +146,28 @@ public class PickerDialog extends QDialog {
         }
         this.setStyleSheet(this.STYLE);
     }
+
     
+    @Override
+    public void accept() {
+        this.disposeAll();
+        super.accept();
+    }
+
+    @Override
+    public void reject() {
+        this.disposeAll();
+        super.reject();
+    }
+    
+    private void disposeAll(){
+        if( this.tableView.model() != null ){
+            this.selectionModel.disposeLater();
+            this.tableView.model().disposeLater();
+            this.tableView.setModel(null);
+        }
+    }
+
     private void init(){
         this.setWindowTitle(tr("RESEARCH_AND_SELECTION"));
         this.layout = new QVBoxLayout(this);

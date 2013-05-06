@@ -281,6 +281,7 @@ public final class Context extends QObject {
             this.model.replaceRows(pd.getSelection());
             this.firstElement();
         }
+        pd.dispose();
     }
     
     public void getDirty(){
