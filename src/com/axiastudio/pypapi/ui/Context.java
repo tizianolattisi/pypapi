@@ -111,9 +111,6 @@ public final class Context extends QObject {
         return tableModel;
     }
 
-    private void IndexChanged() {
-        this.indexChanged(0);
-    }
     private void indexChanged(int row){
         int cnt = this.model.rowCount();
         if(".".equals(this.name)){
