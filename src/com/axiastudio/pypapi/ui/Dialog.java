@@ -36,7 +36,7 @@ public class Dialog extends QDialog implements IForm {
 
     protected Class entityClass;
     protected String uiFile;
-    protected String title;
+    //protected String title;
     private Context context;
     private HashMap<String, QObject> widgets;
     private List<Column> columns;
@@ -50,7 +50,7 @@ public class Dialog extends QDialog implements IForm {
     public Dialog(String uiFile, Class entityClass, String title) {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
-        this.title = title;
+        //this.title = title;
         QFile file = Util.ui2jui(new QFile(uiFile));
         this.loadUi(file);
     }
@@ -92,6 +92,7 @@ public class Dialog extends QDialog implements IForm {
             this.setLayout(dialog.layout());
             this.setModal(true);
         }
+        this.setWindowTitle(dialog.windowTitle());
     }
         
     @Override

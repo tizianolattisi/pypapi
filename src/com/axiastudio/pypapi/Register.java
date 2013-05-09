@@ -384,12 +384,8 @@ public class Register {
     }
     
     public static void registerForm(EntityManagerFactory emf, String ui, Class factory){
-        Register.registerForm(emf, ui, factory, Window.class, "");
+        Register.registerForm(emf, ui, factory, Window.class);
     }        
-
-    public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass){
-        Register.registerForm(emf, ui, factory, formClass, "");
-    }
 
     /**
      * Registers controller, factory and form as utilities.
@@ -398,10 +394,9 @@ public class Register {
      * @param ui The classpath of the ui form
      * @param factory The class factory
      * @param formClass The class of the form
-     * @param title The title of the form
      * 
      */
-    public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass, String title){
+    public static void registerForm(EntityManagerFactory emf, String ui, Class factory, Class formClass){
         if( ui != null ){
             UIInspector inspector = new UIInspector(ui, factory.getName());
         } else {

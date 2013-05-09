@@ -59,7 +59,7 @@ public class Window extends QMainWindow implements IForm {
     public Window(String uiFile, Class entityClass, String title) {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
-        this.title = title;
+        //this.title = title;
         if( uiFile != null ){
             QFile qFile = new QFile(uiFile);
             if( qFile.exists() ){
@@ -108,6 +108,8 @@ public class Window extends QMainWindow implements IForm {
             this.setProperty(name.toString(), window.property(name.toString()));
         }
         this.setCentralWidget(window.centralWidget());
+        this.title = window.windowTitle();
+        this.setWindowTitle(this.title);
     }
 
     private void autoLayout(){
