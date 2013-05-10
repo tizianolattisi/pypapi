@@ -18,6 +18,9 @@ package com.axiastudio.pypapi;
 
 import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -27,14 +30,25 @@ public class Application extends QApplication {
     
     private String customApplicationName=null;
     private String customApplicationCredits=null;
+    List<String> qmFiles = new ArrayList();
     
     public Application(String[] args){
         super(args);
     }
     
+    public void addQmFile(String fileName){
+        qmFiles.add(fileName);
+    }
+    
     public void setLanguage(String lang){
         QTranslator translator = new QTranslator(this);
         translator.load("classpath:com/axiastudio/pypapi/lang/pypapi_"+lang+".qm");
+        for( String qmFile: qmFiles ){
+            if( qmFile.contains("{0}") ){
+                qmFile = MessageFormat.format(qmFile, lang);
+            }
+            translator.load(qmFile);
+        }
         QApplication.installTranslator(translator);
     }
 
