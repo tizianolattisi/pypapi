@@ -70,7 +70,7 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     private void tryToSelect(String s){
-        if( s == null ){
+        if( s == null || s.length() == 0 ){
             return;
         }
         Integer idx=null;
