@@ -67,7 +67,7 @@ public class PyPaPiTableView extends QTableView{
         this.verticalHeader().setFixedWidth(30);
         this.verticalHeader().hide();
         this.initializeMenu();
-
+        this.setItemDelegate(new WikiDelegate(this));
     }
     
     private void initializeMenu(){
