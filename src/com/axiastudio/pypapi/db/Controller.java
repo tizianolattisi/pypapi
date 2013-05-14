@@ -65,7 +65,10 @@ public class Controller implements IController {
     }
 
     public EntityManager getEntityManager() {
-        return this.entityManagerFactory.createEntityManager();
+        if( this.entityManager == null ){
+            this.entityManager = this.entityManagerFactory.createEntityManager();
+        }
+        return this.entityManager;
     }
     
     @Override
@@ -144,39 +147,8 @@ public class Controller implements IController {
         }
         List<Object> result = tq.getResultList();
         store = new Store(result);
-        em.close();
         return store;
     }
-
-    /*
-    @Override
-    public Store createStore() {
-        return this.createStore(-1);
-    }
-    * */
-
-    /*
-    @Override
-    public Store createStore(int limit) {
-        if( this.entityClass == null ){
-            return null;
-        }
-        EntityManager em = this.getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(this.entityClass));
-            Query q = em.createQuery(cq);
-            if( limit > 0 ){
-                q = q.setMaxResults(limit);
-            }
-            List entities = q.getResultList();
-            Store store = new Store(entities);
-            return store;
-        } finally {
-            em.close();
-        }
-    }
-    * */
 
     @Override
     public Store createFullStore(){
@@ -286,26 +258,9 @@ public class Controller implements IController {
                 merged = em.merge(entity);
                 em.getTransaction().commit();                
             }
-            try {
-                // TODO: refresh entity
-                Method getId = merged.getClass().getMethod("getId");
-                Long i = (Long) getId.invoke(merged);
-                em.detach(merged);
-                merged = em.find(this.entityClass, i);
-                em.merge(merged);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            em.refresh(merged);
+
             beforeValidation.setEntity(merged);
-            em.close();
             
             // AFTER COMMIT
 
@@ -336,37 +291,13 @@ public class Controller implements IController {
         Object merged = em.merge(entity);
         em.remove(merged);
         em.getTransaction().commit();
-        em.close();
     }
             
     @Override
     public Object refresh(Object entity){
         EntityManager em = this.getEntityManager();
-        Long i=null;
-        try {
-            Method getId = entity.getClass().getMethod("getId");
-            i = (Long) getId.invoke(entity);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if( i != null ){
-            em.detach(entity);
-            Object merged = em.find(this.entityClass, i);
-            em.merge(merged);
-            em.close();
-            return merged;
-        } else {
-            em.close();
-            return entity;
-        }
+        em.refresh(entity);
+        return entity;
     }
     
     public String getEntityName() {

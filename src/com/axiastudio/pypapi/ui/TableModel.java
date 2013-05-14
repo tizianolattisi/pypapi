@@ -219,8 +219,16 @@ public class TableModel extends QAbstractTableModel {
         this.purgeItemCache(entity);
     }
     
+    public void refresh(){
+        this.purgeItemCache();
+    }
+    
     public void purgeItemCache(){
         this.cache = new HashMap();
+    }
+
+    public void refresh(Object entity){
+        this.purgeItemCache(entity);
     }
 
     public void purgeItemCache(Object entity){
