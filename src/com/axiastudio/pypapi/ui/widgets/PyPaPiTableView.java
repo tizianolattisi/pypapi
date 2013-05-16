@@ -150,7 +150,7 @@ public class PyPaPiTableView extends QTableView{
         this.actionDel.setEnabled(selected && !this.getReadOnly());
         this.actionAdd.setEnabled(!this.getReadOnly());
         String reference = (String) this.property("reference");
-        this.actionQuickInsert.setEnabled(reference != null);
+        this.actionQuickInsert.setEnabled(!this.getReadOnly() && reference != null);
 
     }
     
