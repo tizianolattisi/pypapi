@@ -4,47 +4,57 @@
 <context>
     <name>com.axiastudio.pypapi.ui.PickerDialog</name>
     <message>
-        <location filename="../ui/PickerDialog.java" line="146"/>
+        <location filename="../ui/PickerDialog.java" line="173"/>
         <source>RESEARCH_AND_SELECTION</source>
         <translation>Ricerca e selezione</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="228"/>
+        <location filename="../ui/PickerDialog.java" line="270"/>
         <source>DAYS</source>
         <translation>giorni</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="229"/>
+        <location filename="../ui/PickerDialog.java" line="271"/>
         <source>WEEKS</source>
         <translation>settimane</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="230"/>
+        <location filename="../ui/PickerDialog.java" line="272"/>
         <source>MONTHS</source>
         <translation>mesi</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="231"/>
+        <location filename="../ui/PickerDialog.java" line="273"/>
         <source>YEARS</source>
         <translation>anni</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="248"/>
+        <location filename="../ui/PickerDialog.java" line="290"/>
         <source>SELECT</source>
         <translation>seleziona</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="363"/>
+        <location filename="../ui/PickerDialog.java" line="424"/>
+        <source>EXPORT_ERROR</source>
+        <translation>Errore di esportazione</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="424"/>
+        <source>EXPORT_ERROR_MESSAGE</source>
+        <translation>Non sono stati definiti campi per l&apos;esportazione CSV</translation>
+    </message>
+    <message>
+        <location filename="../ui/PickerDialog.java" line="427"/>
         <source>EXPORT_CSV_FILE</source>
         <translation>Esporta file CSV</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="369"/>
+        <location filename="../ui/PickerDialog.java" line="433"/>
         <source>CSV_EXPORTED</source>
         <translation>File CSV esportato</translation>
     </message>
     <message>
-        <location filename="../ui/PickerDialog.java" line="369"/>
+        <location filename="../ui/PickerDialog.java" line="433"/>
         <source>CSV_EXPORTED_DESCRIPTION</source>
         <translation>Il file CSV è stato esportato correttamente</translation>
     </message>
@@ -52,17 +62,17 @@
 <context>
     <name>com.axiastudio.pypapi.ui.Window</name>
     <message>
-        <location filename="../ui/Window.java" line="79"/>
+        <location filename="../ui/Window.java" line="86"/>
         <source>NAVIGATION</source>
         <translation>Navigazione</translation>
     </message>
     <message>
-        <location filename="../ui/Window.java" line="149"/>
+        <location filename="../ui/Window.java" line="165"/>
         <source>DELETE_ELEMENT_REQUEST</source>
         <translation>Richiesta di cancellazione elemento</translation>
     </message>
     <message>
-        <location filename="../ui/Window.java" line="149"/>
+        <location filename="../ui/Window.java" line="165"/>
         <source>DELETE_ELEMENT_REQUEST_DESCRIPTION</source>
         <translation>Vuoi cancellare l&apos;elemento corrente?</translation>
     </message>
@@ -183,24 +193,29 @@
 <context>
     <name>com.axiastudio.pypapi.ui.widgets.PyPaPiTableView</name>
     <message>
-        <location filename="../ui/widgets/PyPaPiTableView.java" line="80"/>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="88"/>
         <source>INFO</source>
         <translation>Informazioni</translation>
     </message>
     <message>
-        <location filename="../ui/widgets/PyPaPiTableView.java" line="87"/>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="95"/>
         <source>OPEN</source>
         <translation>Apri</translation>
     </message>
     <message>
-        <location filename="../ui/widgets/PyPaPiTableView.java" line="94"/>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="102"/>
         <source>ADD</source>
         <translation>Aggiungi</translation>
     </message>
     <message>
-        <location filename="../ui/widgets/PyPaPiTableView.java" line="101"/>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="109"/>
         <source>DELETE</source>
         <translation>Cancella</translation>
+    </message>
+    <message>
+        <location filename="../ui/widgets/PyPaPiTableView.java" line="116"/>
+        <source>QUICKINSERT</source>
+        <translation>Inserimento veloce</translation>
     </message>
 </context>
 </TS>
