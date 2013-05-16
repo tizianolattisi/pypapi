@@ -421,7 +421,7 @@ public class PickerDialog extends QDialog {
         List<Column> columns = behavior.getExports();
         String content = Util.exportToCvs(this.selection, columns, this.controller.getEntityClass());
         if( content == null ){
-            QMessageBox.information(this, tr("Export error"), tr("No fields defined for export to CSV"));
+            QMessageBox.information(this, tr("EXPORT_ERROR"), tr("EXPORT_ERROR_MESSAGE"));
             return;
         }
         String saveFileName = QFileDialog.getSaveFileName(this, tr("EXPORT_CSV_FILE"), ".", new QFileDialog.Filter("CSV file (*.csv)"));
