@@ -413,7 +413,7 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
-        this.buttonQuickInsert.setEnabled(supersetStore.size() == 0);
+        this.buttonQuickInsert.setEnabled(true);
     }
     
     public final void export(){
