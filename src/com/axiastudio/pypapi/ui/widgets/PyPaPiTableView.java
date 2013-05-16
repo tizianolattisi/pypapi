@@ -45,11 +45,12 @@ public class PyPaPiTableView extends QTableView{
     private final String STYLE="QTableView {"
             + "image: url(classpath:com/axiastudio/pypapi/ui/resources/cog.png);"
             + "image-position: right; border: 1px solid #999999; }";
-    private QAction actionAdd, actionDel, actionOpen, actionInfo;
+    private QAction actionAdd, actionDel, actionOpen, actionInfo, actionQuickInsert;
     private QMenu menuPopup;
     private QToolBar toolBar;
     private Boolean refreshConnected=false;
     private Boolean readOnly=false;
+    private QLineEdit lineEditQuickInsert = new QLineEdit();
 
     public PyPaPiTableView(){
         this(null);
@@ -76,10 +77,17 @@ public class PyPaPiTableView extends QTableView{
         this.menuPopup = new QMenu(this);
         this.toolBar = new QToolBar(this);
         this.toolBar.setOrientation(Qt.Orientation.Vertical);
-        this.toolBar.setIconSize(new QSize(16, 16));
-        this.toolBar.move(1, 22);
+        this.toolBar.setIconSize(new QSize(16, 14));
+        this.toolBar.move(1, 1);
         this.toolBar.hide();
 
+        this.actionQuickInsert = new QAction(tr("QUICKINSERT"), this);
+        QIcon iconQuickInsert = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/lightning_add.png");
+        this.actionQuickInsert.setIcon(iconQuickInsert);
+        this.menuPopup.addAction(actionQuickInsert);
+        this.toolBar.addAction(actionQuickInsert);
+        this.actionQuickInsert.triggered.connect(this, "actionQuickInsert()");
+        
         this.actionInfo = new QAction(tr("INFO"), this);
         QIcon iconInfo = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/information.png");
         this.actionInfo.setIcon(iconInfo);
@@ -107,7 +115,7 @@ public class PyPaPiTableView extends QTableView{
         this.menuPopup.addAction(actionDel);
         this.toolBar.addAction(actionDel);
         this.actionDel.triggered.connect(this, "actionDel()");
-        
+
     }
     
 
@@ -202,6 +210,10 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionAdd(){
+        this.actionAdd(null);
+    }
+    
+    public void actionAdd(List selection){
         TableModel model = (TableModel) this.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.property("entity");
@@ -211,17 +223,24 @@ public class PyPaPiTableView extends QTableView{
             String name = (String) reference;
             String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
-            PickerDialog pd = new PickerDialog(this, controller);
-            Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
-            if( filters != null ){
-                for( Column column: filters.keySet() ){
-                    pd.addFilter(column, filters.get(column));
+            
+            int res=1;
+            if( selection == null ){
+                // Selection from PickerDialog
+                PickerDialog pd = new PickerDialog(this, controller);
+                Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
+                if( filters != null ){
+                    for( Column column: filters.keySet() ){
+                        pd.addFilter(column, filters.get(column));
+                    }
                 }
+                res = pd.exec();
+                selection = pd.getSelection();
             }
-            int res = pd.exec();
+            
             if ( res == 1 ){
-                for( int i=0; i<pd.getSelection().size(); i++ ){
-                    Object entity = pd.getSelection().get(i);
+                for( int i=0; i<selection.size(); i++ ){
+                    Object entity = selection.get(i);
                     Object adapted = null;
                     Class<?> classFrom = entity.getClass();
                     Class<?> classTo = collectionClass;
@@ -298,6 +317,19 @@ public class PyPaPiTableView extends QTableView{
         this.selectRow(this.model().rowCount()-1);
         this.actionInfo();
     }
+    
+    private void actionQuickInsert(){
+        TableModel model = (TableModel) this.model();
+        Class rootClass = model.getContextHandle().getRootClass();
+        String entityName = (String) this.property("entity");
+        String referenceName = (String) Register.queryRelation(this, "reference");
+        lineEditQuickInsert.installEventFilter(new QuickInsertFilter(this));
+        lineEditQuickInsert.show();
+    }
+
+    public QLineEdit getLineEditQuickInsert() {
+        return lineEditQuickInsert;
+    }
 
     public Boolean getReadOnly() {
         return readOnly;
@@ -308,4 +340,52 @@ public class PyPaPiTableView extends QTableView{
     }
     
 
+}
+class QuickInsertFilter extends QObject {
+    
+    private PyPaPiTableView tableView;
+    
+    public QuickInsertFilter(PyPaPiTableView tableView){
+        super();
+        this.tableView = tableView;
+    }
+    
+    @Override
+    public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( qevent.type() == QEvent.Type.KeyPress ){
+            QKeyEvent qke = (QKeyEvent) qevent;
+            if( qke.key() == Qt.Key.Key_Tab.value() ){
+                String idx = this.tableView.getLineEditQuickInsert().text();
+                this.insert(idx);
+                this.tableView.getLineEditQuickInsert().clear();
+            } else if( qke.key() == Qt.Key.Key_Escape.value() ) {
+                this.tableView.getLineEditQuickInsert().close();
+            }
+        }
+        return false;
+    }
+    
+    private void insert(String idx) {
+        TableModel model = (TableModel) this.tableView.model();
+        Class rootClass = model.getContextHandle().getRootClass();
+        String entityName = (String) this.tableView.property("entity");
+        String referenceName = (String) Register.queryRelation(this.tableView, "reference");
+        Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
+        if ( referenceName != null ){
+            String name = (String) referenceName;
+            String className = Resolver.entityClassFromReference(collectionClass, (String) referenceName).getName();
+            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
+            try{
+                Object entity = controller.get(Long.parseLong(idx));
+                if( entity != null ){
+                    List selection = new ArrayList();
+                    selection.add(entity);
+                    this.tableView.actionAdd(selection);
+                }
+            } catch (NumberFormatException e){
+            
+            }
+        }
+    }
+    
 }
