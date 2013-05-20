@@ -208,7 +208,9 @@ public class PyPaPiTableView extends QTableView{
         }
         Collections.sort(selectedRows, Collections.reverseOrder());
         for( Integer row: selectedRows ){
+            Object toRemove = model.getEntityByRow(row);
             model.removeRows(row, 1, null);
+            entityRemoved.emit(toRemove);
         }
     }
     
@@ -298,6 +300,7 @@ public class PyPaPiTableView extends QTableView{
 
                     if( adapted != null ){
                         model.getContextHandle().insertElement(adapted);
+                        entityInserted.emit(adapted);
                     } else {
                         String title = "Adapter warning";
                         String description = "Unable to find an adapter from "+classFrom+" to "+classTo+".";
@@ -309,6 +312,7 @@ public class PyPaPiTableView extends QTableView{
             try {
                 Object notAdapted = collectionClass.newInstance();
                 model.getContextHandle().insertElement(notAdapted);
+                entityInserted.emit(notAdapted);
             } catch (InstantiationException ex) {
                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -342,8 +346,15 @@ public class PyPaPiTableView extends QTableView{
         this.readOnly = readOnly;
     }
     
+    /* SIGNALS */
+    
+    public Signal1<Object> entityInserted = new Signal1<Object>();
+    
+    public Signal1<Object> entityRemoved = new Signal1<Object>();
 
 }
+
+
 class QuickInsertFilter extends QObject {
     
     private PyPaPiTableView tableView;
