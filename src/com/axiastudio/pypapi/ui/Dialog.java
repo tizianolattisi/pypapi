@@ -105,6 +105,7 @@ public class Dialog extends QDialog implements IForm {
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
         configurator.configure(store);
         this.getContext().getMapper().toFirst();
+        storeInitialized.emit();
     }
 
     @Override
@@ -146,5 +147,11 @@ public class Dialog extends QDialog implements IForm {
     public HashMap<String, QObject> getWidgets() {
         return widgets;
     }
+    
+    
+    /* SIGNALS */
+    
+    public Signal0 storeInitialized = new Signal0();
+
     
 }
