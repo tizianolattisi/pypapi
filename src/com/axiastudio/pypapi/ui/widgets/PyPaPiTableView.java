@@ -331,6 +331,7 @@ public class PyPaPiTableView extends QTableView{
         String entityName = (String) this.property("entity");
         String referenceName = (String) Register.queryRelation(this, "reference");
         lineEditQuickInsert.installEventFilter(new QuickInsertFilter(this));
+        lineEditQuickInsert.setWindowTitle("Ins. rapido...");
         lineEditQuickInsert.show();
     }
 
