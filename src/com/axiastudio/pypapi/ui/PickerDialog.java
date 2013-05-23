@@ -92,7 +92,7 @@ public class PickerDialog extends QDialog {
             + "image: none;"
             + "}";
 
-    private List selection;
+    private List selection = new ArrayList();;
     private QTableView tableView;
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
@@ -106,9 +106,10 @@ public class PickerDialog extends QDialog {
     private QToolButton buttonExport;
     private QToolButton buttonQuickInsert;
     private Boolean isCriteria;
-    private HashMap criteriaWidgets;
-    private HashMap filters;
-    private HashMap<String, EntitySelectorUtility> entitySelectorUtilities;
+    private HashMap<Column,QWidget> criteriaWidgets = new HashMap();
+    private HashMap<String, QWidget> joinCriteriaWidgets = new HashMap();
+    private HashMap<Column, Object> filters = new HashMap();
+    private HashMap<String, EntitySelectorUtility> entitySelectorUtilities = new HashMap();
     private QComboBox comboBoxLimit;
 
     public PickerDialog(Controller controller) {
@@ -118,25 +119,21 @@ public class PickerDialog extends QDialog {
     public PickerDialog(QWidget parent, Controller controller) {
         super(parent);
         this.controller = controller;
-        this.selection = new ArrayList();
-        this.entitySelectorUtilities = new HashMap();
-        this.criteriaWidgets = new HashMap();
-        this.filters = new HashMap();
         this.init();
         this.buttonQuickInsert.setEnabled(false);
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> criteria = behavior.getCriteria();
+        HashMap<String, String> joinCriteria = behavior.getJoinCriteria();
         this.isCriteria = false;
-        if (criteria != null){
-            if (criteria.size()>0){
-                this.addCriteria(criteria);
-                this.buttonAccept.setEnabled(false);
-                this.buttonExport.setEnabled(false);
-                this.isCriteria = true;
-            }
-        } else {
+        if( (criteria == null || criteria.size() == 0) &&
+            (joinCriteria == null || joinCriteria.keySet().size() == 0) ){
             this.executeSearch();
             this.buttonSearch.setEnabled(false);
+        } else {
+            this.addCriteria(criteria, joinCriteria);
+            this.buttonAccept.setEnabled(false);
+            this.buttonExport.setEnabled(false);
+            this.isCriteria = true;            
         }
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
@@ -233,14 +230,14 @@ public class PickerDialog extends QDialog {
         this.resize(500, 300);
     }
     
-    private void addCriteria(List<Column> criteria){
+    private void addCriteria(List<Column> criteria, HashMap<String, String> joinCriteria){
         QGridLayout grid = new QGridLayout();
+        int n=0;
         for (int i=0; i<criteria.size(); i++){
             Column column = criteria.get(i);
             QLabel criteriaLabel = new QLabel(column.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
-            // TODO: different types of search widget depending on the data type
             QWidget widget=null;
             if( column.getEditorType().equals(CellEditorType.STRING) ){
                 widget = new QLineEdit();
@@ -309,6 +306,18 @@ public class PickerDialog extends QDialog {
             
                 grid.addLayout(criteriaLayout, i, 1);
             }
+            n = i;
+        }
+        for( String key: joinCriteria.keySet() ){
+            n += 1;
+            String fields = joinCriteria.get(key);
+            QLabel criteriaLabel = new QLabel(fields);
+            grid.addWidget(criteriaLabel, n, 0);
+            QHBoxLayout criteriaLayout = new QHBoxLayout();
+            QWidget widget=new QLineEdit(); // TODO: different types...
+            joinCriteriaWidgets.put(key, widget);
+            criteriaLayout.addWidget(widget);
+            grid.addLayout(criteriaLayout, n, 1);
         }
         this.layout.addLayout(grid);
     }        
@@ -337,6 +346,7 @@ public class PickerDialog extends QDialog {
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();
         } else {
+            // field criteria
             List<Column> criteria = behavior.getCriteria();
             HashMap criteriaMap = new HashMap();
             for (Column column: criteria){
@@ -397,6 +407,20 @@ public class PickerDialog extends QDialog {
                     if( data != null ){
                         criteriaMap.put(column, data);
                     }
+                }
+            }
+            // join criteria
+            HashMap<String, String> joinCriteria = behavior.getJoinCriteria();
+            for( String field: joinCriteria.keySet() ){
+                // foreign Column
+                String name = field + "." + joinCriteria.get(field);
+                name = name.substring(1);
+                Column foreignColumn = new Column(name, name, name);
+                foreignColumn.setEditorType(CellEditorType.STRING);
+                QWidget widget = joinCriteriaWidgets.get(field);
+                String value = ((QLineEdit) widget).text();
+                if( !"".equals(value) ){
+                    criteriaMap.put(foreignColumn, value);
                 }
             }
             criteriaMap.putAll(this.filters);
