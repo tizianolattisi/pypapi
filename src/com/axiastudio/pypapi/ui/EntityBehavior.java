@@ -37,6 +37,7 @@ public class EntityBehavior implements IEntityBehavior {
     private List<String> privates;
     private List<Column> exports;
     private List<Column> searchColumns;
+    private HashMap<String, String> joinCriteria;
     private HashMap<String, String> validators = new HashMap();
     
     public EntityBehavior(String className){
@@ -112,6 +113,16 @@ public class EntityBehavior implements IEntityBehavior {
     @Override
     public Set<String> getReValidatorKeys() {
         return this.validators.keySet();
+    }
+
+    @Override
+    public HashMap<String, String> getJoinCriteria() {
+        return joinCriteria;
+    }
+
+    @Override
+    public void setJoinCriteria(HashMap<String, String> joinCriteria) {
+        this.joinCriteria = joinCriteria;
     }
     
 }

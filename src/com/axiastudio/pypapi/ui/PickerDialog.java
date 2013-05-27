@@ -26,10 +26,14 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,7 +96,7 @@ public class PickerDialog extends QDialog {
             + "image: none;"
             + "}";
 
-    private List selection;
+    private List selection = new ArrayList();;
     private QTableView tableView;
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
@@ -106,10 +110,12 @@ public class PickerDialog extends QDialog {
     private QToolButton buttonExport;
     private QToolButton buttonQuickInsert;
     private Boolean isCriteria;
-    private HashMap criteriaWidgets;
-    private HashMap filters;
-    private HashMap<String, EntitySelectorUtility> entitySelectorUtilities;
+    private HashMap<Column,QWidget> criteriaWidgets = new HashMap();
+    private HashMap<String, QWidget> joinCriteriaWidgets = new HashMap();
+    private HashMap<Column, Object> filters = new HashMap();
+    private HashMap<String, EntitySelectorUtility> entitySelectorUtilities = new HashMap();
     private QComboBox comboBoxLimit;
+    private List<Column> mergedCriteria;
 
     public PickerDialog(Controller controller) {
         this(null, controller);
@@ -118,25 +124,21 @@ public class PickerDialog extends QDialog {
     public PickerDialog(QWidget parent, Controller controller) {
         super(parent);
         this.controller = controller;
-        this.selection = new ArrayList();
-        this.entitySelectorUtilities = new HashMap();
-        this.criteriaWidgets = new HashMap();
-        this.filters = new HashMap();
         this.init();
         this.buttonQuickInsert.setEnabled(false);
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> criteria = behavior.getCriteria();
+        HashMap<String, String> joinCriteria = behavior.getJoinCriteria();
         this.isCriteria = false;
-        if (criteria != null){
-            if (criteria.size()>0){
-                this.addCriteria(criteria);
-                this.buttonAccept.setEnabled(false);
-                this.buttonExport.setEnabled(false);
-                this.isCriteria = true;
-            }
-        } else {
+        if( (criteria == null || criteria.size() == 0) &&
+            (joinCriteria == null || joinCriteria.keySet().size() == 0) ){
             this.executeSearch();
             this.buttonSearch.setEnabled(false);
+        } else {
+            this.addCriteria(criteria, joinCriteria);
+            this.buttonAccept.setEnabled(false);
+            this.buttonExport.setEnabled(false);
+            this.isCriteria = true;            
         }
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
@@ -177,7 +179,8 @@ public class PickerDialog extends QDialog {
         this.tableView.setSizePolicy(new QSizePolicy(QSizePolicy.Policy.Expanding,
                 QSizePolicy.Policy.Expanding));
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
-        this.tableView.setMinimumHeight(150);
+        this.tableView.setMinimumHeight(250);
+        this.tableView.setMinimumWidth(800);
         this.tableView.setSortingEnabled(true);
         this.tableView.installEventFilter(this);
         this.layout.addWidget(this.tableView, 1);
@@ -187,7 +190,7 @@ public class PickerDialog extends QDialog {
         filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
         this.searchLogLabel = new QLabel();
         this.buttonSearch = new QToolButton(this);
-        this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/key.png"));
+        this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/filter.png"));
         this.buttonSearch.clicked.connect(this, "executeSearch()");
         this.buttonSearch.setShortcut(QKeySequence.StandardKey.Find);
         this.buttonCancel = new QToolButton(this);
@@ -233,14 +236,56 @@ public class PickerDialog extends QDialog {
         this.resize(500, 300);
     }
     
-    private void addCriteria(List<Column> criteria){
+    private void addCriteria(List<Column> criteria, HashMap<String, String> joinCriteria){
         QGridLayout grid = new QGridLayout();
-        for (int i=0; i<criteria.size(); i++){
-            Column column = criteria.get(i);
+        Map<String, Class> joinClassMap = new HashMap();
+        mergedCriteria = new ArrayList();
+        mergedCriteria.addAll(criteria);
+        for( String field: joinCriteria.keySet() ){
+            String[] split = joinCriteria.get(field).split(",");
+            for( String single: split ){
+                String fields = field + "." + single;
+                fields = fields.substring(1); 
+                String[] tkns = fields.split("\\.");
+                String label = tkns[tkns.length-1];
+                Class klass = controller.getEntityClass();
+                for( String tkn: tkns ){
+                    Method method = Resolver.getterFromFieldName(klass, tkn);
+                    Class newClass = method.getReturnType();
+                    if( Collection.class.isAssignableFrom(newClass) ){
+                        klass = Resolver.collectionClassFromReference(klass, tkn);
+                    } else {
+                        klass = newClass;
+                    }
+                }
+                label = label.substring(0,1).toUpperCase() + label.substring(1);
+                Column column = new Column(fields, label, label);
+                joinClassMap.put(fields, klass);
+                if( String.class.isAssignableFrom(klass) ){
+                    column.setEditorType(CellEditorType.STRING);
+                } else if( Enum.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.CHOICE);
+                } else if( Boolean.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.BOOLEAN);
+                } else if( Long.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.LONG);
+                } else if( Integer.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.INTEGER);
+                } else if( Date.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.DATE);
+                } else {
+                    column.setEditorType(CellEditorType.CHOICE);
+                }
+                if( column.getEditorType() != null ){
+                    mergedCriteria.add(column);
+                }
+            }
+        }
+        for (int i=0; i<mergedCriteria.size(); i++){
+            Column column = mergedCriteria.get(i);
             QLabel criteriaLabel = new QLabel(column.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
-            // TODO: different types of search widget depending on the data type
             QWidget widget=null;
             if( column.getEditorType().equals(CellEditorType.STRING) ){
                 widget = new QLineEdit();
@@ -274,8 +319,13 @@ public class PickerDialog extends QDialog {
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                Class klass = this.controller.getEntityClass();
-                Class entityClass = Resolver.entityClassFromReference(klass, column.getName());
+                Class entityClass=null;
+                if( !column.getName().contains(".") ){
+                    Class klass = this.controller.getEntityClass();
+                    entityClass = Resolver.entityClassFromReference(klass, column.getName());
+                } else {
+                    entityClass = joinClassMap.get(column.getName());
+                }
                 if( entityClass.isEnum() ){
                     widget = new QComboBox();
                     for( Object object:  entityClass.getEnumConstants() ){
@@ -305,8 +355,7 @@ public class PickerDialog extends QDialog {
             }
             if( widget != null ){
                 this.criteriaWidgets.put(column, widget);
-                criteriaLayout.addWidget(widget);
-            
+                criteriaLayout.addWidget(widget);            
                 grid.addLayout(criteriaLayout, i, 1);
             }
         }
@@ -337,11 +386,10 @@ public class PickerDialog extends QDialog {
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();
         } else {
-            List<Column> criteria = behavior.getCriteria();
             HashMap criteriaMap = new HashMap();
-            for (Column column: criteria){
+            Map<Column,QWidget> widgets = criteriaWidgets;
+            for (Column column: mergedCriteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
-                // TODO: criteria with widgets other than QLIneEdit
                 if( column.getEditorType().equals(CellEditorType.STRING) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){

@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
@@ -31,6 +32,7 @@ import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +77,7 @@ public class UIInspector {
         List<String> privates = new ArrayList();
         List<Column> exports = new ArrayList();
         List<Column> searchColumns = new ArrayList();
+        HashMap<String, String> joinCriteria = new HashMap();
         List children = win.findChildren();
         for (int i=0; i<children.size(); i++){
             QObject child = (QObject) children.get(i);
@@ -98,26 +101,34 @@ public class UIInspector {
                 }
             }
             if (entityProperty != null){
-                
+
             }
             // search dynamic property
             Object searchProperty = child.property("search");
             if (searchProperty != null){
                 if ((Boolean) searchProperty){
-                    if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.STRING);
-                    } else if(QCheckBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.BOOLEAN);
-                    } else if(QSpinBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.INTEGER);
-                    } else if(QDateTimeEdit.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.DATE);
-                    } else if(QComboBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.CHOICE);
+                    if( PyPaPiTableView.class.isInstance(child) ){
+                        Object searchfieldsProperty = child.property("searchfields");
+                        if( searchfieldsProperty != null ){
+                            String searchfields = (String) searchfieldsProperty;
+                            joinCriteria.put((String) entityProperty, searchfields);
+                        }
                     } else {
-                        column.setEditorType(CellEditorType.UNKNOW);
+                        if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.STRING);
+                        } else if(QCheckBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                        } else if(QSpinBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.INTEGER);
+                        } else if(QDateTimeEdit.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.DATE);
+                        } else if(QComboBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.CHOICE);
+                        } else {
+                            column.setEditorType(CellEditorType.UNKNOW);
+                        }
+                        criteria.add(column);
                     }
-                    criteria.add(column);
                 }
             }
             // private dynamic property
@@ -156,6 +167,7 @@ public class UIInspector {
         behavior.setPrivates(privates);
         behavior.setExports(exports);
         behavior.setSearchColumns(searchColumns);
+        behavior.setJoinCriteria(joinCriteria);
         Register.registerUtility(behavior, IEntityBehavior.class, this.entityClassName);
     }
     

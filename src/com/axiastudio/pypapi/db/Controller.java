@@ -40,6 +40,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -91,19 +92,31 @@ public class Controller implements IController {
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             Predicate predicate=null;
+            Path path = null;
+            if( !column.getName().contains(".") ){
+                path = from.get(column.getName().toLowerCase());
+            } else {
+                for( String token: column.getName().split("\\.") ){
+                    if( path == null ){
+                        path = from.get(token);
+                    } else {
+                        path = path.get(token);
+                    }
+                }
+            }
             if( column.getEditorType().equals(CellEditorType.STRING) ){
                 String value = (String) criteria.get(column);
                 value = value.replace("*", "%");
                 if( !value.endsWith("%") ){
                     value += "%";
                 }
-                predicate = cb.like(cb.upper(from.get(column.getName().toLowerCase())), value.toUpperCase());
+                predicate = cb.like(cb.upper(path), value.toUpperCase());
             } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
                 Integer value = (Integer) criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
             } else if( column.getEditorType().equals(CellEditorType.DATE) ){
                 List values = (List) criteria.get(column);
                 GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
@@ -113,11 +126,11 @@ public class Controller implements IController {
                 gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
                 Integer d = (Integer) values.get(1);
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
-                predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
-                        cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
+                predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
+                        cb.lessThan(path, gcEnd.getTime()));
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
                 Object value = criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
             }
             if( predicate != null ){
                 predicates.add(predicate);
@@ -265,10 +278,9 @@ public class Controller implements IController {
             // AFTER COMMIT
 
             Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
-            Validation afterValidation = new Validation(true);
             if( afterCommit != null ){
                 try {
-                    afterValidation = (Validation) afterCommit.invoke(null, merged);
+                    Validation afterValidation = (Validation) afterCommit.invoke(null, merged);
                     afterValidation.setEntity(merged);
                     return afterValidation;
                 } catch (IllegalAccessException ex) {
@@ -326,7 +338,7 @@ public class Controller implements IController {
         Object entity = em.find(this.getEntityClass(), id);
         return entity;
     }
-    
+
     private Long getId(Object entity){
         Long id=null;
         Method getId;
