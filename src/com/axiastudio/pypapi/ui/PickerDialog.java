@@ -114,6 +114,7 @@ public class PickerDialog extends QDialog {
     private HashMap<Column, Object> filters = new HashMap();
     private HashMap<String, EntitySelectorUtility> entitySelectorUtilities = new HashMap();
     private QComboBox comboBoxLimit;
+    private List<Column> mergedCriteria;
 
     public PickerDialog(Controller controller) {
         this(null, controller);
@@ -236,6 +237,9 @@ public class PickerDialog extends QDialog {
     
     private void addCriteria(List<Column> criteria, HashMap<String, String> joinCriteria){
         QGridLayout grid = new QGridLayout();
+        mergedCriteria = new ArrayList();
+        mergedCriteria.addAll(criteria);
+        //List<Column> mergedCriteria = criteria;
         for( String field: joinCriteria.keySet() ){
             //n += 1;
             String fields = field + "." + joinCriteria.get(field);
@@ -257,11 +261,11 @@ public class PickerDialog extends QDialog {
             if( String.class.isAssignableFrom(klass) ){
                 column.setEditorType(CellEditorType.STRING);
             }
-            criteria.add(column);
+            mergedCriteria.add(column);
         }
         //int n=0;
-        for (int i=0; i<criteria.size(); i++){
-            Column column = criteria.get(i);
+        for (int i=0; i<mergedCriteria.size(); i++){
+            Column column = mergedCriteria.get(i);
             QLabel criteriaLabel = new QLabel(column.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
@@ -397,11 +401,12 @@ public class PickerDialog extends QDialog {
             supersetStore = this.controller.createFullStore();
         } else {
             // field criteria
-            List<Column> criteria = behavior.getCriteria();
+            //List<Column> criteria = behavior.getCriteria(); // XXX: and the joins??
+            
             HashMap criteriaMap = new HashMap();
             Map<Column,QWidget> widgets = criteriaWidgets;
             // TODO: extend
-            for (Column column: criteria){
+            for (Column column: mergedCriteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
                 /*if( widget == null ){
                     continue;
