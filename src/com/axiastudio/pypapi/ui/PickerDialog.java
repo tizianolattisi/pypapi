@@ -237,6 +237,7 @@ public class PickerDialog extends QDialog {
     
     private void addCriteria(List<Column> criteria, HashMap<String, String> joinCriteria){
         QGridLayout grid = new QGridLayout();
+        Map<String, Class> joinClassMap = new HashMap();
         mergedCriteria = new ArrayList();
         mergedCriteria.addAll(criteria);
         for( String field: joinCriteria.keySet() ){
@@ -258,10 +259,15 @@ public class PickerDialog extends QDialog {
                 }
                 label = label.substring(0,1).toUpperCase() + label.substring(1);
                 Column column = new Column(fields, label, label);
+                joinClassMap.put(fields, klass);
                 if( String.class.isAssignableFrom(klass) ){
                     column.setEditorType(CellEditorType.STRING);
+                } else if( Enum.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.CHOICE);
                 }
-                mergedCriteria.add(column);
+                if( column.getEditorType() != null ){
+                    mergedCriteria.add(column);
+                }
             }
         }
         for (int i=0; i<mergedCriteria.size(); i++){
@@ -302,8 +308,13 @@ public class PickerDialog extends QDialog {
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                Class klass = this.controller.getEntityClass();
-                Class entityClass = Resolver.entityClassFromReference(klass, column.getName());
+                Class entityClass=null;
+                if( !column.getName().contains(".") ){
+                    Class klass = this.controller.getEntityClass();
+                    entityClass = Resolver.entityClassFromReference(klass, column.getName());
+                } else {
+                    entityClass = joinClassMap.get(column.getName());
+                }
                 if( entityClass.isEnum() ){
                     widget = new QComboBox();
                     for( Object object:  entityClass.getEnumConstants() ){

@@ -96,7 +96,6 @@ public class Controller implements IController {
             if( !column.getName().contains(".") ){
                 path = from.get(column.getName().toLowerCase());
             } else {
-                String value = (String) criteria.get(column);
                 for( String token: column.getName().split("\\.") ){
                     if( path == null ){
                         path = from.get(token);
