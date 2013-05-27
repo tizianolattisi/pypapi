@@ -26,10 +26,13 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -233,7 +236,30 @@ public class PickerDialog extends QDialog {
     
     private void addCriteria(List<Column> criteria, HashMap<String, String> joinCriteria){
         QGridLayout grid = new QGridLayout();
-        int n=0;
+        for( String field: joinCriteria.keySet() ){
+            //n += 1;
+            String fields = field + "." + joinCriteria.get(field);
+            fields = fields.substring(1); 
+            String[] tkns = fields.split("\\.");
+            String label = tkns[tkns.length-1];
+            Class klass = controller.getEntityClass();
+            for( String tkn: tkns ){
+                Method method = Resolver.getterFromFieldName(klass, tkn);
+                Class newClass = method.getReturnType();
+                if( Collection.class.isAssignableFrom(newClass) ){
+                    klass = Resolver.collectionClassFromReference(klass, tkn);
+                } else {
+                    klass = newClass;
+                }
+            }
+            label = label.substring(0,1).toUpperCase() + label.substring(1);
+            Column column = new Column(field, label, label);
+            if( String.class.isAssignableFrom(klass) ){
+                column.setEditorType(CellEditorType.STRING);
+            }
+            criteria.add(column);
+        }
+        //int n=0;
         for (int i=0; i<criteria.size(); i++){
             Column column = criteria.get(i);
             QLabel criteriaLabel = new QLabel(column.getLabel());
@@ -302,24 +328,47 @@ public class PickerDialog extends QDialog {
                 }
             }
             if( widget != null ){
-                this.criteriaWidgets.put(column, widget);
+                if( joinCriteria.keySet().contains(column.getName()) ){
+                    //this.joinCriteriaWidgets.put(column.getName(), widget);
+                    this.criteriaWidgets.put(column, widget);
+                } else {
+                    this.criteriaWidgets.put(column, widget);
+                }
                 criteriaLayout.addWidget(widget);
             
                 grid.addLayout(criteriaLayout, i, 1);
             }
-            n = i;
+            //n = i;
         }
-        for( String key: joinCriteria.keySet() ){
-            n += 1;
-            String fields = joinCriteria.get(key);
-            QLabel criteriaLabel = new QLabel(fields);
+        /*
+        for( String field: joinCriteria.keySet() ){
+            //n += 1;
+            String fields = field + "." + joinCriteria.get(field);
+            fields = fields.substring(1); 
+            String[] tkns = fields.split("\\.");
+            String label = tkns[tkns.length-1];
+            Class klass = controller.getEntityClass();
+            for( String tkn: tkns ){
+                Method method = Resolver.getterFromFieldName(klass, tkn);
+                Class newClass = method.getReturnType();
+                if( Collection.class.isAssignableFrom(newClass) ){
+                    klass = Resolver.collectionClassFromReference(klass, tkn);
+                } else {
+                    klass = newClass;
+                }
+            }
+            label = label.substring(0,1).toUpperCase() + label.substring(1);
+            QLabel criteriaLabel = new QLabel(label);
             grid.addWidget(criteriaLabel, n, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
-            QWidget widget=new QLineEdit(); // TODO: different types...
-            joinCriteriaWidgets.put(key, widget);
+            QWidget widget=null;
+            if( String.class.isAssignableFrom(klass) ){
+                widget = new QLineEdit(); // TODO: different types...
+            }
+            joinCriteriaWidgets.put(field, widget);
             criteriaLayout.addWidget(widget);
             grid.addLayout(criteriaLayout, n, 1);
-        }
+        }*/
         this.layout.addLayout(grid);
     }        
     
@@ -350,9 +399,10 @@ public class PickerDialog extends QDialog {
             // field criteria
             List<Column> criteria = behavior.getCriteria();
             HashMap criteriaMap = new HashMap();
+            Map<Column,QWidget> widgets = criteriaWidgets;
+            // TODO: extend
             for (Column column: criteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
-                // TODO: criteria with widgets other than QLIneEdit
                 if( column.getEditorType().equals(CellEditorType.STRING) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
@@ -411,19 +461,20 @@ public class PickerDialog extends QDialog {
                 }
             }
             // join criteria
+            /*
             HashMap<String, String> joinCriteria = behavior.getJoinCriteria();
             for( String field: joinCriteria.keySet() ){
                 // foreign Column
                 String name = field + "." + joinCriteria.get(field);
                 name = name.substring(1);
                 Column foreignColumn = new Column(name, name, name);
-                foreignColumn.setEditorType(CellEditorType.STRING);
+                foreignColumn.setEditorType(CellEditorType.STRING); // XXX
                 QWidget widget = joinCriteriaWidgets.get(field);
                 String value = ((QLineEdit) widget).text();
                 if( !"".equals(value) ){
                     criteriaMap.put(foreignColumn, value);
                 }
-            }
+            }*/
             criteriaMap.putAll(this.filters);
             Integer limit = 0;
             if( this.comboBoxLimit.currentIndex() != this.comboBoxLimit.count()-1 ){

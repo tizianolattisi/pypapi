@@ -91,58 +91,50 @@ public class Controller implements IController {
         List<Predicate> predicates = new ArrayList();
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
+            Predicate predicate=null;
+            Path path = null;
             if( !column.getName().contains(".") ){
-                Predicate predicate=null;
-                if( column.getEditorType().equals(CellEditorType.STRING) ){
-                    String value = (String) criteria.get(column);
-                    value = value.replace("*", "%");
-                    if( !value.endsWith("%") ){
-                        value += "%";
-                    }
-                    predicate = cb.like(cb.upper(from.get(column.getName().toLowerCase())), value.toUpperCase());
-                } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
-                    Integer value = (Integer) criteria.get(column);
-                    predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
-                } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
-                    Boolean value = (Boolean) criteria.get(column);
-                    predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
-                } else if( column.getEditorType().equals(CellEditorType.DATE) ){
-                    List values = (List) criteria.get(column);
-                    GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
-                    GregorianCalendar gcEnd = new GregorianCalendar();
-                    gcEnd.set(Calendar.YEAR, gcStart.get(Calendar.YEAR));
-                    gcEnd.set(Calendar.MONTH, gcStart.get(Calendar.MONTH));
-                    gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
-                    Integer d = (Integer) values.get(1);
-                    gcEnd.add(Calendar.DAY_OF_MONTH, d);
-                    predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
-                            cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
-                } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
-                    Object value = criteria.get(column);
-                    predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
-                }
-                if( predicate != null ){
-                    predicates.add(predicate);
-                }
+                path = from.get(column.getName().toLowerCase());
             } else {
-                // TODO: join criteria
-                //Predicate predicate=null;
-                Path path=null;
                 String value = (String) criteria.get(column);
-                System.out.println("> "+column.getName());
                 for( String token: column.getName().split("\\.") ){
-                    System.out.println(token);
                     if( path == null ){
                         path = from.get(token);
                     } else {
                         path = path.get(token);
                     }
                 }
-                
-                if( path != null ){
-                    predicates.add(cb.equal(path, value));
+            }
+            if( column.getEditorType().equals(CellEditorType.STRING) ){
+                String value = (String) criteria.get(column);
+                value = value.replace("*", "%");
+                if( !value.endsWith("%") ){
+                    value += "%";
                 }
-                
+                predicate = cb.like(cb.upper(path), value.toUpperCase());
+            } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
+                Integer value = (Integer) criteria.get(column);
+                predicate = cb.equal(path, value);
+            } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
+                Boolean value = (Boolean) criteria.get(column);
+                predicate = cb.equal(path, value);
+            } else if( column.getEditorType().equals(CellEditorType.DATE) ){
+                List values = (List) criteria.get(column);
+                GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
+                GregorianCalendar gcEnd = new GregorianCalendar();
+                gcEnd.set(Calendar.YEAR, gcStart.get(Calendar.YEAR));
+                gcEnd.set(Calendar.MONTH, gcStart.get(Calendar.MONTH));
+                gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
+                Integer d = (Integer) values.get(1);
+                gcEnd.add(Calendar.DAY_OF_MONTH, d);
+                predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
+                        cb.lessThan(path, gcEnd.getTime()));
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                Object value = criteria.get(column);
+                predicate = cb.equal(path, value);
+            }
+            if( predicate != null ){
+                predicates.add(predicate);
             }
         }
         Method method = (Method) Register.queryUtility(ICriteriaFactory.class, this.getClassName());
@@ -287,10 +279,9 @@ public class Controller implements IController {
             // AFTER COMMIT
 
             Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
-            Validation afterValidation = new Validation(true);
             if( afterCommit != null ){
                 try {
-                    afterValidation = (Validation) afterCommit.invoke(null, merged);
+                    Validation afterValidation = (Validation) afterCommit.invoke(null, merged);
                     afterValidation.setEntity(merged);
                     return afterValidation;
                 } catch (IllegalAccessException ex) {
