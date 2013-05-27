@@ -253,7 +253,7 @@ public class PickerDialog extends QDialog {
                 }
             }
             label = label.substring(0,1).toUpperCase() + label.substring(1);
-            Column column = new Column(field, label, label);
+            Column column = new Column(fields, label, label);
             if( String.class.isAssignableFrom(klass) ){
                 column.setEditorType(CellEditorType.STRING);
             }
@@ -403,6 +403,9 @@ public class PickerDialog extends QDialog {
             // TODO: extend
             for (Column column: criteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
+                /*if( widget == null ){
+                    continue;
+                }*/
                 if( column.getEditorType().equals(CellEditorType.STRING) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
