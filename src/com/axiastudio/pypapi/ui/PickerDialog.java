@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -263,6 +264,16 @@ public class PickerDialog extends QDialog {
                 if( String.class.isAssignableFrom(klass) ){
                     column.setEditorType(CellEditorType.STRING);
                 } else if( Enum.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.CHOICE);
+                } else if( Boolean.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.BOOLEAN);
+                } else if( Long.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.LONG);
+                } else if( Integer.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.INTEGER);
+                } else if( Date.class.isAssignableFrom(klass) ) {
+                    column.setEditorType(CellEditorType.DATE);
+                } else {
                     column.setEditorType(CellEditorType.CHOICE);
                 }
                 if( column.getEditorType() != null ){
