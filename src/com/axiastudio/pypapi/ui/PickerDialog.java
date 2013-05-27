@@ -240,26 +240,29 @@ public class PickerDialog extends QDialog {
         mergedCriteria = new ArrayList();
         mergedCriteria.addAll(criteria);
         for( String field: joinCriteria.keySet() ){
-            String fields = field + "." + joinCriteria.get(field);
-            fields = fields.substring(1); 
-            String[] tkns = fields.split("\\.");
-            String label = tkns[tkns.length-1];
-            Class klass = controller.getEntityClass();
-            for( String tkn: tkns ){
-                Method method = Resolver.getterFromFieldName(klass, tkn);
-                Class newClass = method.getReturnType();
-                if( Collection.class.isAssignableFrom(newClass) ){
-                    klass = Resolver.collectionClassFromReference(klass, tkn);
-                } else {
-                    klass = newClass;
+            String[] split = joinCriteria.get(field).split(",");
+            for( String single: split ){
+                String fields = field + "." + single;
+                fields = fields.substring(1); 
+                String[] tkns = fields.split("\\.");
+                String label = tkns[tkns.length-1];
+                Class klass = controller.getEntityClass();
+                for( String tkn: tkns ){
+                    Method method = Resolver.getterFromFieldName(klass, tkn);
+                    Class newClass = method.getReturnType();
+                    if( Collection.class.isAssignableFrom(newClass) ){
+                        klass = Resolver.collectionClassFromReference(klass, tkn);
+                    } else {
+                        klass = newClass;
+                    }
                 }
+                label = label.substring(0,1).toUpperCase() + label.substring(1);
+                Column column = new Column(fields, label, label);
+                if( String.class.isAssignableFrom(klass) ){
+                    column.setEditorType(CellEditorType.STRING);
+                }
+                mergedCriteria.add(column);
             }
-            label = label.substring(0,1).toUpperCase() + label.substring(1);
-            Column column = new Column(fields, label, label);
-            if( String.class.isAssignableFrom(klass) ){
-                column.setEditorType(CellEditorType.STRING);
-            }
-            mergedCriteria.add(column);
         }
         for (int i=0; i<mergedCriteria.size(); i++){
             Column column = mergedCriteria.get(i);
