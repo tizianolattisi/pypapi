@@ -239,9 +239,7 @@ public class PickerDialog extends QDialog {
         QGridLayout grid = new QGridLayout();
         mergedCriteria = new ArrayList();
         mergedCriteria.addAll(criteria);
-        //List<Column> mergedCriteria = criteria;
         for( String field: joinCriteria.keySet() ){
-            //n += 1;
             String fields = field + "." + joinCriteria.get(field);
             fields = fields.substring(1); 
             String[] tkns = fields.split("\\.");
@@ -263,7 +261,6 @@ public class PickerDialog extends QDialog {
             }
             mergedCriteria.add(column);
         }
-        //int n=0;
         for (int i=0; i<mergedCriteria.size(); i++){
             Column column = mergedCriteria.get(i);
             QLabel criteriaLabel = new QLabel(column.getLabel());
@@ -332,47 +329,11 @@ public class PickerDialog extends QDialog {
                 }
             }
             if( widget != null ){
-                if( joinCriteria.keySet().contains(column.getName()) ){
-                    //this.joinCriteriaWidgets.put(column.getName(), widget);
-                    this.criteriaWidgets.put(column, widget);
-                } else {
-                    this.criteriaWidgets.put(column, widget);
-                }
-                criteriaLayout.addWidget(widget);
-            
+                this.criteriaWidgets.put(column, widget);
+                criteriaLayout.addWidget(widget);            
                 grid.addLayout(criteriaLayout, i, 1);
             }
-            //n = i;
         }
-        /*
-        for( String field: joinCriteria.keySet() ){
-            //n += 1;
-            String fields = field + "." + joinCriteria.get(field);
-            fields = fields.substring(1); 
-            String[] tkns = fields.split("\\.");
-            String label = tkns[tkns.length-1];
-            Class klass = controller.getEntityClass();
-            for( String tkn: tkns ){
-                Method method = Resolver.getterFromFieldName(klass, tkn);
-                Class newClass = method.getReturnType();
-                if( Collection.class.isAssignableFrom(newClass) ){
-                    klass = Resolver.collectionClassFromReference(klass, tkn);
-                } else {
-                    klass = newClass;
-                }
-            }
-            label = label.substring(0,1).toUpperCase() + label.substring(1);
-            QLabel criteriaLabel = new QLabel(label);
-            grid.addWidget(criteriaLabel, n, 0);
-            QHBoxLayout criteriaLayout = new QHBoxLayout();
-            QWidget widget=null;
-            if( String.class.isAssignableFrom(klass) ){
-                widget = new QLineEdit(); // TODO: different types...
-            }
-            joinCriteriaWidgets.put(field, widget);
-            criteriaLayout.addWidget(widget);
-            grid.addLayout(criteriaLayout, n, 1);
-        }*/
         this.layout.addLayout(grid);
     }        
     
@@ -400,17 +361,10 @@ public class PickerDialog extends QDialog {
         if (!this.isCriteria){
             supersetStore = this.controller.createFullStore();
         } else {
-            // field criteria
-            //List<Column> criteria = behavior.getCriteria(); // XXX: and the joins??
-            
             HashMap criteriaMap = new HashMap();
             Map<Column,QWidget> widgets = criteriaWidgets;
-            // TODO: extend
             for (Column column: mergedCriteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
-                /*if( widget == null ){
-                    continue;
-                }*/
                 if( column.getEditorType().equals(CellEditorType.STRING) ){
                     String value = ((QLineEdit) widget).text();
                     if (!"".equals(value)){
@@ -468,21 +422,6 @@ public class PickerDialog extends QDialog {
                     }
                 }
             }
-            // join criteria
-            /*
-            HashMap<String, String> joinCriteria = behavior.getJoinCriteria();
-            for( String field: joinCriteria.keySet() ){
-                // foreign Column
-                String name = field + "." + joinCriteria.get(field);
-                name = name.substring(1);
-                Column foreignColumn = new Column(name, name, name);
-                foreignColumn.setEditorType(CellEditorType.STRING); // XXX
-                QWidget widget = joinCriteriaWidgets.get(field);
-                String value = ((QLineEdit) widget).text();
-                if( !"".equals(value) ){
-                    criteriaMap.put(foreignColumn, value);
-                }
-            }*/
             criteriaMap.putAll(this.filters);
             Integer limit = 0;
             if( this.comboBoxLimit.currentIndex() != this.comboBoxLimit.count()-1 ){
