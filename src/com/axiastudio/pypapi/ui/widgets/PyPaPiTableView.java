@@ -42,6 +42,7 @@ import java.util.logging.Logger;
  */
 public class PyPaPiTableView extends QTableView{
     
+    private final Integer DEFAULT_ROW_HEIGHT = 24;
     private final String STYLE="QTableView {"
             + "image: url(classpath:com/axiastudio/pypapi/ui/resources/cog.png);"
             + "image-position: right; border: 1px solid #999999; }";
@@ -69,6 +70,7 @@ public class PyPaPiTableView extends QTableView{
         this.verticalHeader().hide();
         this.initializeMenu();
         this.setItemDelegate(new WikiDelegate(this));
+        this.verticalHeader().setDefaultSectionSize(DEFAULT_ROW_HEIGHT);
     }
     
     private void initializeMenu(){
