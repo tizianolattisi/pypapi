@@ -60,7 +60,7 @@ public final class Context extends QObject {
         this.name = name;
 
         this.model = this.createModel(store);
-        this.mapper = new QDataWidgetMapper(this); // XXX: this? maybe this.parent?
+        this.mapper = new QDataWidgetMapper(this.parent());
         this.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit);
         this.mapper.setModel(this.model);
         this.model.setColumns(columns);
