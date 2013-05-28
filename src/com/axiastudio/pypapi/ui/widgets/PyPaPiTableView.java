@@ -157,7 +157,7 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionOpen(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Object reference = Register.queryRelation(this, "reference");
         for (QModelIndex idx: rows){
@@ -178,7 +178,7 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionInfo(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         for (QModelIndex idx: rows){
             Object entity = model.getEntityByRow(idx.row());
@@ -202,7 +202,7 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionDel(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         List<Integer> selectedRows = new ArrayList();
         for( QModelIndex idx: rows ){
@@ -221,7 +221,7 @@ public class PyPaPiTableView extends QTableView{
     }
     
     public void actionAdd(List selection){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.property("entity");
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
@@ -328,7 +328,7 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionQuickInsert(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.property("entity");
         String referenceName = (String) Register.queryRelation(this, "reference");
@@ -383,7 +383,7 @@ class QuickInsertFilter extends QObject {
     }
     
     private void insert(String idx) {
-        TableModel model = (TableModel) this.tableView.model();
+        ITableModel model = (ITableModel) this.tableView.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.tableView.property("entity");
         String referenceName = (String) Register.queryRelation(this.tableView, "reference");

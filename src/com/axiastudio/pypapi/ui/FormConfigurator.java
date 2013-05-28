@@ -233,14 +233,16 @@ public class FormConfigurator {
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){
             QTableView qtv = (QTableView) this.form.getWidgets().get(path);
-            qtv.setModel(dataContext.getModel());
+            ProxyModel proxy = new ProxyModel();
+            proxy.setSourceModel(dataContext.getModel());
+            qtv.setModel(proxy);
             this.setResizeModes(qtv);
         }
         return dataContext;
     }
     
     private void setResizeModes(QTableView qtv){
-        TableModel model = (TableModel) qtv.model();
+        ITableModel model = (ITableModel) qtv.model();
         QHeaderView horizontalHeader = qtv.horizontalHeader();
         for( int i=0; i<model.getColumns().size(); i++ ){
             Column c = model.getColumns().get(i);

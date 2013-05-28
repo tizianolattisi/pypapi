@@ -456,8 +456,10 @@ public class PickerDialog extends QDialog {
         }
         TableModel model = new TableModel(supersetStore, columns);
         model.setEditable(false);
-        this.tableView.setModel(model);
-        this.selectionModel = new QItemSelectionModel(model);
+        ProxyModel proxy = new ProxyModel();
+        proxy.setSourceModel(model);
+        this.tableView.setModel(proxy);
+        this.selectionModel = new QItemSelectionModel(proxy);
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
@@ -529,7 +531,7 @@ public class PickerDialog extends QDialog {
     }
     
     private void selectRows(QItemSelection selected, QItemSelection deselected){
-        TableModel model = (TableModel) this.tableView.model();
+        ITableModel model = (ITableModel) this.tableView.model();
         List<Integer> selectedIndexes = new ArrayList();
         List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){

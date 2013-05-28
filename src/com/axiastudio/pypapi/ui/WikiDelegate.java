@@ -38,7 +38,7 @@ public class WikiDelegate extends QItemDelegate {
 
     @Override
     public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-        Column column = ((TableModel) index.model()).getColumns().get(index.column()); 
+        Column column = ((ITableModel) index.model()).getColumns().get(index.column()); 
         if( column.getEditorType() == CellEditorType.STRING ){
             QAbstractItemModel model = index.model();
             Object data = model.data(index, Qt.ItemDataRole.DisplayRole);
