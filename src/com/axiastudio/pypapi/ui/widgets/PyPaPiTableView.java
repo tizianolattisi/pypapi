@@ -161,6 +161,9 @@ public class PyPaPiTableView extends QTableView{
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Object reference = Register.queryRelation(this, "reference");
         for (QModelIndex idx: rows){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             Object entity = model.getEntityByRow(idx.row());
             if ( reference != null ){
                 entity = Resolver.entityFromReference(entity, (String) reference);
@@ -181,6 +184,9 @@ public class PyPaPiTableView extends QTableView{
         ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         for (QModelIndex idx: rows){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             Object entity = model.getEntityByRow(idx.row());
             IForm form = Util.formFromEntity(entity);
             if( form == null ){
@@ -206,6 +212,9 @@ public class PyPaPiTableView extends QTableView{
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         List<Integer> selectedRows = new ArrayList();
         for( QModelIndex idx: rows ){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             selectedRows.add(idx.row());
         }
         Collections.sort(selectedRows, Collections.reverseOrder());

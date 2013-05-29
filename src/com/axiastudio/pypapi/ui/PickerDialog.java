@@ -535,11 +535,17 @@ public class PickerDialog extends QDialog {
         List<Integer> selectedIndexes = new ArrayList();
         List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){
+            if( model instanceof ProxyModel ){ 
+                i = ((ProxyModel) model).mapToSource(i);
+            }
             if(!selectedIndexes.contains(i.row())){
                 selectedIndexes.add(i.row());
             }
         }
         for (QModelIndex i: deselected.indexes()){
+            if( model instanceof ProxyModel ){ 
+                i = ((ProxyModel) model).mapToSource(i);
+            }
             if(!deselectedIndexes.contains(i.row())){
                 deselectedIndexes.add(i.row());
             }
