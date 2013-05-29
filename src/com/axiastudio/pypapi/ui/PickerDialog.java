@@ -459,6 +459,15 @@ public class PickerDialog extends QDialog {
         ProxyModel proxy = new ProxyModel();
         proxy.setSourceModel(model);
         this.tableView.setModel(proxy);
+            Integer sortColumn = behavior.getSortColumn();
+            if( sortColumn != null ){
+                Qt.SortOrder sortOrder;
+                if( behavior.getSortOrder() == -1 ){
+                    this.tableView.sortByColumn(sortColumn, Qt.SortOrder.DescendingOrder);
+                } else {
+                    this.tableView.sortByColumn(sortColumn, Qt.SortOrder.AscendingOrder);
+                }
+            }
         this.selectionModel = new QItemSelectionModel(proxy);
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,

@@ -151,7 +151,7 @@ public class UIInspector {
                 }
             }
         }
-        // search columns
+        // search columns and order
         Object searchColumnsProperty = win.property("searchcolumns");
         if (searchColumnsProperty != null){
             String[] columnNames = ((String) searchColumnsProperty).split(",");
@@ -162,6 +162,20 @@ public class UIInspector {
                 Column searchColumn = new Column(name, name, name, null, resizeMode.value());
                 searchColumns.add(searchColumn);
             }
+        }
+        Object sortOrderProperty = win.property("sortorder");
+        if( sortOrderProperty != null ){
+            String sortOrder = (String) sortOrderProperty;
+            if( sortOrder.startsWith("-") || sortOrder.startsWith(">") ){
+                behavior.setSortOrder(-1);
+            } else if( sortOrder.startsWith("+") || sortOrder.startsWith("<") ) {
+                behavior.setSortOrder(+1);
+            }
+        }
+        Object sortColumnProperty = win.property("sortcolumn");
+        if( sortColumnProperty != null ){
+            Integer sortColumn = (Integer) sortColumnProperty;
+            behavior.setSortColumn(sortColumn);
         }
         behavior.setCriteria(criteria);
         behavior.setPrivates(privates);
