@@ -29,6 +29,7 @@ import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.SortOrder;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -196,6 +197,22 @@ public class FormConfigurator {
                     }
                     Register.registerRelation(filters, child, "filters");
                 }
+                // sorting
+                Object sortOrderProperty = child.property("sortorder");
+                SortOrder sortOrder=Qt.SortOrder.AscendingOrder;
+                if( sortOrderProperty != null ){
+                    String sortOrderString = (String) sortOrderProperty;
+                    if( sortOrderString.startsWith("-") || sortOrderString.startsWith(">") ){
+                        sortOrder = Qt.SortOrder.DescendingOrder;
+                    } else if( sortOrderString.startsWith("+") || sortOrderString.startsWith("<") ) {
+                        sortOrder = Qt.SortOrder.AscendingOrder;
+                    }
+                }
+                Object sortColumnProperty = child.property("sortcolumn");
+                if( sortColumnProperty != null ){
+                    Integer sortColumn = (Integer) sortColumnProperty;
+                    ((QTableView) child).sortByColumn(sortColumn, sortOrder);
+                }                
             }
             // Delegate
             if (child.getClass().equals(PyPaPiTableView.class)){
@@ -233,14 +250,16 @@ public class FormConfigurator {
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){
             QTableView qtv = (QTableView) this.form.getWidgets().get(path);
-            qtv.setModel(dataContext.getModel());
+            ProxyModel proxy = new ProxyModel();
+            proxy.setSourceModel(dataContext.getModel());
+            qtv.setModel(proxy);
             this.setResizeModes(qtv);
         }
         return dataContext;
     }
     
     private void setResizeModes(QTableView qtv){
-        TableModel model = (TableModel) qtv.model();
+        ITableModel model = (ITableModel) qtv.model();
         QHeaderView horizontalHeader = qtv.horizontalHeader();
         for( int i=0; i<model.getColumns().size(); i++ ){
             Column c = model.getColumns().get(i);

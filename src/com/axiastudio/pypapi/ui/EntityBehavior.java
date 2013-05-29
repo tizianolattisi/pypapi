@@ -37,6 +37,8 @@ public class EntityBehavior implements IEntityBehavior {
     private List<String> privates;
     private List<Column> exports;
     private List<Column> searchColumns;
+    private Integer sortColumn;
+    private Integer sortOrder;
     private HashMap<String, String> joinCriteria;
     private HashMap<String, String> validators = new HashMap();
     
@@ -123,6 +125,22 @@ public class EntityBehavior implements IEntityBehavior {
     @Override
     public void setJoinCriteria(HashMap<String, String> joinCriteria) {
         this.joinCriteria = joinCriteria;
+    }
+
+    public Integer getSortColumn() {
+        return sortColumn;
+    }
+
+    public void setSortColumn(Integer sortColumn) {
+        this.sortColumn = sortColumn;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
     
 }

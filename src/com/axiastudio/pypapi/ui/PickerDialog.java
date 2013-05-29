@@ -456,8 +456,19 @@ public class PickerDialog extends QDialog {
         }
         TableModel model = new TableModel(supersetStore, columns);
         model.setEditable(false);
-        this.tableView.setModel(model);
-        this.selectionModel = new QItemSelectionModel(model);
+        ProxyModel proxy = new ProxyModel();
+        proxy.setSourceModel(model);
+        this.tableView.setModel(proxy);
+            Integer sortColumn = behavior.getSortColumn();
+            if( sortColumn != null ){
+                Qt.SortOrder sortOrder;
+                if( behavior.getSortOrder() == -1 ){
+                    this.tableView.sortByColumn(sortColumn, Qt.SortOrder.DescendingOrder);
+                } else {
+                    this.tableView.sortByColumn(sortColumn, Qt.SortOrder.AscendingOrder);
+                }
+            }
+        this.selectionModel = new QItemSelectionModel(proxy);
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
@@ -529,15 +540,21 @@ public class PickerDialog extends QDialog {
     }
     
     private void selectRows(QItemSelection selected, QItemSelection deselected){
-        TableModel model = (TableModel) this.tableView.model();
+        ITableModel model = (ITableModel) this.tableView.model();
         List<Integer> selectedIndexes = new ArrayList();
         List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){
+            if( model instanceof ProxyModel ){ 
+                i = ((ProxyModel) model).mapToSource(i);
+            }
             if(!selectedIndexes.contains(i.row())){
                 selectedIndexes.add(i.row());
             }
         }
         for (QModelIndex i: deselected.indexes()){
+            if( model instanceof ProxyModel ){ 
+                i = ((ProxyModel) model).mapToSource(i);
+            }
             if(!deselectedIndexes.contains(i.row())){
                 deselectedIndexes.add(i.row());
             }

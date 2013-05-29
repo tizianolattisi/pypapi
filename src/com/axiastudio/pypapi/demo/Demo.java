@@ -47,6 +47,11 @@ public class Demo {
         book.setDescription("description...");
         book.setGenre(Genre.ROMANCE);
 
+        Book book2 = new Book();
+        book2.setTitle("Pro JPA2");
+        book2.setDescription("Mastering the Java Persistence API");
+        book2.setGenre(Genre.REFERENCE);
+        
         Person person = new Person();
         person.setName("Tiziano");
         person.setSurname("Lattisi");
@@ -62,14 +67,18 @@ public class Demo {
 
         Loan l = new Loan();
         l.setBook(book);
+        Loan l2 = new Loan();
+        l2.setBook(book2);
         
         Collection<Loan> loanCollection = new ArrayList();
         loanCollection.add(l);
+        loanCollection.add(l2);
         
         person.setLoanCollection(loanCollection);
 
         em.getTransaction().begin();
         em.persist(book);
+        em.persist(book2);
         em.persist(person);
         em.getTransaction().commit();
         em.close();
