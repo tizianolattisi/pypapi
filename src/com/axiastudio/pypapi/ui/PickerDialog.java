@@ -283,8 +283,14 @@ public class PickerDialog extends QDialog {
         }
         for (int i=0; i<mergedCriteria.size(); i++){
             Column column = mergedCriteria.get(i);
+            QGridLayout myGrid;
+            if( column.getName().contains(".") ){
+                myGrid = grid;
+            } else {
+                myGrid = grid;
+            }
             QLabel criteriaLabel = new QLabel(column.getLabel());
-            grid.addWidget(criteriaLabel, i, 0);
+            myGrid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
             QWidget widget=null;
             if( column.getEditorType().equals(CellEditorType.STRING) ){
@@ -356,7 +362,7 @@ public class PickerDialog extends QDialog {
             if( widget != null ){
                 this.criteriaWidgets.put(column, widget);
                 criteriaLayout.addWidget(widget);            
-                grid.addLayout(criteriaLayout, i, 1);
+                myGrid.addLayout(criteriaLayout, i, 1);
             }
         }
         this.layout.addLayout(grid);
