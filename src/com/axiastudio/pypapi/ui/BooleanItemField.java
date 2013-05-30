@@ -76,6 +76,23 @@ public class BooleanItemField extends ItemField {
     
     @Override
     public Object getDisplay(){
+        // XXX: different return for the true value
+        /*
+         * Different return value to permit that the generic implementation of
+         * sort() works with Boolean items.
+         * 
+         * see:
+         * http://qt-project.org/doc/qt-4.8/qsortfilterproxymodel.html#details
+         * 
+         * QSortFilterProxyModel provides a generic sort() reimplementation that
+         * operates on the sortRole() (Qt::DisplayRole by default) of the items 
+         * and that understands several data types, including int, QString, and 
+         * QDateTime.
+         * 
+         */
+        if( (Boolean) this.value ){
+            return "";
+        }
         return null;
     }
 
