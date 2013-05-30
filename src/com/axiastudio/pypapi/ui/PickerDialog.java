@@ -23,7 +23,6 @@ import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
-import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
@@ -575,16 +574,20 @@ public class PickerDialog extends QDialog {
         List<Integer> selectedIndexes = new ArrayList();
         List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){
+            System.out.println("selezione: "+i.row());
             if( model instanceof ProxyModel ){ 
                 i = ((ProxyModel) model).mapToSource(i);
+                System.out.println("trasformato: "+i.row());
             }
             if(!selectedIndexes.contains(i.row())){
                 selectedIndexes.add(i.row());
             }
         }
         for (QModelIndex i: deselected.indexes()){
+            System.out.println("de-selezione: "+i.row());
             if( model instanceof ProxyModel ){ 
                 i = ((ProxyModel) model).mapToSource(i);
+                System.out.println("trasformato: "+i.row());
             }
             if(!deselectedIndexes.contains(i.row())){
                 deselectedIndexes.add(i.row());
@@ -599,6 +602,7 @@ public class PickerDialog extends QDialog {
         Boolean isSelection = this.selection.size()>0;
         this.buttonAccept.setEnabled(isSelection);
         this.buttonExport.setEnabled(isSelection);
+        System.out.println(selection);
     }
     
     public List getSelection() {

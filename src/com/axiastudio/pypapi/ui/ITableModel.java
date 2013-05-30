@@ -32,5 +32,17 @@ public interface ITableModel {
     public Object getEntityByRow(int row);
 
     public boolean removeRows(int row, int i, QModelIndex object);
+
+    public int rowCount();
+
+    public int rowCount(QModelIndex qmi);
+
+    public int columnCount();
+
+    public int columnCount(QModelIndex qmi);
+    
+    public Object data(int i, int role);
+
+    public Object data(QModelIndex qmi, int role);
     
 }

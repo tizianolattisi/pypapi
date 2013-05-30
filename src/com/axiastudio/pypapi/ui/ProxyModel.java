@@ -44,5 +44,19 @@ public class ProxyModel extends QSortFilterProxyModel implements ITableModel {
     public boolean removeRows(int row, int count, QModelIndex parent) {
         return ((TableModel) this.sourceModel()).removeRows(row, count, parent);
     }
+
+    @Override
+    public int rowCount(QModelIndex qmi){
+        return ((TableModel) this.sourceModel()).rowCount(qmi);
+    }
+
+    @Override
+    public int columnCount(QModelIndex qmi){
+        return ((TableModel) this.sourceModel()).columnCount(qmi);
+    }
     
+    @Override
+    public Object data(QModelIndex qmi, int role){
+        return ((TableModel) this.sourceModel()).data(this.mapToSource(qmi), role);
+    }
 }
