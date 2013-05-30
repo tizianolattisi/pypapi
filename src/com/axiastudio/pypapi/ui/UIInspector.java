@@ -159,7 +159,7 @@ public class UIInspector {
                         } else if(QCheckBox.class.isInstance(child)){
                             column.setEditorType(CellEditorType.BOOLEAN);
                         } else if(QSpinBox.class.isInstance(child)){
-                            column.setEditorType(CellEditorType.INTEGER);
+                            column.setEditorType(CellEditorType.LONG); // XXX: and INTEGER?
                         } else if(QDateTimeEdit.class.isInstance(child)){
                             column.setEditorType(CellEditorType.DATE);
                         } else if(QComboBox.class.isInstance(child)){

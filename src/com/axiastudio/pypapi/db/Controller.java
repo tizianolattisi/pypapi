@@ -120,6 +120,9 @@ public class Controller implements IController {
             } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
                 Integer value = (Integer) criteria.get(column);
                 predicate = cb.equal(path, value);
+            } else if( column.getEditorType().equals(CellEditorType.LONG) ){
+                Long value = (Long) criteria.get(column);
+                predicate = cb.equal(path, value);
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
                 predicate = cb.equal(path, value);

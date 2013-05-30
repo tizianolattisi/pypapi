@@ -319,7 +319,7 @@ public class PickerDialog extends QDialog {
                 widget = new QCheckBox();
                 ((QCheckBox) widget).setTristate(true);
                 ((QCheckBox) widget).setCheckState(CheckState.PartiallyChecked);
-            } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
+            } else if( column.getEditorType().equals(CellEditorType.INTEGER) || column.getEditorType().equals(CellEditorType.LONG) ){
                 widget = new QSpinBox();
                 ((QSpinBox) widget).setRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
             } else if( column.getEditorType().equals(CellEditorType.DATE) ){
@@ -429,6 +429,11 @@ public class PickerDialog extends QDialog {
                     }
                 } else if ( column.getEditorType().equals(CellEditorType.INTEGER) ){
                     Integer value = ((QSpinBox) widget).value();
+                    if( value != 0 ){
+                        criteriaMap.put(column, value);
+                    }
+                } else if ( column.getEditorType().equals(CellEditorType.LONG) ){
+                    Long value = ((Integer) ((QSpinBox) widget).value()).longValue();
                     if( value != 0 ){
                         criteriaMap.put(column, value);
                     }
