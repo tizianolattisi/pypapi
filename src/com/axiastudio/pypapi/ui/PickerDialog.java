@@ -551,7 +551,7 @@ public class PickerDialog extends QDialog {
     }
     
     private void applyFilter(String text){
-        TableModel model = (TableModel) this.tableView.model();
+        ITableModel model = (ITableModel) this.tableView.model();
         if(text.length()==0){
             for(int i=0; i<model.rowCount(); i++){
                 this.tableView.setRowHidden(i, false);
@@ -560,9 +560,12 @@ public class PickerDialog extends QDialog {
             for(int i=0; i<model.rowCount(); i++){
                 Boolean toHide=true;
                 for(int j=0; j<model.columnCount(); j++){
-                    if( toHide==true && model.data(i, j).toString().toUpperCase().contains(text.toUpperCase()) ){
-                        toHide=false;
-                    }
+                    Object data = model.data(i, j);
+                    if( data instanceof String ){
+                        if( toHide==true && data.toString().toUpperCase().contains(text.toUpperCase()) ){
+                            toHide=false;
+                        }
+                    }   
                 }
                 this.tableView.setRowHidden(i, toHide);
             }
@@ -574,20 +577,16 @@ public class PickerDialog extends QDialog {
         List<Integer> selectedIndexes = new ArrayList();
         List<Integer> deselectedIndexes = new ArrayList();
         for (QModelIndex i: selected.indexes()){
-            System.out.println("selezione: "+i.row());
             if( model instanceof ProxyModel ){ 
                 i = ((ProxyModel) model).mapToSource(i);
-                System.out.println("trasformato: "+i.row());
             }
             if(!selectedIndexes.contains(i.row())){
                 selectedIndexes.add(i.row());
             }
         }
         for (QModelIndex i: deselected.indexes()){
-            System.out.println("de-selezione: "+i.row());
             if( model instanceof ProxyModel ){ 
                 i = ((ProxyModel) model).mapToSource(i);
-                System.out.println("trasformato: "+i.row());
             }
             if(!deselectedIndexes.contains(i.row())){
                 deselectedIndexes.add(i.row());
@@ -602,7 +601,6 @@ public class PickerDialog extends QDialog {
         Boolean isSelection = this.selection.size()>0;
         this.buttonAccept.setEnabled(isSelection);
         this.buttonExport.setEnabled(isSelection);
-        System.out.println(selection);
     }
     
     public List getSelection() {
