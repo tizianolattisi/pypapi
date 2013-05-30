@@ -80,6 +80,8 @@ public class FormConfigurator {
         List children = this.form.findChildren();
         Boolean isColumn;
         Boolean isEntity;
+        
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
 
         List<Column> columns = new ArrayList();
         List<Column> entities = new ArrayList();
@@ -107,14 +109,13 @@ public class FormConfigurator {
                 if ( lookupProperty != null){
                     lookupPropertyName = this.capitalize((String) lookupProperty);
                 }
-                column = new Column(columnPropertyName, columnPropertyName, columnPropertyName,
-                        lookupPropertyName);
+                column = behavior.getColumnByName(columnPropertyName);
                 boolean add = columns.add(column);
                 Object put = widgets.put(columnPropertyName, child);
             }
             if (isEntity){
                 String entityPropertyName = this.capitalize((String) entityProperty);
-                column = new Column(entityPropertyName, entityPropertyName, entityPropertyName);
+                column = behavior.getColumnByName(entityPropertyName);
                 boolean add = entities.add(column);
                 Object put = widgets.put(entityPropertyName, child);
             }

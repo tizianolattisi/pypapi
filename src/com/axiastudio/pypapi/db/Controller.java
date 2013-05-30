@@ -89,6 +89,7 @@ public class Controller implements IController {
         Class<?> returnType = this.entityClass;
         Root from = cq.from(returnType);
         List<Predicate> predicates = new ArrayList();
+        Map<String, Path> paths = new HashMap();
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             Predicate predicate=null;
@@ -98,7 +99,12 @@ public class Controller implements IController {
             } else {
                 for( String token: column.getName().split("\\.") ){
                     if( path == null ){
-                        path = from.get(token);
+                        if( paths.containsKey(token)){
+                            path = paths.get(token);
+                        } else {
+                            path = from.get(token);
+                            paths.put(token, path);
+                        }
                     } else {
                         path = path.get(token);
                     }
@@ -128,7 +134,7 @@ public class Controller implements IController {
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
                 predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
                         cb.lessThan(path, gcEnd.getTime()));
-            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP)){
                 Object value = criteria.get(column);
                 predicate = cb.equal(path, value);
             }

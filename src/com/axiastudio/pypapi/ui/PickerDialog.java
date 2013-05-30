@@ -324,7 +324,7 @@ public class PickerDialog extends QDialog {
                 comboBox2.addItem(tr("YEARS"));
                 hbox.addWidget(comboBox2);
                 widget.setLayout(hbox);
-            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP) ){
                 Class entityClass=null;
                 if( !column.getName().contains(".") ){
                     Class klass = this.controller.getEntityClass();
@@ -393,7 +393,6 @@ public class PickerDialog extends QDialog {
             supersetStore = this.controller.createFullStore();
         } else {
             HashMap criteriaMap = new HashMap();
-            Map<Column,QWidget> widgets = criteriaWidgets;
             for (Column column: mergedCriteria){
                 QWidget widget = (QWidget) this.criteriaWidgets.get(column);
                 if( column.getEditorType().equals(CellEditorType.STRING) ){
@@ -440,7 +439,7 @@ public class PickerDialog extends QDialog {
                         values.add(days);
                         criteriaMap.put(column, values);
                     }
-                } else if ( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                } else if ( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP) ){
                     Object data;
                     if( widget.getClass().equals(QComboBox.class )){
                         int idx = ((QComboBox) widget).currentIndex();

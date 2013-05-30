@@ -33,6 +33,7 @@ import java.util.Set;
 public class EntityBehavior implements IEntityBehavior {
     
     private String className;
+    private List<Column> columns;
     private List<Column> criteria;
     private List<String> privates;
     private List<Column> exports;
@@ -142,5 +143,21 @@ public class EntityBehavior implements IEntityBehavior {
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
     }
+
+    public List<Column> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
     
+    public Column getColumnByName(String name) {
+        for( Column column: columns ){
+            if( name.equals(column.getName()) ){
+                return column;
+            }
+        }
+        return null;
+    }
 }
