@@ -128,7 +128,7 @@ public class Controller implements IController {
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
                 predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
                         cb.lessThan(path, gcEnd.getTime()));
-            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP)){
                 Object value = criteria.get(column);
                 predicate = cb.equal(path, value);
             }
