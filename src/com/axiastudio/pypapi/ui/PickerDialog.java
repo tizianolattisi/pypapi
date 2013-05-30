@@ -23,6 +23,7 @@ import com.axiastudio.pypapi.db.IController;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
+import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.GroupLayout;
 
 
 
@@ -281,8 +283,32 @@ public class PickerDialog extends QDialog {
                 }
             }
         }
-        for (int i=0; i<mergedCriteria.size(); i++){
-            Column column = mergedCriteria.get(i);
+        int i=-1;
+        String currentFrame = null;
+        for (int j=0; j<mergedCriteria.size(); j++){
+            i++;
+            Column column = mergedCriteria.get(j);
+            if( column.getName().contains(".") ){
+                String token = column.getName().split("\\.")[0];
+                if( currentFrame==null || !currentFrame.equals(token) ){
+                    QFrame frame = new QFrame();
+                    frame.setFrameShape(QFrame.Shape.HLine);
+                    grid.addWidget(frame, i, 0, 1, 2);
+                    i++;
+                    QLabel groupLabel = new QLabel();
+                    String labelText;
+                    if( token.endsWith("Collection") ){
+                        labelText = token.substring(0,1).toUpperCase()+token.substring(1, token.length()-10);
+                    } else {
+                        labelText = token.substring(0,1).toUpperCase()+token.substring(1);
+                    }
+                    groupLabel.setText(labelText);
+                    groupLabel.setAlignment(Qt.AlignmentFlag.createQFlags(Qt.AlignmentFlag.AlignHCenter));
+                    grid.addWidget(groupLabel, i, 0, 1, 2);
+                    i++;
+                    currentFrame = token;
+                }
+            }
             QLabel criteriaLabel = new QLabel(column.getLabel());
             grid.addWidget(criteriaLabel, i, 0);
             QHBoxLayout criteriaLayout = new QHBoxLayout();
@@ -337,6 +363,7 @@ public class PickerDialog extends QDialog {
                 } else {
                     widget = new QWidget();
                     QHBoxLayout hbox= new QHBoxLayout();
+                    hbox.setContentsMargins(4, 4, 4, 4);
                     QLabel label = new QLabel(tr("SELECT"));
                     hbox.addWidget(label);
                     QToolButton button = new QToolButton();
