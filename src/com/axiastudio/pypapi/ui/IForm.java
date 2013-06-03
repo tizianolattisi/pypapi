@@ -50,5 +50,7 @@ public interface IForm {
     public List<Column> getEntities();
     
     public HashMap<String, QObject> getWidgets();
+    
+    public String windowTitle();
 
 }
