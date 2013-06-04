@@ -29,7 +29,7 @@ public class PyPaPiDateTimeEdit extends QDateTimeEdit {
     private Boolean isNull;
     private Boolean isInitiallyEnabled=null;
     
-    static final String NULLSTYLE="color: white";
+    static final String NULLSTYLE="color: white; background: white;";
 
     public PyPaPiDateTimeEdit(QWidget parent) {
         super(parent);

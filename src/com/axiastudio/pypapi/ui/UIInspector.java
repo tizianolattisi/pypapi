@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
@@ -25,13 +26,16 @@ import com.trolltech.qt.gui.QCheckBox;
 import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QDateTimeEdit;
 import com.trolltech.qt.gui.QHeaderView;
+import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +50,6 @@ import java.util.logging.Logger;
 public class UIInspector {
     
     private String entityClassName;
-    private List<Column> columns = new ArrayList();
     private List<Column> entities = new ArrayList();;
 
     public UIInspector(Class factory, String entityClassName) {
@@ -69,12 +72,30 @@ public class UIInspector {
         }
     }
     
+    private Map<QObject, QLabel> extractBuddies(QWidget win){
+        Map<QObject, QLabel> buddies = new HashMap();
+        List children = win.findChildren();
+        for (int i=0; i<children.size(); i++){
+            QObject child = (QObject) children.get(i);
+            if( child instanceof QLabel ){
+                QLabel label = (QLabel) child;
+                if( label.buddy() != null ){
+                    buddies.put(label.buddy(), label);
+                }
+            }
+        }
+        return buddies;
+    }
+    
     private void register(QWidget win){
         EntityBehavior behavior = new EntityBehavior(this.entityClassName);
+        List<Column> columns = new ArrayList();
         List<Column> criteria = new ArrayList();
         List<String> privates = new ArrayList();
         List<Column> exports = new ArrayList();
         List<Column> searchColumns = new ArrayList();
+        Map<QObject, QLabel> buddies = this.extractBuddies(win);
+        HashMap<String, String> joinCriteria = new HashMap();
         List children = win.findChildren();
         for (int i=0; i<children.size(); i++){
             QObject child = (QObject) children.get(i);
@@ -88,9 +109,19 @@ public class UIInspector {
                 if ( lookupProperty != null){
                     lookupPropertyName = this.capitalize((String) lookupProperty);
                 }
-                column = new Column(columnPropertyName, columnPropertyName, columnPropertyName,
+                String label=columnPropertyName;
+                String description=columnPropertyName;
+                if( buddies.keySet().contains(child) ){
+                    label = buddies.get(child).text();                    
+                    if( buddies.get(child).toolTip() != null ){
+                        description = buddies.get(child).toolTip();
+                    } else {
+                        description = label;
+                    }
+                }
+                column = new Column(columnPropertyName, label, description,
                         lookupPropertyName);
-                boolean add = this.columns.add(column);
+                columns.add(column);
                 // Reg Exp validator
                 Object validatorProperty = child.property("validator");
                 if( validatorProperty != null){
@@ -98,26 +129,46 @@ public class UIInspector {
                 }
             }
             if (entityProperty != null){
-                
+                String entityPropertyName = this.capitalize((String) entityProperty);
+                String label=entityPropertyName;
+                String description=entityPropertyName;
+                if( buddies.keySet().contains(child) ){
+                    label = buddies.get(child).text();                    
+                    if( buddies.get(child).toolTip() != null ){
+                        description = buddies.get(child).toolTip();
+                    } else {
+                        description = label;
+                    }
+                }
+                column = new Column(entityPropertyName, label, description);
+                columns.add(column);
             }
             // search dynamic property
             Object searchProperty = child.property("search");
             if (searchProperty != null){
                 if ((Boolean) searchProperty){
-                    if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.STRING);
-                    } else if(QCheckBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.BOOLEAN);
-                    } else if(QSpinBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.INTEGER);
-                    } else if(QDateTimeEdit.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.DATE);
-                    } else if(QComboBox.class.isInstance(child)){
-                        column.setEditorType(CellEditorType.CHOICE);
+                    if( PyPaPiTableView.class.isInstance(child) ){
+                        Object searchfieldsProperty = child.property("searchfields");
+                        if( searchfieldsProperty != null ){
+                            String searchfields = (String) searchfieldsProperty;
+                            joinCriteria.put((String) entityProperty, searchfields);
+                        }
                     } else {
-                        column.setEditorType(CellEditorType.UNKNOW);
+                        if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.STRING);
+                        } else if(QCheckBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                        } else if(QSpinBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.LONG); // XXX: and INTEGER?
+                        } else if(QDateTimeEdit.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.DATE);
+                        } else if(QComboBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.CHOICE);
+                        } else {
+                            column.setEditorType(CellEditorType.UNKNOW);
+                        }
+                        criteria.add(column);
                     }
-                    criteria.add(column);
                 }
             }
             // private dynamic property
@@ -140,7 +191,7 @@ public class UIInspector {
                 }
             }
         }
-        // search columns
+        // search columns and order
         Object searchColumnsProperty = win.property("searchcolumns");
         if (searchColumnsProperty != null){
             String[] columnNames = ((String) searchColumnsProperty).split(",");
@@ -148,14 +199,41 @@ public class UIInspector {
                 QHeaderView.ResizeMode resizeMode = Util.extractResizeMode(name);
                 name = Util.cleanColumnName(name);
                 name = this.capitalize(name);
-                Column searchColumn = new Column(name, name, name, null, resizeMode.value());
-                searchColumns.add(searchColumn);
+                Column searchColumn=null;
+                for( Column column: columns ){
+                    if( name.equals(column.getName()) ){
+                        searchColumn = column;
+                        break;
+                    }
+                }
+                if( searchColumn != null ){
+                    searchColumns.add(searchColumn);
+                } else {
+                    // it's a fake column
+                    searchColumns.add(new Column(name, name, name, null, resizeMode.value()));
+                }
             }
         }
+        Object sortOrderProperty = win.property("sortorder");
+        if( sortOrderProperty != null ){
+            String sortOrder = (String) sortOrderProperty;
+            if( sortOrder.startsWith("-") || sortOrder.startsWith(">") ){
+                behavior.setSortOrder(-1);
+            } else if( sortOrder.startsWith("+") || sortOrder.startsWith("<") ) {
+                behavior.setSortOrder(+1);
+            }
+        }
+        Object sortColumnProperty = win.property("sortcolumn");
+        if( sortColumnProperty != null ){
+            Integer sortColumn = (Integer) sortColumnProperty;
+            behavior.setSortColumn(sortColumn);
+        }
+        behavior.setColumns(columns);
         behavior.setCriteria(criteria);
         behavior.setPrivates(privates);
         behavior.setExports(exports);
         behavior.setSearchColumns(searchColumns);
+        behavior.setJoinCriteria(joinCriteria);
         Register.registerUtility(behavior, IEntityBehavior.class, this.entityClassName);
     }
     

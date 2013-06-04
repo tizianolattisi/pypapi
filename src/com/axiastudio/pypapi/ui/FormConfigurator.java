@@ -29,6 +29,7 @@ import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.Qt.SortOrder;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -79,6 +80,8 @@ public class FormConfigurator {
         List children = this.form.findChildren();
         Boolean isColumn;
         Boolean isEntity;
+        
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
 
         List<Column> columns = new ArrayList();
         List<Column> entities = new ArrayList();
@@ -106,14 +109,13 @@ public class FormConfigurator {
                 if ( lookupProperty != null){
                     lookupPropertyName = this.capitalize((String) lookupProperty);
                 }
-                column = new Column(columnPropertyName, columnPropertyName, columnPropertyName,
-                        lookupPropertyName);
+                column = behavior.getColumnByName(columnPropertyName);
                 boolean add = columns.add(column);
                 Object put = widgets.put(columnPropertyName, child);
             }
             if (isEntity){
                 String entityPropertyName = this.capitalize((String) entityProperty);
-                column = new Column(entityPropertyName, entityPropertyName, entityPropertyName);
+                column = behavior.getColumnByName(entityPropertyName);
                 boolean add = entities.add(column);
                 Object put = widgets.put(entityPropertyName, child);
             }
@@ -196,6 +198,22 @@ public class FormConfigurator {
                     }
                     Register.registerRelation(filters, child, "filters");
                 }
+                // sorting
+                Object sortOrderProperty = child.property("sortorder");
+                SortOrder sortOrder=Qt.SortOrder.AscendingOrder;
+                if( sortOrderProperty != null ){
+                    String sortOrderString = (String) sortOrderProperty;
+                    if( sortOrderString.startsWith("-") || sortOrderString.startsWith(">") ){
+                        sortOrder = Qt.SortOrder.DescendingOrder;
+                    } else if( sortOrderString.startsWith("+") || sortOrderString.startsWith("<") ) {
+                        sortOrder = Qt.SortOrder.AscendingOrder;
+                    }
+                }
+                Object sortColumnProperty = child.property("sortcolumn");
+                if( sortColumnProperty != null ){
+                    Integer sortColumn = (Integer) sortColumnProperty;
+                    ((QTableView) child).sortByColumn(sortColumn, sortOrder);
+                }                
             }
             // Delegate
             if (child.getClass().equals(PyPaPiTableView.class)){
@@ -233,14 +251,16 @@ public class FormConfigurator {
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){
             QTableView qtv = (QTableView) this.form.getWidgets().get(path);
-            qtv.setModel(dataContext.getModel());
+            ProxyModel proxy = new ProxyModel();
+            proxy.setSourceModel(dataContext.getModel());
+            qtv.setModel(proxy);
             this.setResizeModes(qtv);
         }
         return dataContext;
     }
     
     private void setResizeModes(QTableView qtv){
-        TableModel model = (TableModel) qtv.model();
+        ITableModel model = (ITableModel) qtv.model();
         QHeaderView horizontalHeader = qtv.horizontalHeader();
         for( int i=0; i<model.getColumns().size(); i++ ){
             Column c = model.getColumns().get(i);

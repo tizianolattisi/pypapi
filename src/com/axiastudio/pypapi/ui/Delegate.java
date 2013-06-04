@@ -31,7 +31,7 @@ import java.math.BigDecimal;
  */
 public class Delegate extends QItemDelegate {
     
-    private static final Boolean READONLY=false;
+    private static final Boolean READONLY=true;
 
     /*
      * The PyPaPi Delegate need a QTablewView as parent
@@ -40,6 +40,7 @@ public class Delegate extends QItemDelegate {
         super(parent);
     }
 
+    /*
     @Override
     public QWidget createEditor(QWidget qw, QStyleOptionViewItem qsovi, QModelIndex qmi) {
         if( this.READONLY ){
@@ -66,13 +67,15 @@ public class Delegate extends QItemDelegate {
             
         }
         return super.createEditor(qw, qsovi, qmi);
-    }
+    }*/
 
+    /*
     @Override
     public void setEditorData(QWidget qw, QModelIndex qmi) {        
         super.setEditorData(qw, qmi);
-    }
+    }*/
 
+    /*
     @Override
     public void setModelData(QWidget qw, QAbstractItemModel qaim, QModelIndex qmi) {
         Column column = ((TableModel) qmi.model()).getColumns().get(qmi.column());
@@ -91,25 +94,25 @@ public class Delegate extends QItemDelegate {
         } else if( column.getEditorType() == CellEditorType.DATE ){
         } else if( column.getEditorType() == CellEditorType.BOOLEAN ){
             super.setModelData(qw, qaim, qmi);
-            /*
-            Qt.CheckState checkState = ((QCheckBox) qw).checkState();
-            Boolean value = null;
-            if(checkState == Qt.CheckState.Checked){
-                value = true;
-            } else if (checkState == Qt.CheckState.Unchecked) {
-                value = false;
-            }          
-            ((TableModel) qaim).setData(qmi, value);*/
+            //Qt.CheckState checkState = ((QCheckBox) qw).checkState();
+            //Boolean value = null;
+            //if(checkState == Qt.CheckState.Checked){
+            //    value = true;
+            //} else if (checkState == Qt.CheckState.Unchecked) {
+            //    value = false;
+            //}          
+            //((TableModel) qaim).setData(qmi, value);
         } else if( column.getEditorType() == CellEditorType.LOOKUP ){
             // disabled
         }
         //super.setModelData(qw, qaim, qmi);
-    }
+    }*/
 
+    /*
     @Override
     public void updateEditorGeometry(QWidget qw, QStyleOptionViewItem qsovi, QModelIndex qmi) {
         super.updateEditorGeometry(qw, qsovi, qmi);
-    }
+    }*/
 
     
     @Override
@@ -120,11 +123,21 @@ public class Delegate extends QItemDelegate {
             Object data = model.data(index, Qt.ItemDataRole.DisplayRole);
             String out=null;
             if( data instanceof QDate ){
-                QDate date = (QDate) model.data(index, Qt.ItemDataRole.DisplayRole);
-                out = date.toString("dd/MM/yyyy");
-            } else if( data instanceof QDate ){
-                QDateTime date = (QDateTime) model.data(index, Qt.ItemDataRole.DisplayRole);
-                out = date.toString("dd/MM/yyyy HH:mm");
+                QDate minimumDate = (new QDateEdit()).minimumDate();
+                QDate date = (QDate) data; //model.data(index, Qt.ItemDataRole.DisplayRole);
+                if( date.equals(minimumDate) ){
+                    out = "";
+                } else {
+                    out = date.toString("dd/MM/yyyy");
+                }
+            } else if( data instanceof QDateTime ){
+                QDateTime date = (QDateTime) data; //model.data(index, Qt.ItemDataRole.DisplayRole);
+                QDateTime minimumDateTime = (new QDateEdit()).minimumDateTime();
+                if( date.equals(minimumDateTime) ){
+                    out = "";
+                } else {
+                    out = date.toString("dd/MM/yyyy HH:mm");
+                }
             }
             if( out != null ){
                 Alignment flags = Qt.AlignmentFlag.createQFlags();

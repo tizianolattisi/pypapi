@@ -42,14 +42,16 @@ import java.util.logging.Logger;
  */
 public class PyPaPiTableView extends QTableView{
     
+    private final Integer DEFAULT_ROW_HEIGHT = 24;
     private final String STYLE="QTableView {"
             + "image: url(classpath:com/axiastudio/pypapi/ui/resources/cog.png);"
             + "image-position: right; border: 1px solid #999999; }";
-    private QAction actionAdd, actionDel, actionOpen, actionInfo;
+    private QAction actionAdd, actionDel, actionOpen, actionInfo, actionQuickInsert;
     private QMenu menuPopup;
     private QToolBar toolBar;
     private Boolean refreshConnected=false;
     private Boolean readOnly=false;
+    private QLineEdit lineEditQuickInsert = new QLineEdit();
 
     public PyPaPiTableView(){
         this(null);
@@ -67,7 +69,8 @@ public class PyPaPiTableView extends QTableView{
         this.verticalHeader().setFixedWidth(30);
         this.verticalHeader().hide();
         this.initializeMenu();
-
+        this.setItemDelegate(new WikiDelegate(this));
+        this.verticalHeader().setDefaultSectionSize(DEFAULT_ROW_HEIGHT);
     }
     
     private void initializeMenu(){
@@ -76,10 +79,17 @@ public class PyPaPiTableView extends QTableView{
         this.menuPopup = new QMenu(this);
         this.toolBar = new QToolBar(this);
         this.toolBar.setOrientation(Qt.Orientation.Vertical);
-        this.toolBar.setIconSize(new QSize(16, 16));
-        this.toolBar.move(1, 22);
+        this.toolBar.setIconSize(new QSize(16, 14));
+        this.toolBar.move(1, 1);
         this.toolBar.hide();
 
+        this.actionQuickInsert = new QAction(tr("QUICKINSERT"), this);
+        QIcon iconQuickInsert = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/lightning_add.png");
+        this.actionQuickInsert.setIcon(iconQuickInsert);
+        this.menuPopup.addAction(actionQuickInsert);
+        this.toolBar.addAction(actionQuickInsert);
+        this.actionQuickInsert.triggered.connect(this, "actionQuickInsert()");
+        
         this.actionInfo = new QAction(tr("INFO"), this);
         QIcon iconInfo = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/information.png");
         this.actionInfo.setIcon(iconInfo);
@@ -107,7 +117,7 @@ public class PyPaPiTableView extends QTableView{
         this.menuPopup.addAction(actionDel);
         this.toolBar.addAction(actionDel);
         this.actionDel.triggered.connect(this, "actionDel()");
-        
+
     }
     
 
@@ -141,13 +151,19 @@ public class PyPaPiTableView extends QTableView{
         this.actionOpen.setEnabled(selected);
         this.actionDel.setEnabled(selected && !this.getReadOnly());
         this.actionAdd.setEnabled(!this.getReadOnly());
+        String reference = (String) this.property("reference");
+        this.actionQuickInsert.setEnabled(!this.getReadOnly() && reference != null);
+
     }
     
     private void actionOpen(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         Object reference = Register.queryRelation(this, "reference");
         for (QModelIndex idx: rows){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             Object entity = model.getEntityByRow(idx.row());
             if ( reference != null ){
                 entity = Resolver.entityFromReference(entity, (String) reference);
@@ -165,9 +181,12 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionInfo(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         for (QModelIndex idx: rows){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             Object entity = model.getEntityByRow(idx.row());
             IForm form = Util.formFromEntity(entity);
             if( form == null ){
@@ -189,20 +208,29 @@ public class PyPaPiTableView extends QTableView{
     }
     
     private void actionDel(){
-        TableModel model = (TableModel) this.model();
+        ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
         List<Integer> selectedRows = new ArrayList();
         for( QModelIndex idx: rows ){
+            if( this.model() instanceof ProxyModel ){ 
+                idx = ((ProxyModel) this.model()).mapToSource(idx);
+            }
             selectedRows.add(idx.row());
         }
         Collections.sort(selectedRows, Collections.reverseOrder());
         for( Integer row: selectedRows ){
+            Object toRemove = model.getEntityByRow(row);
             model.removeRows(row, 1, null);
+            entityRemoved.emit(toRemove);
         }
     }
     
     private void actionAdd(){
-        TableModel model = (TableModel) this.model();
+        this.actionAdd(null);
+    }
+    
+    public void actionAdd(List selection){
+        ITableModel model = (ITableModel) this.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.property("entity");
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
@@ -211,17 +239,24 @@ public class PyPaPiTableView extends QTableView{
             String name = (String) reference;
             String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
-            PickerDialog pd = new PickerDialog(this, controller);
-            Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
-            if( filters != null ){
-                for( Column column: filters.keySet() ){
-                    pd.addFilter(column, filters.get(column));
+            
+            int res=1;
+            if( selection == null ){
+                // Selection from PickerDialog
+                PickerDialog pd = new PickerDialog(this, controller);
+                Map<Column, Object> filters = (Map) Register.queryRelation(this, "filters");
+                if( filters != null ){
+                    for( Column column: filters.keySet() ){
+                        pd.addFilter(column, filters.get(column));
+                    }
                 }
+                res = pd.exec();
+                selection = pd.getSelection();
             }
-            int res = pd.exec();
+            
             if ( res == 1 ){
-                for( int i=0; i<pd.getSelection().size(); i++ ){
-                    Object entity = pd.getSelection().get(i);
+                for( int i=0; i<selection.size(); i++ ){
+                    Object entity = selection.get(i);
                     Object adapted = null;
                     Class<?> classFrom = entity.getClass();
                     Class<?> classTo = collectionClass;
@@ -276,6 +311,7 @@ public class PyPaPiTableView extends QTableView{
 
                     if( adapted != null ){
                         model.getContextHandle().insertElement(adapted);
+                        entityInserted.emit(adapted);
                     } else {
                         String title = "Adapter warning";
                         String description = "Unable to find an adapter from "+classFrom+" to "+classTo+".";
@@ -287,6 +323,7 @@ public class PyPaPiTableView extends QTableView{
             try {
                 Object notAdapted = collectionClass.newInstance();
                 model.getContextHandle().insertElement(notAdapted);
+                entityInserted.emit(notAdapted);
             } catch (InstantiationException ex) {
                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -298,6 +335,20 @@ public class PyPaPiTableView extends QTableView{
         this.selectRow(this.model().rowCount()-1);
         this.actionInfo();
     }
+    
+    private void actionQuickInsert(){
+        ITableModel model = (ITableModel) this.model();
+        Class rootClass = model.getContextHandle().getRootClass();
+        String entityName = (String) this.property("entity");
+        String referenceName = (String) Register.queryRelation(this, "reference");
+        lineEditQuickInsert.installEventFilter(new QuickInsertFilter(this));
+        lineEditQuickInsert.setWindowTitle("Ins. rapido...");
+        lineEditQuickInsert.show();
+    }
+
+    public QLineEdit getLineEditQuickInsert() {
+        return lineEditQuickInsert;
+    }
 
     public Boolean getReadOnly() {
         return readOnly;
@@ -307,5 +358,60 @@ public class PyPaPiTableView extends QTableView{
         this.readOnly = readOnly;
     }
     
+    /* SIGNALS */
+    
+    public Signal1<Object> entityInserted = new Signal1<Object>();
+    
+    public Signal1<Object> entityRemoved = new Signal1<Object>();
 
+}
+
+
+class QuickInsertFilter extends QObject {
+    
+    private PyPaPiTableView tableView;
+    
+    public QuickInsertFilter(PyPaPiTableView tableView){
+        super();
+        this.tableView = tableView;
+    }
+    
+    @Override
+    public boolean eventFilter(QObject qo, QEvent qevent) {
+        if( qevent.type() == QEvent.Type.KeyPress ){
+            QKeyEvent qke = (QKeyEvent) qevent;
+            if( qke.key() == Qt.Key.Key_Tab.value() ){
+                String idx = this.tableView.getLineEditQuickInsert().text();
+                this.insert(idx);
+                this.tableView.getLineEditQuickInsert().clear();
+            } else if( qke.key() == Qt.Key.Key_Escape.value() ) {
+                this.tableView.getLineEditQuickInsert().close();
+            }
+        }
+        return false;
+    }
+    
+    private void insert(String idx) {
+        ITableModel model = (ITableModel) this.tableView.model();
+        Class rootClass = model.getContextHandle().getRootClass();
+        String entityName = (String) this.tableView.property("entity");
+        String referenceName = (String) Register.queryRelation(this.tableView, "reference");
+        Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
+        if ( referenceName != null ){
+            String name = (String) referenceName;
+            String className = Resolver.entityClassFromReference(collectionClass, (String) referenceName).getName();
+            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
+            try{
+                Object entity = controller.get(Long.parseLong(idx));
+                if( entity != null ){
+                    List selection = new ArrayList();
+                    selection.add(entity);
+                    this.tableView.actionAdd(selection);
+                }
+            } catch (NumberFormatException e){
+            
+            }
+        }
+    }
+    
 }

@@ -16,6 +16,7 @@
  */
 package com.axiastudio.pypapi.ui;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -66,4 +67,13 @@ public interface IEntityBehavior {
      */
     Set<String> getReValidatorKeys();
 
+    /**
+     * @return the map of the join criteria
+     */
+    public HashMap<String, String> getJoinCriteria();
+    
+    /**
+     * @param joinCriteria the map of the join criteria
+     */
+    public void setJoinCriteria(HashMap<String, String> joinCriteria);
 }

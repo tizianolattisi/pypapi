@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class TableModel extends QAbstractTableModel {
+public class TableModel extends QAbstractTableModel implements ITableModel {
     
     private List<Column> columns;
     private Store store;
@@ -85,6 +85,7 @@ public class TableModel extends QAbstractTableModel {
         return this.store;
     }
 
+    @Override
     public List<Column> getColumns(){
         return this.columns;
     }
@@ -219,8 +220,16 @@ public class TableModel extends QAbstractTableModel {
         this.purgeItemCache(entity);
     }
     
+    public void refresh(){
+        this.purgeItemCache();
+    }
+    
     public void purgeItemCache(){
         this.cache = new HashMap();
+    }
+
+    public void refresh(Object entity){
+        this.purgeItemCache(entity);
     }
 
     public void purgeItemCache(Object entity){

@@ -59,7 +59,7 @@ public class Window extends QMainWindow implements IForm {
     public Window(String uiFile, Class entityClass, String title) {
         this.entityClass = entityClass;
         this.uiFile = uiFile;
-        this.title = title;
+        //this.title = title;
         if( uiFile != null ){
             QFile qFile = new QFile(uiFile);
             if( qFile.exists() ){
@@ -95,6 +95,7 @@ public class Window extends QMainWindow implements IForm {
         this.context.getMapper().currentIndexChanged.connect(this, "indexChanged(int)");
         this.context.getMapper().toFirst();
         bar.refresh();
+        storeInitialized.emit();
     }
     
     private void loadUi(QFile uiFile){
@@ -108,6 +109,8 @@ public class Window extends QMainWindow implements IForm {
             this.setProperty(name.toString(), window.property(name.toString()));
         }
         this.setCentralWidget(window.centralWidget());
+        this.title = window.windowTitle();
+        this.setWindowTitle(this.title);
     }
 
     private void autoLayout(){
@@ -223,5 +226,10 @@ public class Window extends QMainWindow implements IForm {
     public void setContext(Context context) {
         this.context = context;
     }
+    
+    /* SIGNALS */
+    
+    public Signal0 storeInitialized = new Signal0();
+
     
 }

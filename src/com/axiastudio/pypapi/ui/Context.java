@@ -60,7 +60,7 @@ public final class Context extends QObject {
         this.name = name;
 
         this.model = this.createModel(store);
-        this.mapper = new QDataWidgetMapper(this); // XXX: this? maybe this.parent?
+        this.mapper = new QDataWidgetMapper(this.parent());
         this.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.AutoSubmit);
         this.mapper.setModel(this.model);
         this.model.setColumns(columns);
@@ -111,9 +111,6 @@ public final class Context extends QObject {
         return tableModel;
     }
 
-    private void IndexChanged() {
-        this.indexChanged(0);
-    }
     private void indexChanged(int row){
         int cnt = this.model.rowCount();
         if(".".equals(this.name)){
@@ -266,8 +263,8 @@ public final class Context extends QObject {
     
     public void refreshElement(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        this.primaryDc.currentEntity = c.refresh(this.primaryDc.currentEntity);
-        this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);
+        c.refresh(this.primaryDc.currentEntity);
+        this.model.refresh(this.primaryDc.currentEntity);
         this.isDirty = false;
         this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
         this.mapper.revert();
@@ -281,6 +278,7 @@ public final class Context extends QObject {
             this.model.replaceRows(pd.getSelection());
             this.firstElement();
         }
+        pd.dispose();
     }
     
     public void getDirty(){

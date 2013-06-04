@@ -18,6 +18,11 @@ package com.axiastudio.pypapi;
 
 import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,14 +32,26 @@ public class Application extends QApplication {
     
     private String customApplicationName=null;
     private String customApplicationCredits=null;
+    private Map<String, Object> config = new HashMap();
+    List<String> qmFiles = new ArrayList();
     
     public Application(String[] args){
         super(args);
     }
     
+    public void addQmFile(String fileName){
+        qmFiles.add(fileName);
+    }
+    
     public void setLanguage(String lang){
         QTranslator translator = new QTranslator(this);
         translator.load("classpath:com/axiastudio/pypapi/lang/pypapi_"+lang+".qm");
+        for( String qmFile: qmFiles ){
+            if( qmFile.contains("{0}") ){
+                qmFile = MessageFormat.format(qmFile, lang);
+            }
+            translator.load(qmFile);
+        }
         QApplication.installTranslator(translator);
     }
 
@@ -56,6 +73,18 @@ public class Application extends QApplication {
     
     public static Application getApplicationInstance(){
         return (Application) Application.instance();
+    }
+
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+    
+    public Object getConfigItem(String key) {
+        return config.get(key);
+    }
+    
+    public void setConfigItem(String key, Object value) {
+        config.put(key, value);
     }
     
 }

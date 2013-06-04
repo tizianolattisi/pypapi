@@ -33,10 +33,14 @@ import java.util.Set;
 public class EntityBehavior implements IEntityBehavior {
     
     private String className;
+    private List<Column> columns;
     private List<Column> criteria;
     private List<String> privates;
     private List<Column> exports;
     private List<Column> searchColumns;
+    private Integer sortColumn;
+    private Integer sortOrder;
+    private HashMap<String, String> joinCriteria;
     private HashMap<String, String> validators = new HashMap();
     
     public EntityBehavior(String className){
@@ -113,5 +117,47 @@ public class EntityBehavior implements IEntityBehavior {
     public Set<String> getReValidatorKeys() {
         return this.validators.keySet();
     }
+
+    @Override
+    public HashMap<String, String> getJoinCriteria() {
+        return joinCriteria;
+    }
+
+    @Override
+    public void setJoinCriteria(HashMap<String, String> joinCriteria) {
+        this.joinCriteria = joinCriteria;
+    }
+
+    public Integer getSortColumn() {
+        return sortColumn;
+    }
+
+    public void setSortColumn(Integer sortColumn) {
+        this.sortColumn = sortColumn;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public List<Column> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
+    }
     
+    public Column getColumnByName(String name) {
+        for( Column column: columns ){
+            if( name.equals(column.getName()) ){
+                return column;
+            }
+        }
+        return null;
+    }
 }

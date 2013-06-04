@@ -40,6 +40,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -65,11 +66,19 @@ public class Controller implements IController {
     }
 
     public EntityManager getEntityManager() {
-        return this.entityManagerFactory.createEntityManager();
+        if( this.entityManager == null ){
+            this.entityManager = this.entityManagerFactory.createEntityManager();
+        }
+        return this.entityManager;
     }
     
     @Override
     public Store createCriteriaStore(Map criteria){
+        return this.createCriteriaStore(criteria, 0);
+    }
+
+    @Override
+    public Store createCriteriaStore(Map criteria, Integer limit){
         if( this.entityClass == null ){
             return null;
         }
@@ -80,22 +89,43 @@ public class Controller implements IController {
         Class<?> returnType = this.entityClass;
         Root from = cq.from(returnType);
         List<Predicate> predicates = new ArrayList();
+        Map<String, Path> paths = new HashMap();
         for( Object k: criteria.keySet() ){
             Column column = (Column) k;
             Predicate predicate=null;
+            Path path = null;
+            if( !column.getName().contains(".") ){
+                path = from.get(column.getName().toLowerCase());
+            } else {
+                for( String token: column.getName().split("\\.") ){
+                    if( path == null ){
+                        if( paths.containsKey(token)){
+                            path = paths.get(token);
+                        } else {
+                            path = from.get(token);
+                            paths.put(token, path);
+                        }
+                    } else {
+                        path = path.get(token);
+                    }
+                }
+            }
             if( column.getEditorType().equals(CellEditorType.STRING) ){
                 String value = (String) criteria.get(column);
                 value = value.replace("*", "%");
                 if( !value.endsWith("%") ){
                     value += "%";
                 }
-                predicate = cb.like(cb.upper(from.get(column.getName().toLowerCase())), value.toUpperCase());
+                predicate = cb.like(cb.upper(path), value.toUpperCase());
             } else if( column.getEditorType().equals(CellEditorType.INTEGER) ){
                 Integer value = (Integer) criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
+            } else if( column.getEditorType().equals(CellEditorType.LONG) ){
+                Long value = (Long) criteria.get(column);
+                predicate = cb.equal(path, value);
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
             } else if( column.getEditorType().equals(CellEditorType.DATE) ){
                 List values = (List) criteria.get(column);
                 GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
@@ -105,11 +135,11 @@ public class Controller implements IController {
                 gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
                 Integer d = (Integer) values.get(1);
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
-                predicate = cb.and(cb.greaterThanOrEqualTo(from.get(column.getName().toLowerCase()), gcStart.getTime()),
-                        cb.lessThan(from.get(column.getName().toLowerCase()), gcEnd.getTime()));
-            } else if( column.getEditorType().equals(CellEditorType.CHOICE) ){
+                predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
+                        cb.lessThan(path, gcEnd.getTime()));
+            } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP)){
                 Object value = criteria.get(column);
-                predicate = cb.equal(from.get(column.getName().toLowerCase()), value);
+                predicate = cb.equal(path, value);
             }
             if( predicate != null ){
                 predicates.add(predicate);
@@ -134,40 +164,13 @@ public class Controller implements IController {
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
         }
         TypedQuery<Object> tq = em.createQuery(cq);
+        if( limit != 0 ){
+            tq.setMaxResults(limit);
+        }
         List<Object> result = tq.getResultList();
         store = new Store(result);
         return store;
     }
-
-    /*
-    @Override
-    public Store createStore() {
-        return this.createStore(-1);
-    }
-    * */
-
-    /*
-    @Override
-    public Store createStore(int limit) {
-        if( this.entityClass == null ){
-            return null;
-        }
-        EntityManager em = this.getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(this.entityClass));
-            Query q = em.createQuery(cq);
-            if( limit > 0 ){
-                q = q.setMaxResults(limit);
-            }
-            List entities = q.getResultList();
-            Store store = new Store(entities);
-            return store;
-        } finally {
-            em.close();
-        }
-    }
-    * */
 
     @Override
     public Store createFullStore(){
@@ -277,34 +280,16 @@ public class Controller implements IController {
                 merged = em.merge(entity);
                 em.getTransaction().commit();                
             }
-            try {
-                // TODO: refresh entity
-                Method getId = merged.getClass().getMethod("getId");
-                Long i = (Long) getId.invoke(merged);
-                em.detach(merged);
-                merged = em.find(this.entityClass, i);
-                em.merge(merged);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NoSuchMethodException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            em.refresh(merged);
+
             beforeValidation.setEntity(merged);
-            em.close();
             
             // AFTER COMMIT
 
             Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
-            Validation afterValidation = new Validation(true);
             if( afterCommit != null ){
                 try {
-                    afterValidation = (Validation) afterCommit.invoke(null, merged);
+                    Validation afterValidation = (Validation) afterCommit.invoke(null, merged);
                     afterValidation.setEntity(merged);
                     return afterValidation;
                 } catch (IllegalAccessException ex) {
@@ -332,29 +317,8 @@ public class Controller implements IController {
     @Override
     public Object refresh(Object entity){
         EntityManager em = this.getEntityManager();
-        Long i=null;
-        try {
-            Method getId = entity.getClass().getMethod("getId");
-            i = (Long) getId.invoke(entity);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if( i != null ){
-            em.detach(entity);
-            Object merged = em.find(this.entityClass, i);
-            em.merge(merged);
-            return merged;
-        } else {
-            return entity;
-        }
+        em.refresh(entity);
+        return entity;
     }
     
     public String getEntityName() {
@@ -383,7 +347,7 @@ public class Controller implements IController {
         Object entity = em.find(this.getEntityClass(), id);
         return entity;
     }
-    
+
     private Long getId(Object entity){
         Long id=null;
         Method getId;
