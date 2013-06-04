@@ -43,16 +43,19 @@ public class Application extends QApplication {
         qmFiles.add(fileName);
     }
     
-    public void setLanguage(String lang){
-        QTranslator translator = new QTranslator(this);
-        translator.load("classpath:com/axiastudio/pypapi/lang/pypapi_"+lang+".qm");
+    public void setLanguage(String lang){        
+        QTranslator fwTranslator = new QTranslator(this);
+        fwTranslator.load("classpath:com/axiastudio/pypapi/lang/pypapi_"+lang+".qm");
+        QApplication.installTranslator(fwTranslator);
+
         for( String qmFile: qmFiles ){
             if( qmFile.contains("{0}") ){
                 qmFile = MessageFormat.format(qmFile, lang);
             }
+            QTranslator translator = new QTranslator(this);
             translator.load(qmFile);
+            QApplication.installTranslator(translator);
         }
-        QApplication.installTranslator(translator);
     }
 
     public String getCustomApplicationCredits() {
