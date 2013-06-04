@@ -20,7 +20,9 @@ import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +32,7 @@ public class Application extends QApplication {
     
     private String customApplicationName=null;
     private String customApplicationCredits=null;
+    private Map<String, Object> config = new HashMap();
     List<String> qmFiles = new ArrayList();
     
     public Application(String[] args){
@@ -70,6 +73,18 @@ public class Application extends QApplication {
     
     public static Application getApplicationInstance(){
         return (Application) Application.instance();
+    }
+
+    public void setConfig(Map<String, Object> config) {
+        this.config = config;
+    }
+    
+    public Object getConfigItem(String key) {
+        return config.get(key);
+    }
+    
+    public void setConfigItem(String key, Object value) {
+        config.put(key, value);
     }
     
 }
