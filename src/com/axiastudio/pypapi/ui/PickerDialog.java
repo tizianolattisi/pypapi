@@ -188,10 +188,10 @@ public class PickerDialog extends QDialog {
         this.filterLineEdit = new QLineEdit();
         this.filterLineEdit.textChanged.connect(this, "applyFilter(String)");
         QLabel filterLabel = new QLabel();
-        filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
+        filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/filter.png"));
         this.searchLogLabel = new QLabel();
         this.buttonSearch = new QToolButton(this);
-        this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/filter.png"));
+        this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
         this.buttonSearch.clicked.connect(this, "executeSearch()");
         this.buttonSearch.setShortcut(QKeySequence.StandardKey.Find);
         this.buttonCancel = new QToolButton(this);
