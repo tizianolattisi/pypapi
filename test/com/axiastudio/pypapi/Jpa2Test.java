@@ -17,11 +17,9 @@
 package com.axiastudio.pypapi;
 
 import com.axiastudio.pypapi.demo.entities.Book;
-import com.axiastudio.pypapi.demo.entities.Book_;
 import com.axiastudio.pypapi.demo.entities.Genre;
 import com.axiastudio.pypapi.demo.entities.Loan;
 import com.axiastudio.pypapi.demo.entities.Person;
-import com.axiastudio.pypapi.demo.entities.Person_;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -152,7 +150,7 @@ public class Jpa2Test {
         CriteriaQuery<Book> cq = cb.createQuery(Book.class);
         Root from = cq.from(Book.class);
         // from.get("description")
-        Predicate predicate = cb.like(from.get(Book_.description), "%very%");
+        Predicate predicate = cb.like(from.get("description"), "%very%");
         cq = cq.where(predicate);
         TypedQuery<Book> tq = em.createQuery(cq);
         
@@ -170,8 +168,8 @@ public class Jpa2Test {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Person> cq = cb.createQuery(Person.class);
         Root from = cq.from(Person.class);
-        cq = cq.where(cb.and(cb.equal(from.get(Person_.name), "Tiziano"),
-                             cb.equal(from.get(Person_.surname), "Lattisi")));
+        cq = cq.where(cb.and(cb.equal(from.get("name"), "Tiziano"),
+                             cb.equal(from.get("surname"), "Lattisi")));
         TypedQuery<Person> tq = em.createQuery(cq);
         Person person = tq.getSingleResult();
         
