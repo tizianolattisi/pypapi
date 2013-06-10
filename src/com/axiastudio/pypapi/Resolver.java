@@ -153,7 +153,7 @@ public class Resolver {
     /**
      * Return field value form field name
      * 
-     * @param object The object
+     * @param entity The object
      * @param name The name of the field
      * @return  The value
      * 
