@@ -44,9 +44,9 @@ public class ItemEditable extends Item {
     public boolean set(int role, Object objValue) throws Exception {
         /*
          * Set the value corresponding to the requested role
-         * thru the correct setter method.
+         * through the correct setter method.
          */
-        // XXX: chek ItemEditable.set(role, value) -> Item*.set*(value) -> ItemEditable.set(value)
+        // XXX: check ItemEditable.set(role, value) -> Item*.set*(value) -> ItemEditable.set(value)
         Object result;
         Object nameObject = ItemEditable.ITEM_ROLES.get(role);
         if( nameObject == null){

@@ -179,6 +179,9 @@ public class TableModel extends QAbstractTableModel implements ITableModel {
         if( !this.editable && flags.isSet(Qt.ItemFlag.ItemIsEditable) ){
             flags.clear(Qt.ItemFlag.ItemIsEditable);
         }
+        if( !this.editable && flags.isSet(Qt.ItemFlag.ItemIsUserCheckable) ){
+            flags.clear(Qt.ItemFlag.ItemIsUserCheckable);
+        }
         return flags;
     }
 
@@ -281,6 +284,7 @@ public class TableModel extends QAbstractTableModel implements ITableModel {
         return editable;
     }
 
+    @Override
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
