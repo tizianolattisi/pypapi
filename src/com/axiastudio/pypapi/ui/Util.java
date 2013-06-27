@@ -280,6 +280,9 @@ public class Util {
             ((QWidget) widget).setEnabled(!readOnly);
         } else if( widget instanceof PyPaPiTableView ){
             ((PyPaPiTableView) widget).setReadOnly(readOnly);
+            if( ((PyPaPiTableView) widget).model() != null ){
+                ((ITableModel) ((PyPaPiTableView) widget).model()).setEditable(!readOnly);
+            }
         }
 
     }

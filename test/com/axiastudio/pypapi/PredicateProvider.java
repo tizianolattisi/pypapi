@@ -16,7 +16,6 @@
  */
 package com.axiastudio.pypapi;
 
-import com.axiastudio.pypapi.demo.entities.Book_;
 import com.axiastudio.pypapi.demo.entities.Genre;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -30,7 +29,7 @@ public class PredicateProvider {
     
     public static Predicate bookPredicateProvider(CriteriaBuilder cb, Root from) {
 
-        Predicate predicate = cb.notEqual(from.get(Book_.genre), Genre.REFERENCE);
+        Predicate predicate = cb.notEqual(from.get("genre"), Genre.REFERENCE);
         return predicate;
 
     }

@@ -317,6 +317,14 @@ public class Controller implements IController {
     @Override
     public Object refresh(Object entity){
         EntityManager em = this.getEntityManager();
+        if( !em.contains(entity) ){
+            Long id = this.getId(entity);
+            if( id != null ){
+                entity = this.get(id);
+            } else {
+                return entity;
+            }
+        }
         em.refresh(entity);
         return entity;
     }

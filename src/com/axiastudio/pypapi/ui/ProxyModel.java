@@ -59,4 +59,9 @@ public class ProxyModel extends QSortFilterProxyModel implements ITableModel {
     public Object data(QModelIndex qmi, int role){
         return ((TableModel) this.sourceModel()).data(this.mapToSource(qmi), role);
     }
+
+    @Override
+    public void setEditable(boolean editable) {
+        ((TableModel) this.sourceModel()).setEditable(editable);
+    }
 }

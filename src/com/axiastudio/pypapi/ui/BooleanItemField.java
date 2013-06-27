@@ -90,7 +90,7 @@ public class BooleanItemField extends ItemField {
          * QDateTime.
          * 
          */
-        if( (Boolean) this.value ){
+        if( this.value != null && (Boolean) this.value ){
             return "";
         }
         return null;

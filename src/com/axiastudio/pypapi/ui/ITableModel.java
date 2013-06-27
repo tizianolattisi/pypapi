@@ -44,5 +44,6 @@ public interface ITableModel {
     public Object data(int i, int role);
 
     public Object data(QModelIndex qmi, int role);
-    
+
+    void setEditable(boolean editable);
 }
