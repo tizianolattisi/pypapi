@@ -84,6 +84,9 @@ public class EntityBehavior implements IEntityBehavior {
      */
     @Override
     public List<Column> getSearchColumns() {
+        if( searchColumns.size() == 0){
+            return columns;
+        }
         return searchColumns;
     }
 
