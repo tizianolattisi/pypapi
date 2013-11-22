@@ -161,7 +161,7 @@ public class Controller implements IController {
             }
         }
         if( predicates.size()>0 ){
-            cq.where(cb.and(predicates.toArray(new Predicate[0])));
+            cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
         }
         TypedQuery<Object> tq = em.createQuery(cq);
         if( limit != 0 ){
