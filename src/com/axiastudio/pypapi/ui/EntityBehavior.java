@@ -41,7 +41,7 @@ public class EntityBehavior implements IEntityBehavior {
     private Integer sortColumn;
     private Integer sortOrder;
     private HashMap<String, String> joinCriteria;
-    private HashMap<String, String> validators = new HashMap();
+    private HashMap<String, String> validators = new HashMap<String, String>();
     
     public EntityBehavior(String className){
         this.className = className;
