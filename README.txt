@@ -1,4 +1,4 @@
-This is PyPaPi version 0.3.
+This is PyPaPi version 0.4.
 
 PyPaPi is a Java and Qt desktop application framework.
 For more informations refer the web site <http://www.pypapi.org>
