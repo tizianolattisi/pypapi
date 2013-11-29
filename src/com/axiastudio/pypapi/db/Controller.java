@@ -160,6 +160,7 @@ public class Controller implements IController {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        cq.select(from);
         if( predicates.size()>0 ){
             cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
         }
