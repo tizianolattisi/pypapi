@@ -102,6 +102,7 @@ public class PickerDialog extends QDialog {
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
     private QLabel searchLogLabel;
+    private QLabel totRecordLabel;
     private Store store;
     private Controller controller;
     private QVBoxLayout layout;
@@ -189,6 +190,7 @@ public class PickerDialog extends QDialog {
         this.filterLineEdit.textChanged.connect(this, "applyFilter(String)");
         QLabel filterLabel = new QLabel();
         filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/filter.png"));
+        this.totRecordLabel = new QLabel();
         this.searchLogLabel = new QLabel();
         this.buttonSearch = new QToolButton(this);
         this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
@@ -220,6 +222,10 @@ public class PickerDialog extends QDialog {
         QSpacerItem spacer = new QSpacerItem(20, 20, QSizePolicy.Policy.Expanding,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer);
+        buttonLayout.addWidget(totRecordLabel);
+        QSpacerItem spacer1 = new QSpacerItem(20, 20, QSizePolicy.Policy.Expanding,
+                QSizePolicy.Policy.Minimum);
+        buttonLayout.addItem(spacer1);
         buttonLayout.addWidget(new QLabel("max"));
         buttonLayout.addWidget(this.comboBoxLimit);
         buttonLayout.addWidget(this.buttonSearch);
@@ -329,12 +335,19 @@ public class PickerDialog extends QDialog {
                 dateEdit.setDate(dateEdit.minimumDate());
                 hbox.addWidget(dateEdit);
                 QComboBox comboBox1 = new QComboBox();
+                comboBox1.addItem("-6");
+                comboBox1.addItem("-5");
+                comboBox1.addItem("-4");
+                comboBox1.addItem("-3");
+                comboBox1.addItem("-2");
+                comboBox1.addItem("-1");
                 comboBox1.addItem("1");
                 comboBox1.addItem("2");
                 comboBox1.addItem("3");
                 comboBox1.addItem("4");
                 comboBox1.addItem("5");
                 comboBox1.addItem("6");
+                comboBox1.setCurrentIndex(6);
                 hbox.addWidget(comboBox1);
                 QComboBox comboBox2 = new QComboBox();
                 comboBox2.addItem(tr("DAYS"));
@@ -442,7 +455,8 @@ public class PickerDialog extends QDialog {
                     QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
                     QDate date = dateEdit.date();
                     if( !date.equals(dateEdit.minimumDate()) ){
-                        Integer n = comboBox1.currentIndex() + 1;
+//                        Integer n = comboBox1.currentIndex() + 1;
+                        Integer n = Integer.parseInt(comboBox1.currentText());
                         Integer idx = comboBox2.currentIndex();
                         Integer days = null;
                         if( idx == 0 ) {
@@ -503,6 +517,7 @@ public class PickerDialog extends QDialog {
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
         this.buttonQuickInsert.setEnabled(true);
+        this.totRecordLabel.setText(" Tot record: " + String.valueOf(supersetStore.size()));
     }
     
     public final void export(){
