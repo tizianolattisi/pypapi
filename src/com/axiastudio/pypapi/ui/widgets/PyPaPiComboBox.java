@@ -47,6 +47,8 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     public void setLookupStore(Store lookupStore, Boolean notnull) {
+        this.clear();
+
         this.lookupStore = lookupStore;
         if( !notnull ){
             this.lookupStore.add(null);
