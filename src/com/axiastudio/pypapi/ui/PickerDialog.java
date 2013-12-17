@@ -145,14 +145,19 @@ public class PickerDialog extends QDialog {
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
         this.tableView.setSortingEnabled(true);
+        refreshResizeMode();
+        this.setStyleSheet(this.STYLE);
+    }
+
+    private void refreshResizeMode() {
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         for( int i=0; i<behavior.getSearchColumns().size(); i++ ){
             Column c = behavior.getSearchColumns().get(i);
             this.tableView.horizontalHeader().setResizeMode(i, QHeaderView.ResizeMode.resolve(c.getResizeModeValue()));
         }
-        this.setStyleSheet(this.STYLE);
     }
 
-    
+
     @Override
     public void accept() {
         this.disposeAll();
@@ -516,6 +521,7 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
+        refreshResizeMode();
         this.buttonQuickInsert.setEnabled(true);
         this.totRecordLabel.setText(" Tot record: " + String.valueOf(supersetStore.size()));
     }
