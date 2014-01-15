@@ -237,14 +237,18 @@ public class Controller implements IController {
                         }
                         for (Iterator it = collection.iterator(); it.hasNext();) {
                             Object orphan = it.next();
-                            try {
-                                parentSetter.invoke(orphan, entity);
-                            } catch (IllegalAccessException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            if( orphan != null ){
+                                try {
+                                    parentSetter.invoke(orphan, entity);
+                                } catch (IllegalAccessException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IllegalArgumentException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (InvocationTargetException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (NullPointerException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
                         }
                     }
