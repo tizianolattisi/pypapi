@@ -46,7 +46,9 @@ public interface IForm {
     public void setWidgets(HashMap<String, QObject> widgets);
     
     public List<Column> getColumns();
-    
+
+    public Column getColumn(String columnName);
+
     public List<Column> getEntities();
     
     public HashMap<String, QObject> getWidgets();

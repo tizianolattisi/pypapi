@@ -139,6 +139,16 @@ public class Dialog extends QDialog implements IForm {
     }
 
     @Override
+    public Column getColumn(String columnName) {
+        for( Column column: getColumns() ){
+            if( column.getName().equals(columnName) ){
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Column> getEntities() {
         return entities;
     }

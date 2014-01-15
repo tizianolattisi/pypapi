@@ -226,7 +226,17 @@ public class Window extends QMainWindow implements IForm {
     public void setContext(Context context) {
         this.context = context;
     }
-    
+
+    @Override
+    public Column getColumn(String columnName) {
+        for( Column column: getColumns() ){
+            if( column.getName().equals(columnName) ){
+                return column;
+            }
+        }
+        return null;
+    }
+
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();
