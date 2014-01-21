@@ -97,7 +97,7 @@ public class PickerDialog extends QDialog {
             + "image: none;"
             + "}";
 
-    private List selection = new ArrayList();;
+    private List selection = new ArrayList();
     private QTableView tableView;
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
@@ -503,6 +503,7 @@ public class PickerDialog extends QDialog {
             }
             supersetStore = this.controller.createCriteriaStore(criteriaMap, limit);
         }
+        this.store = supersetStore;
         TableModel model = new TableModel(supersetStore, columns);
         model.setEditable(false);
         ProxyModel proxy = new ProxyModel();
@@ -522,14 +523,27 @@ public class PickerDialog extends QDialog {
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
         refreshResizeMode();
+        this.selection.clear();
         this.buttonQuickInsert.setEnabled(true);
+        this.buttonExport.setEnabled(true);
         this.totRecordLabel.setText(" Tot record: " + String.valueOf(supersetStore.size()));
     }
     
     public final void export(){
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> columns = behavior.getExports();
-        String content = Util.exportToCvs(this.selection, columns, this.controller.getEntityClass());
+/*        if (this.selection.size() == 0){
+            this.tableView.selectAll();
+        }
+  forse troppo lento se ci sono tanti record...  */
+
+        List exportList = new ArrayList();
+        if (this.selection.size() == 0){
+            exportList = this.store;
+        } else {
+            exportList = this.selection;
+        }
+        String content = Util.exportToCvs(exportList, columns, this.controller.getEntityClass());
         if( content == null ){
             QMessageBox.information(this, tr("EXPORT_ERROR"), tr("EXPORT_ERROR_MESSAGE"));
             return;
@@ -621,7 +635,7 @@ public class PickerDialog extends QDialog {
         }
         Boolean isSelection = this.selection.size()>0;
         this.buttonAccept.setEnabled(isSelection);
-        this.buttonExport.setEnabled(isSelection);
+//        this.buttonExport.setEnabled(isSelection);
     }
     
     public List getSelection() {

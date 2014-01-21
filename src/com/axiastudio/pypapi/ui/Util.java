@@ -231,6 +231,8 @@ public class Util {
         for( Column column: columns ){
             Method method = Resolver.getterFromFieldName(entityClass, column.getName());
             methods.add(method);
+            // Headers
+            out += "\"" + column.getLabel() + "\",";
         }
         if( methods.size() == 0 ){
             return null;
@@ -253,7 +255,7 @@ public class Util {
                     row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
                 } else if( Boolean.class == returnType ) {
                     Boolean b = (Boolean) value;
-                    row += b.toString().toUpperCase();
+                    row += "," + b.toString().toUpperCase();
                 } else if( returnType.isEnum() ) {
                     row += ",\"" + value.toString() + "\"";
                 } else if( Date.class == returnType ) {
