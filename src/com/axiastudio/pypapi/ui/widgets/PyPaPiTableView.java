@@ -52,6 +52,7 @@ public class PyPaPiTableView extends QTableView{
     private Boolean refreshConnected=false;
     private Boolean readOnly=false;
     private QLineEdit lineEditQuickInsert = new QLineEdit();
+    private Object infoEntity=null;
 
     public PyPaPiTableView(){
         this(null);
@@ -187,8 +188,8 @@ public class PyPaPiTableView extends QTableView{
             if( this.model() instanceof ProxyModel ){ 
                 idx = ((ProxyModel) this.model()).mapToSource(idx);
             }
-            Object entity = model.getEntityByRow(idx.row());
-            IForm form = Util.formFromEntity(entity);
+            infoEntity = model.getEntityByRow(idx.row());
+            IForm form = Util.formFromEntity(infoEntity);
             if( form == null ){
                 return;
             }
@@ -202,9 +203,16 @@ public class PyPaPiTableView extends QTableView{
             }
             IForm parent = (IForm) Util.findParentForm(this);
             // when the form's data is changed, get the parent's data dirty
+            form.getContext().getModel().dataChanged.connect(this, "refreshInfoEntity()");
             form.getContext().getModel().dataChanged.connect(parent.getContext().getModel().dataChanged);
             form.show();
         }
+    }
+
+    private void refreshInfoEntity(){
+        ITableModel model = (ITableModel) model();
+        model.getContextHandle().updateElement(infoEntity);
+        entityUpdated.emit(infoEntity);
     }
     
     private void actionDel(){
@@ -357,12 +365,14 @@ public class PyPaPiTableView extends QTableView{
     public void setReadOnly(Boolean readOnly) {
         this.readOnly = readOnly;
     }
-    
+
     /* SIGNALS */
     
     public Signal1<Object> entityInserted = new Signal1<Object>();
     
     public Signal1<Object> entityRemoved = new Signal1<Object>();
+
+    public Signal1<Object> entityUpdated = new Signal1<Object>();
 
 }
 

@@ -233,6 +233,13 @@ public final class Context extends QObject {
         }
     }
 
+    public void updateElement(Object entity) {
+        this.model.replaceEntity(this.mapper.currentIndex(), entity);
+        this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+        this.isDirty = true;
+    }
+
+
     public void commitChanges(){
         Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
         Validation val = c.commit(this.primaryDc.currentEntity);
@@ -311,5 +318,5 @@ public final class Context extends QObject {
     public Boolean getIsDirty() {
         return isDirty;
     }
-    
+
 }
