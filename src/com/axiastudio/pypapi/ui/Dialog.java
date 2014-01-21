@@ -79,10 +79,10 @@ public class Dialog extends QDialog implements IForm {
             }
             if( box != null ){
                 box.addStretch();
-                QToolButton buttonCancel = new QToolButton(this);
-                buttonCancel.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
-                buttonCancel.clicked.connect(this, "reject()");
-                box.addWidget(buttonCancel);
+                //QToolButton buttonCancel = new QToolButton(this);
+                //buttonCancel.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
+                //buttonCancel.clicked.connect(this, "reject()");
+                //box.addWidget(buttonCancel);
                 QToolButton buttonAccept = new QToolButton();
                 buttonAccept.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/accept.png"));
                 buttonAccept.clicked.connect(this, "accept()");
