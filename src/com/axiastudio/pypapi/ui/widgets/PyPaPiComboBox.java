@@ -42,6 +42,10 @@ public class PyPaPiComboBox extends QComboBox {
         this(null);
     }
 
+    public Store getLookupStore() {
+        return lookupStore;
+    }
+
     public void setLookupStore(Store lookupStore) {
         this.setLookupStore(lookupStore, Boolean.FALSE);
     }
@@ -65,6 +69,10 @@ public class PyPaPiComboBox extends QComboBox {
         this.editTextChanged.connect(this, "tryToSelect(String)");
         this.currentIndexChanged.connect(this, "tryToSelect(int)");
         this.activatedIndex.connect(this, "tryToSelect(int)");
+    }
+
+    public Object getCurrentEntity() {
+        return this.lookupStore.get(this.currentIndex());
     }
     
     private void tryToSelect(int i){
