@@ -51,6 +51,7 @@ public class Window extends QMainWindow implements IForm {
     private List<Column> columns;
     private List<Column> entities;
     private PyPaPiNavigationBar navigationBar;
+    private IForm parentForm=null;
 
     public Window(String uiFile, Class entityClass) {
         this(uiFile, entityClass, "");
@@ -72,7 +73,7 @@ public class Window extends QMainWindow implements IForm {
             this.autoLayout();
         }
     }
-    
+
     @Override
     public void init(){
         this.init(null);
@@ -235,6 +236,16 @@ public class Window extends QMainWindow implements IForm {
             }
         }
         return null;
+    }
+
+    @Override
+    public IForm getParentForm() {
+        return parentForm;
+    }
+
+    @Override
+    public void setParentForm(IForm parentForm) {
+        this.parentForm = parentForm;
     }
 
     /* SIGNALS */

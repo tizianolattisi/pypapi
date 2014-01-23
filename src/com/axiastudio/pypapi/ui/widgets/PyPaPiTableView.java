@@ -202,6 +202,7 @@ public class PyPaPiTableView extends QTableView{
                 }
             }
             IForm parent = (IForm) Util.findParentForm(this);
+            form.setParentForm(parent);
             // when the form's data is changed, get the parent's data dirty
             form.getContext().getModel().dataChanged.connect(this, "refreshInfoEntity()");
             form.getContext().getModel().dataChanged.connect(parent.getContext().getModel().dataChanged);

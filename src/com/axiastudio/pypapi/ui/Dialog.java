@@ -41,6 +41,7 @@ public class Dialog extends QDialog implements IForm {
     private HashMap<String, QObject> widgets;
     private List<Column> columns;
     private List<Column> entities;
+    private IForm parentForm=null;
 
     
     public Dialog(String uiFile, Class entityClass) {
@@ -94,7 +95,7 @@ public class Dialog extends QDialog implements IForm {
         }
         this.setWindowTitle(dialog.windowTitle());
     }
-        
+
     @Override
     public void init() {
         this.init(null);
@@ -157,8 +158,18 @@ public class Dialog extends QDialog implements IForm {
     public HashMap<String, QObject> getWidgets() {
         return widgets;
     }
-    
-    
+
+    @Override
+    public IForm getParentForm() {
+        return parentForm;
+    }
+
+    @Override
+    public void setParentForm(IForm parentForm) {
+        this.parentForm = parentForm;
+    }
+
+
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();

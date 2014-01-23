@@ -55,4 +55,8 @@ public interface IForm {
     
     public String windowTitle();
 
+    public IForm getParentForm();
+
+    public void setParentForm(IForm parentForm);
+
 }
