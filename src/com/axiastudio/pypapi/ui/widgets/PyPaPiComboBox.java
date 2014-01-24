@@ -30,7 +30,7 @@ import com.trolltech.qt.gui.QWidget;
 public class PyPaPiComboBox extends QComboBox {
     
     private Store lookupStore;
-    private static final String ND = "n.d."; 
+    public static final String ND = "n.d.";
 
     public PyPaPiComboBox(QWidget qw) {
         super(qw);
@@ -72,7 +72,14 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     public Object getCurrentEntity() {
+        if( this.currentIndex() == -1 ){
+            return null;
+        }
         return this.lookupStore.get(this.currentIndex());
+    }
+
+    public String getCurrentText() {
+        return this.itemText(this.currentIndex());
     }
     
     private void tryToSelect(int i){
