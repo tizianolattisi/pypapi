@@ -233,9 +233,9 @@ public final class Context extends QObject {
         }
     }
 
-    public void updateElement(Object entity) {
-        this.model.replaceEntity(this.mapper.currentIndex(), entity);
-        this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+    public void updateElement(Object entity, Integer row) {
+        this.model.replaceEntity(row, entity);
+        this.mapper.currentIndexChanged.emit(row);
         this.isDirty = true;
     }
 
