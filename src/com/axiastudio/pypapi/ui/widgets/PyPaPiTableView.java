@@ -20,15 +20,13 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
 import com.axiastudio.pypapi.db.IController;
+import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -246,7 +244,7 @@ public class PyPaPiTableView extends QTableView{
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
         Object reference = Register.queryRelation(this, "reference");
         if ( reference != null ){
-            String name = (String) reference;
+            //String name = (String) reference;
             String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
             
@@ -382,7 +380,7 @@ public class PyPaPiTableView extends QTableView{
 class QuickInsertFilter extends QObject {
     
     private PyPaPiTableView tableView;
-    
+
     public QuickInsertFilter(PyPaPiTableView tableView){
         super();
         this.tableView = tableView;
@@ -402,7 +400,7 @@ class QuickInsertFilter extends QObject {
         }
         return false;
     }
-    
+
     private void insert(String idx) {
         ITableModel model = (ITableModel) this.tableView.model();
         Class rootClass = model.getContextHandle().getRootClass();
@@ -413,9 +411,36 @@ class QuickInsertFilter extends QObject {
             String name = (String) referenceName;
             String className = Resolver.entityClassFromReference(collectionClass, (String) referenceName).getName();
             Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
+
+            // prendo i filtri dalla dynamic property
+            Map<Column, Object> filters = (Map) Register.queryRelation(this.tableView, "filters");
+            Map<Column, Object> newFilters = new HashMap<Column, Object>();
+
+            // converto "true", "false" e setto il CellEditorType
+            for(Column column: filters.keySet() ){
+                Object value = filters.get(column);
+                if( value instanceof String ){
+                    // Differential strategy
+                    String stringValue = (String) value;
+                    if( "true".equals(stringValue) ){
+                        column.setEditorType(CellEditorType.BOOLEAN);
+                        newFilters.put(column, true);
+                    } else if( "false".equals(stringValue) ){
+                        column.setEditorType(CellEditorType.BOOLEAN);
+                        newFilters.put(column, false);
+                    }
+                } else {
+                    column.setEditorType(CellEditorType.STRING);
+                    newFilters.put(column, value);
+                }
+            }
+
+            // mi faccio dare la lista "bianca"
+            Store whiteList = controller.createCriteriaStore(newFilters);
+
             try{
                 Object entity = controller.get(Long.parseLong(idx));
-                if( entity != null ){
+                if( entity != null && whiteList.contains(entity) ){
                     List selection = new ArrayList();
                     selection.add(entity);
                     this.tableView.actionAdd(selection);
@@ -425,5 +450,5 @@ class QuickInsertFilter extends QObject {
             }
         }
     }
-    
+
 }
