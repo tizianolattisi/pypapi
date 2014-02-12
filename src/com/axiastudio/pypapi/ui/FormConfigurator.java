@@ -126,24 +126,27 @@ public class FormConfigurator {
             }
             if (child.getClass().equals(PyPaPiComboBox.class)){
                 Method storeFactory = (Method) Register.queryUtility(IStoreFactory.class, column.getName());
-                Store lookupStore=null;
-                if( storeFactory != null ){
-                    try {
-                        lookupStore = (Store) storeFactory.invoke(this.form);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InvocationTargetException ex) {
-                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                Boolean skipInitStoreProperty = (Boolean) child.property("skipinitialstore");
+                Store lookupStore= new Store(new ArrayList());
+                if ( skipInitStoreProperty==null || !skipInitStoreProperty ) {
+                    if( storeFactory != null ){
+                        try {
+                            lookupStore = (Store) storeFactory.invoke(this.form);
+                        } catch (IllegalAccessException ex) {
+                            Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IllegalArgumentException ex) {
+                            Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InvocationTargetException ex) {
+                            Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
+                        Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
+                        if( controller == null ){
+                            Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, "Unable to get controller for {0}", entityClassFromReference.getName());
+                        }
+                        lookupStore = controller.createFullStore();
                     }
-                } else {
-                    Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
-                    Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
-                    if( controller == null ){
-                        Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, "Unable to get controller for {0}", entityClassFromReference.getName());
-                    }
-                    lookupStore = controller.createFullStore();
                 }
                 column.setLookupStore(lookupStore);
                 // is not null?
