@@ -415,32 +415,34 @@ class QuickInsertFilter extends QObject {
             // prendo i filtri dalla dynamic property
             Map<Column, Object> filters = (Map) Register.queryRelation(this.tableView, "filters");
             Map<Column, Object> newFilters = new HashMap<Column, Object>();
+            Store whiteList = new Store(new ArrayList());
 
             // converto "true", "false" e setto il CellEditorType
-            for(Column column: filters.keySet() ){
-                Object value = filters.get(column);
-                if( value instanceof String ){
-                    // Differential strategy
-                    String stringValue = (String) value;
-                    if( "true".equals(stringValue) ){
-                        column.setEditorType(CellEditorType.BOOLEAN);
-                        newFilters.put(column, true);
-                    } else if( "false".equals(stringValue) ){
-                        column.setEditorType(CellEditorType.BOOLEAN);
-                        newFilters.put(column, false);
+            if ( filters != null ) {
+                for(Column column: filters.keySet() ){
+                    Object value = filters.get(column);
+                    if( value instanceof String ){
+                        // Differential strategy
+                        String stringValue = (String) value;
+                        if( "true".equals(stringValue) ){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                            newFilters.put(column, true);
+                        } else if( "false".equals(stringValue) ){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                            newFilters.put(column, false);
+                        }
+                    } else {
+                        column.setEditorType(CellEditorType.STRING);
+                        newFilters.put(column, value);
                     }
-                } else {
-                    column.setEditorType(CellEditorType.STRING);
-                    newFilters.put(column, value);
                 }
+                // mi faccio dare la lista "bianca"
+                whiteList = controller.createCriteriaStore(newFilters);
             }
-
-            // mi faccio dare la lista "bianca"
-            Store whiteList = controller.createCriteriaStore(newFilters);
 
             try{
                 Object entity = controller.get(Long.parseLong(idx));
-                if( entity != null && whiteList.contains(entity) ){
+                if( entity != null && (filters == null || whiteList.contains(entity)) ){
                     List selection = new ArrayList();
                     selection.add(entity);
                     this.tableView.actionAdd(selection);
