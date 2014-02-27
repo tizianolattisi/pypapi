@@ -366,6 +366,19 @@ public class PyPaPiTableView extends QTableView{
         this.readOnly = readOnly;
     }
 
+    @Override
+    public void setModel(QAbstractItemModel model) {
+        if( getReadOnly() ){
+            if( model instanceof ProxyModel ){
+                model = ((ProxyModel) model).sourceModel();
+            }
+            if( model instanceof TableModel ){
+                ((TableModel) model).setEditable(false);
+            }
+        }
+        super.setModel(model);
+    }
+
     /* SIGNALS */
     
     public Signal1<Object> entityInserted = new Signal1<Object>();
