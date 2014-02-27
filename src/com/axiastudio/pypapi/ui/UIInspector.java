@@ -22,16 +22,8 @@ import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
-import com.trolltech.qt.gui.QCheckBox;
-import com.trolltech.qt.gui.QComboBox;
-import com.trolltech.qt.gui.QDateTimeEdit;
-import com.trolltech.qt.gui.QHeaderView;
-import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QLineEdit;
-import com.trolltech.qt.gui.QMainWindow;
-import com.trolltech.qt.gui.QSpinBox;
-import com.trolltech.qt.gui.QTextEdit;
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,7 +152,9 @@ public class UIInspector {
                             column.setEditorType(CellEditorType.BOOLEAN);
                         } else if(QSpinBox.class.isInstance(child)){
                             column.setEditorType(CellEditorType.LONG); // XXX: and INTEGER?
-                        } else if(QDateTimeEdit.class.isInstance(child)){
+                        }  else if(QDoubleSpinBox.class.isInstance(child)){
+                            column.setEditorType(CellEditorType.DOUBLE);
+                        }else if(QDateTimeEdit.class.isInstance(child)){
                             column.setEditorType(CellEditorType.DATE);
                         } else if(QComboBox.class.isInstance(child)){
                             column.setEditorType(CellEditorType.CHOICE);
