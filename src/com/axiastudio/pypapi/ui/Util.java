@@ -21,6 +21,7 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
+import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
@@ -279,11 +280,18 @@ public class Util {
         } else if( widget instanceof QComboBox || widget instanceof QCheckBox ||
                    widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
                    widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
-            ((QWidget) widget).setEnabled(!readOnly);
+            widget.setEnabled(!readOnly);
         } else if( widget instanceof PyPaPiTableView ){
             ((PyPaPiTableView) widget).setReadOnly(readOnly);
-            if( ((PyPaPiTableView) widget).model() != null ){
-                ((ITableModel) ((PyPaPiTableView) widget).model()).setEditable(!readOnly);
+            QAbstractItemModel model = ((PyPaPiTableView) widget).model();
+            if( model != null ){
+                if( model instanceof ProxyModel ){
+                    model = ((ProxyModel) model).sourceModel();
+                }
+                if( model instanceof TableModel ){
+                    ((TableModel) model).setEditable(false);
+                }
+                ((ITableModel) model).setEditable(!readOnly);
             }
         }
 
