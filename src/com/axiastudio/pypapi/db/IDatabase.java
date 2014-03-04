@@ -26,4 +26,5 @@ import java.util.Map;
 public interface IDatabase {
     void open(String persistenceUnit);
     void open(String persistenceUnit, Map properties);
+    Controller createController(Class klass);
 }

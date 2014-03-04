@@ -18,12 +18,8 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
-import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.db.IStoreFactory;
-import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.db.*;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiComboBox;
-import com.axiastudio.pypapi.ui.widgets.PyPaPiEntityPicker;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QObject;
@@ -120,10 +116,6 @@ public class FormConfigurator {
                 Object put = widgets.put(entityPropertyName, child);
             }
 
-            // XXX: implements ILookable?
-            if (child.getClass().equals(PyPaPiEntityPicker.class)){
-                ((PyPaPiEntityPicker) child).setBindColumn(column);
-            }
             if (child.getClass().equals(PyPaPiComboBox.class)){
                 Method storeFactory = (Method) Register.queryUtility(IStoreFactory.class, column.getName());
                 Boolean skipInitStoreProperty = (Boolean) child.property("skipinitialstore");
@@ -141,7 +133,8 @@ public class FormConfigurator {
                         }
                     } else {
                         Class entityClassFromReference = Resolver.entityClassFromReference(this.entityClass, column.getName());
-                        Controller controller = (Controller) Register.queryUtility(IController.class, entityClassFromReference.getName());
+                        Database db = (Database) Register.queryUtility(IDatabase.class);
+                        Controller controller = db.createController(entityClassFromReference);
                         if( controller == null ){
                             Logger.getLogger(FormConfigurator.class.getName()).log(Level.SEVERE, "Unable to get controller for {0}", entityClassFromReference.getName());
                         }

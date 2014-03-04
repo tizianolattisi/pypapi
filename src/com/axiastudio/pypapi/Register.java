@@ -402,8 +402,6 @@ public class Register {
         } else {
             UIInspector inspector = new UIInspector(factory, factory.getName());
         }
-        Controller controller = new Controller(emf, factory);
-        Register.registerUtility(controller, IController.class, factory.getName());
         Register.registerUtility(formClass, IForm.class, factory.getName());
         Register.registerUtility(factory, IFactory.class, factory.getName());
         Register.registerUtility(ui, IUIFile.class, factory.getName());

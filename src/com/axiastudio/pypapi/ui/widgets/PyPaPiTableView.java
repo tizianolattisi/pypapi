@@ -18,9 +18,7 @@ package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
-import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.db.*;
 import com.axiastudio.pypapi.ui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
@@ -124,7 +122,8 @@ public class PyPaPiTableView extends QTableView{
         this.refreshButtons();
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
     }
-    
+
+    /*
     @Override
     protected void enterEvent(QEvent event){
         if( !this.refreshConnected ){
@@ -140,7 +139,7 @@ public class PyPaPiTableView extends QTableView{
     protected void leaveEvent(QEvent event){
             this.verticalHeader().hide();
             this.toolBar.hide();
-    }
+    }*/
 
     
     private void refreshButtons(){
@@ -244,10 +243,10 @@ public class PyPaPiTableView extends QTableView{
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
         Object reference = Register.queryRelation(this, "reference");
         if ( reference != null ){
-            //String name = (String) reference;
-            String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
-            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
-            
+            Class referenceClass = Resolver.entityClassFromReference(collectionClass, (String) reference);
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(referenceClass);
+
             int res=1;
             if( selection == null ){
                 // Selection from PickerDialog
@@ -418,12 +417,12 @@ class QuickInsertFilter extends QObject {
         ITableModel model = (ITableModel) this.tableView.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.tableView.property("entity");
-        String referenceName = (String) Register.queryRelation(this.tableView, "reference");
+        String reference = (String) Register.queryRelation(this.tableView, "reference");
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
-        if ( referenceName != null ){
-            String name = (String) referenceName;
-            String className = Resolver.entityClassFromReference(collectionClass, (String) referenceName).getName();
-            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
+        if ( reference != null ){
+            Class referenceClass = Resolver.entityClassFromReference(collectionClass, (String) reference);
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(referenceClass);
 
             // prendo i filtri dalla dynamic property
             Map<Column, Object> filters = (Map) Register.queryRelation(this.tableView, "filters");

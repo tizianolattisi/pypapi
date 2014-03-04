@@ -61,5 +61,12 @@ public class Database implements IDatabase {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    @Override
+    public Controller createController(Class klass) {
+        Database db = (Database) Register.queryUtility(IDatabase.class);
+        Controller controller = new Controller(db.getEntityManagerFactory().createEntityManager(), klass);
+        return controller;
+
+    }
 }

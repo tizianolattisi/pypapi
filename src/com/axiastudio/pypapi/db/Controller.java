@@ -52,24 +52,16 @@ import javax.persistence.criteria.Root;
 public class Controller implements IController {
     
     private Class entityClass;
-    private EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager=null;
+    private EntityManager entityManager;
 
     
-    public Controller(EntityManagerFactory emf){
-        this(emf, null);
-    }
-    
-    public Controller(EntityManagerFactory emf, Class entityClass){
-        this.entityClass = entityClass;
-        this.entityManagerFactory = emf;
+    public Controller(EntityManager em, Class klass){
+        entityClass = klass;
+        entityManager = em;
     }
 
     public EntityManager getEntityManager() {
-        if( this.entityManager == null ){
-            this.entityManager = this.entityManagerFactory.createEntityManager();
-        }
-        return this.entityManager;
+        return entityManager;
     }
     
     @Override

@@ -18,9 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
-import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IController;
-import com.axiastudio.pypapi.db.Store;
+import com.axiastudio.pypapi.db.*;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
@@ -59,7 +57,8 @@ class EntitySelectorUtility {
     }
     
     public Object select(){
-        Controller controller = (Controller) Register.queryUtility(IController.class, this.klass.getName(), true);
+        Database db = (Database) Register.queryUtility(IDatabase.class);
+        Controller controller = db.createController(klass);
         PickerDialog pd = new PickerDialog(this.parent, controller);
         int res = pd.exec();
         Object entity = null;
