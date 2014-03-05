@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.Qt;
+
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 

@@ -18,10 +18,14 @@ package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
-import com.axiastudio.pypapi.db.*;
+import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.Database;
+import com.axiastudio.pypapi.db.IDatabase;
+import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;

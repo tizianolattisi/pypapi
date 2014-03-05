@@ -24,7 +24,6 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
 import com.trolltech.qt.gui.QWidget;
 
-import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

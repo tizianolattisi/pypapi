@@ -23,6 +23,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemFlags;
 import com.trolltech.qt.core.Qt.Orientation;
 import com.trolltech.qt.gui.QAbstractTableModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

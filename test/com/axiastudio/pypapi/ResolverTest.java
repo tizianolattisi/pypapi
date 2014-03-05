@@ -17,11 +17,12 @@
 package com.axiastudio.pypapi;
 
 import com.axiastudio.pypapi.annotations.Adapter;
+import org.junit.*;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.*;
 
 
 /**

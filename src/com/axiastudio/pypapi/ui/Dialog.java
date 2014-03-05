@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;

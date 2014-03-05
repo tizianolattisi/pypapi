@@ -18,23 +18,20 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
-import com.axiastudio.pypapi.db.*;
+import com.axiastudio.pypapi.db.Controller;
+import com.axiastudio.pypapi.db.Database;
+import com.axiastudio.pypapi.db.IDatabase;
+import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.GroupLayout;
 
 
 

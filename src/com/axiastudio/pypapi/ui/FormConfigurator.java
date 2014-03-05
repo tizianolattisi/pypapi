@@ -27,6 +27,7 @@ import com.trolltech.qt.core.QRegExp;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.SortOrder;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

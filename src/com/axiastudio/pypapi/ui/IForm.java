@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.QObject;
+
 import java.util.HashMap;
 import java.util.List;
 

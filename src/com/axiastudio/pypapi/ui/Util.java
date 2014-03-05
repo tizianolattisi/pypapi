@@ -25,9 +25,10 @@ import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
+import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
-import com.trolltech.qt.gui.*;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

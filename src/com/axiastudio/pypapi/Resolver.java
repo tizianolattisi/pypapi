@@ -17,8 +17,9 @@
 package com.axiastudio.pypapi;
 
 import com.axiastudio.pypapi.annotations.Adapter;
-import com.axiastudio.pypapi.annotations.Private;
 import com.axiastudio.pypapi.annotations.Callback;
+import com.axiastudio.pypapi.annotations.Private;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
