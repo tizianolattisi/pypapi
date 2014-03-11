@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -253,19 +254,30 @@ public class Util {
                 } catch (InvocationTargetException ex) {
                     Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if( String.class == returnType ){
-                    row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
-                } else if( Boolean.class == returnType ) {
-                    Boolean b = (Boolean) value;
-                    row += "," + b.toString().toUpperCase();
-                } else if( returnType.isEnum() ) {
-                    row += ",\"" + value.toString() + "\"";
-                } else if( Date.class == returnType ) {
-                    row += ",\"" + value.toString() + "\"";
-                } else if( Serializable.class.isAssignableFrom(returnType) ) {
-                    row += ",\"" + value.toString() + "\"";
+                if (value == null ) {
+                    if  (String.class == returnType || returnType.isEnum() || Date.class == returnType ||
+                                    Serializable.class.isAssignableFrom(returnType)) {
+                        row += ",\"\"";
+                    } else {
+                        row += ",";
+                    }
                 } else {
-                    row += "," + value.toString();
+                    if( String.class == returnType ){
+                        row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
+                    } else if( Boolean.class == returnType ) {
+                        Boolean b = (Boolean) value;
+                        row += "," + b.toString().toUpperCase();
+                    } else if( returnType.isEnum() ) {
+                        row += ",\"" + value.toString() + "\"";
+                    } else if( Date.class == returnType ) {
+                        SimpleDateFormat sdf = new SimpleDateFormat();
+                        sdf.applyPattern("yyyy-MM-dd");
+                        row += ",\"" + sdf.format(value) + "\"";
+                    } else if( Serializable.class.isAssignableFrom(returnType) ) {
+                        row += ",\"" + value.toString() + "\"";
+                    } else {
+                        row += "," + value.toString();
+                    }
                 }
             }
             out += "\n" + row.substring(1);
