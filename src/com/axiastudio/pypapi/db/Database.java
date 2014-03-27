@@ -65,8 +65,7 @@ public class Database implements IDatabase {
 
     @Override
     public Controller createController(Class klass) {
-        Database db = (Database) Register.queryUtility(IDatabase.class);
-        Controller controller = new Controller(db.getEntityManagerFactory().createEntityManager(), klass);
+        Controller controller = new Controller(getEntityManagerFactory().createEntityManager(), klass);
         return controller;
 
     }
