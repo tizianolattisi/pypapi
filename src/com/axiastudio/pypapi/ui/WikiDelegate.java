@@ -18,13 +18,8 @@ package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.QRectF;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QFont;
-import com.trolltech.qt.gui.QItemDelegate;
-import com.trolltech.qt.gui.QPainter;
-import com.trolltech.qt.gui.QStyleOptionViewItem;
-import com.trolltech.qt.gui.QTableView;
+import com.trolltech.qt.gui.*;
 
 /**
  *

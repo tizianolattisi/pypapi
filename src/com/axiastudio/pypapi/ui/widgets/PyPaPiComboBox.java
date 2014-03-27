@@ -30,7 +30,7 @@ import com.trolltech.qt.gui.QWidget;
 public class PyPaPiComboBox extends QComboBox {
     
     private Store lookupStore;
-    private static final String ND = "n.d."; 
+    public static final String ND = "n.d.";
 
     public PyPaPiComboBox(QWidget qw) {
         super(qw);
@@ -42,11 +42,17 @@ public class PyPaPiComboBox extends QComboBox {
         this(null);
     }
 
+    public Store getLookupStore() {
+        return lookupStore;
+    }
+
     public void setLookupStore(Store lookupStore) {
         this.setLookupStore(lookupStore, Boolean.FALSE);
     }
 
     public void setLookupStore(Store lookupStore, Boolean notnull) {
+        this.clear();
+
         this.lookupStore = lookupStore;
         if( !notnull ){
             this.lookupStore.add(null);
@@ -63,6 +69,17 @@ public class PyPaPiComboBox extends QComboBox {
         this.editTextChanged.connect(this, "tryToSelect(String)");
         this.currentIndexChanged.connect(this, "tryToSelect(int)");
         this.activatedIndex.connect(this, "tryToSelect(int)");
+    }
+
+    public Object getCurrentEntity() {
+        if( this.currentIndex() == -1 ){
+            return null;
+        }
+        return this.lookupStore.get(this.currentIndex());
+    }
+
+    public String getCurrentText() {
+        return this.itemText(this.currentIndex());
     }
     
     private void tryToSelect(int i){

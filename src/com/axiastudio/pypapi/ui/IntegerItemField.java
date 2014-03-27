@@ -17,6 +17,7 @@
 package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.Qt;
+
 import java.lang.reflect.Method;
 
 /**
@@ -44,7 +45,12 @@ public class IntegerItemField extends ItemField {
     
     @Override
     public boolean setEdit(Object objValue) {
-        Integer i = (Integer) objValue;
+        Integer i;
+        if( objValue instanceof String ){
+            i = Integer.getInteger((String) objValue);
+        } else {
+            i = (Integer) objValue;
+        }
         return this.set(i);
     }
     

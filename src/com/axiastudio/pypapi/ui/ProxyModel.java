@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.gui.QSortFilterProxyModel;
+
 import java.util.List;
 
 /**

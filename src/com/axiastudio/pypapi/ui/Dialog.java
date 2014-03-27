@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,6 +42,7 @@ public class Dialog extends QDialog implements IForm {
     private HashMap<String, QObject> widgets;
     private List<Column> columns;
     private List<Column> entities;
+    private IForm parentForm=null;
 
     
     public Dialog(String uiFile, Class entityClass) {
@@ -79,10 +81,10 @@ public class Dialog extends QDialog implements IForm {
             }
             if( box != null ){
                 box.addStretch();
-                QToolButton buttonCancel = new QToolButton(this);
-                buttonCancel.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
-                buttonCancel.clicked.connect(this, "reject()");
-                box.addWidget(buttonCancel);
+                //QToolButton buttonCancel = new QToolButton(this);
+                //buttonCancel.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/cancel.png"));
+                //buttonCancel.clicked.connect(this, "reject()");
+                //box.addWidget(buttonCancel);
                 QToolButton buttonAccept = new QToolButton();
                 buttonAccept.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/accept.png"));
                 buttonAccept.clicked.connect(this, "accept()");
@@ -94,7 +96,7 @@ public class Dialog extends QDialog implements IForm {
         }
         this.setWindowTitle(dialog.windowTitle());
     }
-        
+
     @Override
     public void init() {
         this.init(null);
@@ -139,6 +141,16 @@ public class Dialog extends QDialog implements IForm {
     }
 
     @Override
+    public Column getColumn(String columnName) {
+        for( Column column: getColumns() ){
+            if( column.getName().equals(columnName) ){
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public List<Column> getEntities() {
         return entities;
     }
@@ -147,8 +159,18 @@ public class Dialog extends QDialog implements IForm {
     public HashMap<String, QObject> getWidgets() {
         return widgets;
     }
-    
-    
+
+    @Override
+    public IForm getParentForm() {
+        return parentForm;
+    }
+
+    @Override
+    public void setParentForm(IForm parentForm) {
+        this.parentForm = parentForm;
+    }
+
+
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();

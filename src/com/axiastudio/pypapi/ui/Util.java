@@ -21,16 +21,19 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.IFactory;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
+import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QTemporaryFile;
+import com.trolltech.qt.gui.*;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.QMessageBox.StandardButton;
-import com.trolltech.qt.gui.*;
+
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -231,6 +234,8 @@ public class Util {
         for( Column column: columns ){
             Method method = Resolver.getterFromFieldName(entityClass, column.getName());
             methods.add(method);
+            // Headers
+            out += "\"" + column.getLabel() + "\",";
         }
         if( methods.size() == 0 ){
             return null;
@@ -249,19 +254,30 @@ public class Util {
                 } catch (InvocationTargetException ex) {
                     Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if( String.class == returnType ){
-                    row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
-                } else if( Boolean.class == returnType ) {
-                    Boolean b = (Boolean) value;
-                    row += b.toString().toUpperCase();
-                } else if( returnType.isEnum() ) {
-                    row += ",\"" + value.toString() + "\"";
-                } else if( Date.class == returnType ) {
-                    row += ",\"" + value.toString() + "\"";
-                } else if( Serializable.class.isAssignableFrom(returnType) ) {
-                    row += ",\"" + value.toString() + "\"";
+                if (value == null ) {
+                    if  (String.class == returnType || returnType.isEnum() || Date.class == returnType ||
+                                    Serializable.class.isAssignableFrom(returnType)) {
+                        row += ",\"\"";
+                    } else {
+                        row += ",";
+                    }
                 } else {
-                    row += "," + value.toString();
+                    if( String.class == returnType ){
+                        row += ",\"" + value.toString().replaceAll("\"", "\"\"") + "\"";
+                    } else if( Boolean.class == returnType ) {
+                        Boolean b = (Boolean) value;
+                        row += "," + b.toString().toUpperCase();
+                    } else if( returnType.isEnum() ) {
+                        row += ",\"" + value.toString() + "\"";
+                    } else if( Date.class == returnType ) {
+                        SimpleDateFormat sdf = new SimpleDateFormat();
+                        sdf.applyPattern("yyyy-MM-dd");
+                        row += ",\"" + sdf.format(value) + "\"";
+                    } else if( Serializable.class.isAssignableFrom(returnType) ) {
+                        row += ",\"" + value.toString() + "\"";
+                    } else {
+                        row += "," + value.toString();
+                    }
                 }
             }
             out += "\n" + row.substring(1);
@@ -277,11 +293,18 @@ public class Util {
         } else if( widget instanceof QComboBox || widget instanceof QCheckBox ||
                    widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
                    widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
-            ((QWidget) widget).setEnabled(!readOnly);
+            widget.setEnabled(!readOnly);
         } else if( widget instanceof PyPaPiTableView ){
             ((PyPaPiTableView) widget).setReadOnly(readOnly);
-            if( ((PyPaPiTableView) widget).model() != null ){
-                ((ITableModel) ((PyPaPiTableView) widget).model()).setEditable(!readOnly);
+            QAbstractItemModel model = ((PyPaPiTableView) widget).model();
+            if( model != null ){
+                if( model instanceof ProxyModel ){
+                    model = ((ProxyModel) model).sourceModel();
+                }
+                if( model instanceof TableModel ){
+                    ((TableModel) model).setEditable(false);
+                }
+                ((ITableModel) model).setEditable(!readOnly);
             }
         }
 

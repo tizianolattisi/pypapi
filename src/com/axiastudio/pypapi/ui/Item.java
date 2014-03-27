@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
 import com.trolltech.qt.core.Qt;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;

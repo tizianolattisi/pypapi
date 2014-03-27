@@ -20,6 +20,7 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Store;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemFlags;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;

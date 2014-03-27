@@ -29,6 +29,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class Window extends QMainWindow implements IForm {
     private List<Column> columns;
     private List<Column> entities;
     private PyPaPiNavigationBar navigationBar;
+    private IForm parentForm=null;
 
     public Window(String uiFile, Class entityClass) {
         this(uiFile, entityClass, "");
@@ -72,7 +74,7 @@ public class Window extends QMainWindow implements IForm {
             this.autoLayout();
         }
     }
-    
+
     @Override
     public void init(){
         this.init(null);
@@ -226,7 +228,27 @@ public class Window extends QMainWindow implements IForm {
     public void setContext(Context context) {
         this.context = context;
     }
-    
+
+    @Override
+    public Column getColumn(String columnName) {
+        for( Column column: getColumns() ){
+            if( column.getName().equals(columnName) ){
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public IForm getParentForm() {
+        return parentForm;
+    }
+
+    @Override
+    public void setParentForm(IForm parentForm) {
+        this.parentForm = parentForm;
+    }
+
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();

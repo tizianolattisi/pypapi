@@ -19,24 +19,19 @@ package com.axiastudio.pypapi.ui;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IController;
+import com.axiastudio.pypapi.db.Database;
+import com.axiastudio.pypapi.db.IDatabase;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiDateEdit;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.CheckState;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.GroupLayout;
 
 
 
@@ -59,7 +54,8 @@ class EntitySelectorUtility {
     }
     
     public Object select(){
-        Controller controller = (Controller) Register.queryUtility(IController.class, this.klass.getName(), true);
+        Database db = (Database) Register.queryUtility(IDatabase.class);
+        Controller controller = db.createController(klass);
         PickerDialog pd = new PickerDialog(this.parent, controller);
         int res = pd.exec();
         Object entity = null;
@@ -97,11 +93,12 @@ public class PickerDialog extends QDialog {
             + "image: none;"
             + "}";
 
-    private List selection = new ArrayList();;
+    private List selection = new ArrayList();
     private QTableView tableView;
     private QItemSelectionModel selectionModel;
     private QLineEdit filterLineEdit;
     private QLabel searchLogLabel;
+    private QLabel totRecordLabel;
     private Store store;
     private Controller controller;
     private QVBoxLayout layout;
@@ -144,14 +141,19 @@ public class PickerDialog extends QDialog {
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
         this.tableView.setSortingEnabled(true);
+        refreshResizeMode();
+        this.setStyleSheet(this.STYLE);
+    }
+
+    private void refreshResizeMode() {
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         for( int i=0; i<behavior.getSearchColumns().size(); i++ ){
             Column c = behavior.getSearchColumns().get(i);
             this.tableView.horizontalHeader().setResizeMode(i, QHeaderView.ResizeMode.resolve(c.getResizeModeValue()));
         }
-        this.setStyleSheet(this.STYLE);
     }
 
-    
+
     @Override
     public void accept() {
         this.disposeAll();
@@ -189,6 +191,7 @@ public class PickerDialog extends QDialog {
         this.filterLineEdit.textChanged.connect(this, "applyFilter(String)");
         QLabel filterLabel = new QLabel();
         filterLabel.setPixmap(new QPixmap("classpath:com/axiastudio/pypapi/ui/resources/toolbar/filter.png"));
+        this.totRecordLabel = new QLabel();
         this.searchLogLabel = new QLabel();
         this.buttonSearch = new QToolButton(this);
         this.buttonSearch.setIcon(new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/find.png"));
@@ -220,6 +223,10 @@ public class PickerDialog extends QDialog {
         QSpacerItem spacer = new QSpacerItem(20, 20, QSizePolicy.Policy.Expanding,
                 QSizePolicy.Policy.Minimum);
         buttonLayout.addItem(spacer);
+        buttonLayout.addWidget(totRecordLabel);
+        QSpacerItem spacer1 = new QSpacerItem(20, 20, QSizePolicy.Policy.Expanding,
+                QSizePolicy.Policy.Minimum);
+        buttonLayout.addItem(spacer1);
         buttonLayout.addWidget(new QLabel("max"));
         buttonLayout.addWidget(this.comboBoxLimit);
         buttonLayout.addWidget(this.buttonSearch);
@@ -329,12 +336,19 @@ public class PickerDialog extends QDialog {
                 dateEdit.setDate(dateEdit.minimumDate());
                 hbox.addWidget(dateEdit);
                 QComboBox comboBox1 = new QComboBox();
+                comboBox1.addItem("-6");
+                comboBox1.addItem("-5");
+                comboBox1.addItem("-4");
+                comboBox1.addItem("-3");
+                comboBox1.addItem("-2");
+                comboBox1.addItem("-1");
                 comboBox1.addItem("1");
                 comboBox1.addItem("2");
                 comboBox1.addItem("3");
                 comboBox1.addItem("4");
                 comboBox1.addItem("5");
                 comboBox1.addItem("6");
+                comboBox1.setCurrentIndex(6);
                 hbox.addWidget(comboBox1);
                 QComboBox comboBox2 = new QComboBox();
                 comboBox2.addItem(tr("DAYS"));
@@ -442,7 +456,8 @@ public class PickerDialog extends QDialog {
                     QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
                     QDate date = dateEdit.date();
                     if( !date.equals(dateEdit.minimumDate()) ){
-                        Integer n = comboBox1.currentIndex() + 1;
+//                        Integer n = comboBox1.currentIndex() + 1;
+                        Integer n = Integer.parseInt(comboBox1.currentText());
                         Integer idx = comboBox2.currentIndex();
                         Integer days = null;
                         if( idx == 0 ) {
@@ -484,6 +499,7 @@ public class PickerDialog extends QDialog {
             }
             supersetStore = this.controller.createCriteriaStore(criteriaMap, limit);
         }
+        this.store = supersetStore;
         TableModel model = new TableModel(supersetStore, columns);
         model.setEditable(false);
         ProxyModel proxy = new ProxyModel();
@@ -502,13 +518,28 @@ public class PickerDialog extends QDialog {
         this.tableView.setSelectionModel(this.selectionModel);
         this.selectionModel.selectionChanged.connect(this,
                 "selectRows(QItemSelection, QItemSelection)");
+        refreshResizeMode();
+        this.selection.clear();
         this.buttonQuickInsert.setEnabled(true);
+        this.buttonExport.setEnabled(true);
+        this.totRecordLabel.setText(" Tot record: " + String.valueOf(supersetStore.size()));
     }
     
     public final void export(){
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.controller.getClassName());
         List<Column> columns = behavior.getExports();
-        String content = Util.exportToCvs(this.selection, columns, this.controller.getEntityClass());
+/*        if (this.selection.size() == 0){
+            this.tableView.selectAll();
+        }
+  forse troppo lento se ci sono tanti record...  */
+
+        List exportList = new ArrayList();
+        if (this.selection.size() == 0){
+            exportList = this.store;
+        } else {
+            exportList = this.selection;
+        }
+        String content = Util.exportToCvs(exportList, columns, this.controller.getEntityClass());
         if( content == null ){
             QMessageBox.information(this, tr("EXPORT_ERROR"), tr("EXPORT_ERROR_MESSAGE"));
             return;
@@ -600,7 +631,7 @@ public class PickerDialog extends QDialog {
         }
         Boolean isSelection = this.selection.size()>0;
         this.buttonAccept.setEnabled(isSelection);
-        this.buttonExport.setEnabled(isSelection);
+//        this.buttonExport.setEnabled(isSelection);
     }
     
     public List getSelection() {

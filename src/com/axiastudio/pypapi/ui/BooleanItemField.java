@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemFlags;
+
 import java.lang.reflect.Method;
 
 /**

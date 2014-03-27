@@ -17,8 +17,9 @@
 package com.axiastudio.pypapi.ui;
 
 import com.trolltech.qt.core.QDate;
-import com.trolltech.qt.core.QTime;
 import com.trolltech.qt.core.QDateTime;
+import com.trolltech.qt.core.QTime;
+
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;

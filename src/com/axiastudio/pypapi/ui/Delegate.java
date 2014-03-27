@@ -16,14 +16,9 @@
  */
 package com.axiastudio.pypapi.ui;
 
-import com.trolltech.qt.core.QAbstractItemModel;
-import com.trolltech.qt.core.QDate;
-import com.trolltech.qt.core.QDateTime;
-import com.trolltech.qt.core.QModelIndex;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.gui.*;
-import java.math.BigDecimal;
 
 /**
  *

@@ -17,11 +17,12 @@
 package com.axiastudio.pypapi.db;
 
 import com.axiastudio.pypapi.Register;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 
 /**
@@ -61,5 +62,11 @@ public class Database implements IDatabase {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    @Override
+    public Controller createController(Class klass) {
+        Controller controller = new Controller(getEntityManagerFactory().createEntityManager(), klass);
+        return controller;
+
+    }
 }

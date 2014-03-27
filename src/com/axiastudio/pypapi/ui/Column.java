@@ -18,6 +18,7 @@ package com.axiastudio.pypapi.ui;
 
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Store;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;

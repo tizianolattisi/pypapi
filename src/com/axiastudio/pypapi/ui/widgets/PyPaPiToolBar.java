@@ -17,12 +17,12 @@
 package com.axiastudio.pypapi.ui.widgets;
 
 import com.axiastudio.pypapi.ui.Window;
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QKeySequence.StandardKey;
 import com.trolltech.qt.gui.QToolBar;
+
 import java.util.HashMap;
 import java.util.Map;
 

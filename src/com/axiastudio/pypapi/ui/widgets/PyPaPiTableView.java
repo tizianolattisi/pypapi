@@ -19,16 +19,16 @@ package com.axiastudio.pypapi.ui.widgets;
 import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.db.Controller;
-import com.axiastudio.pypapi.db.IController;
+import com.axiastudio.pypapi.db.Database;
+import com.axiastudio.pypapi.db.IDatabase;
+import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.ui.*;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +52,7 @@ public class PyPaPiTableView extends QTableView{
     private Boolean refreshConnected=false;
     private Boolean readOnly=false;
     private QLineEdit lineEditQuickInsert = new QLineEdit();
+    private Object infoEntity=null;
 
     public PyPaPiTableView(){
         this(null);
@@ -125,7 +126,8 @@ public class PyPaPiTableView extends QTableView{
         this.refreshButtons();
         QAction action = this.menuPopup.exec(this.mapToGlobal(point));
     }
-    
+
+    /*
     @Override
     protected void enterEvent(QEvent event){
         if( !this.refreshConnected ){
@@ -141,7 +143,7 @@ public class PyPaPiTableView extends QTableView{
     protected void leaveEvent(QEvent event){
             this.verticalHeader().hide();
             this.toolBar.hide();
-    }
+    }*/
 
     
     private void refreshButtons(){
@@ -187,8 +189,8 @@ public class PyPaPiTableView extends QTableView{
             if( this.model() instanceof ProxyModel ){ 
                 idx = ((ProxyModel) this.model()).mapToSource(idx);
             }
-            Object entity = model.getEntityByRow(idx.row());
-            IForm form = Util.formFromEntity(entity);
+            infoEntity = model.getEntityByRow(idx.row());
+            IForm form = Util.formFromEntity(infoEntity);
             if( form == null ){
                 return;
             }
@@ -201,10 +203,19 @@ public class PyPaPiTableView extends QTableView{
                 }
             }
             IForm parent = (IForm) Util.findParentForm(this);
+            form.setParentForm(parent);
             // when the form's data is changed, get the parent's data dirty
+            form.getContext().getModel().dataChanged.connect(this, "refreshInfoEntity()");
             form.getContext().getModel().dataChanged.connect(parent.getContext().getModel().dataChanged);
             form.show();
         }
+    }
+
+    private void refreshInfoEntity(){
+        int row = this.selectionModel().selectedRows().get(0).row();
+        ITableModel model = (ITableModel) model();
+        model.getContextHandle().updateElement(infoEntity, row);
+        entityUpdated.emit(infoEntity);
     }
     
     private void actionDel(){
@@ -236,10 +247,10 @@ public class PyPaPiTableView extends QTableView{
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
         Object reference = Register.queryRelation(this, "reference");
         if ( reference != null ){
-            String name = (String) reference;
-            String className = Resolver.entityClassFromReference(collectionClass, (String) reference).getName();
-            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
-            
+            Class referenceClass = Resolver.entityClassFromReference(collectionClass, (String) reference);
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(referenceClass);
+
             int res=1;
             if( selection == null ){
                 // Selection from PickerDialog
@@ -357,12 +368,27 @@ public class PyPaPiTableView extends QTableView{
     public void setReadOnly(Boolean readOnly) {
         this.readOnly = readOnly;
     }
-    
+
+    @Override
+    public void setModel(QAbstractItemModel model) {
+        if( getReadOnly() ){
+            if( model instanceof ProxyModel ){
+                model = ((ProxyModel) model).sourceModel();
+            }
+            if( model instanceof TableModel ){
+                ((TableModel) model).setEditable(false);
+            }
+        }
+        super.setModel(model);
+    }
+
     /* SIGNALS */
     
     public Signal1<Object> entityInserted = new Signal1<Object>();
     
     public Signal1<Object> entityRemoved = new Signal1<Object>();
+
+    public Signal1<Object> entityUpdated = new Signal1<Object>();
 
 }
 
@@ -370,7 +396,7 @@ public class PyPaPiTableView extends QTableView{
 class QuickInsertFilter extends QObject {
     
     private PyPaPiTableView tableView;
-    
+
     public QuickInsertFilter(PyPaPiTableView tableView){
         super();
         this.tableView = tableView;
@@ -390,20 +416,49 @@ class QuickInsertFilter extends QObject {
         }
         return false;
     }
-    
+
     private void insert(String idx) {
         ITableModel model = (ITableModel) this.tableView.model();
         Class rootClass = model.getContextHandle().getRootClass();
         String entityName = (String) this.tableView.property("entity");
-        String referenceName = (String) Register.queryRelation(this.tableView, "reference");
+        String reference = (String) Register.queryRelation(this.tableView, "reference");
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
-        if ( referenceName != null ){
-            String name = (String) referenceName;
-            String className = Resolver.entityClassFromReference(collectionClass, (String) referenceName).getName();
-            Controller controller = (Controller) Register.queryUtility(IController.class, className, true);
+        if ( reference != null ){
+            Class referenceClass = Resolver.entityClassFromReference(collectionClass, (String) reference);
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(referenceClass);
+
+            // prendo i filtri dalla dynamic property
+            Map<Column, Object> filters = (Map) Register.queryRelation(this.tableView, "filters");
+            Map<Column, Object> newFilters = new HashMap<Column, Object>();
+            Store whiteList = new Store(new ArrayList());
+
+            // converto "true", "false" e setto il CellEditorType
+            if ( filters != null ) {
+                for(Column column: filters.keySet() ){
+                    Object value = filters.get(column);
+                    if( value instanceof String ){
+                        // Differential strategy
+                        String stringValue = (String) value;
+                        if( "true".equals(stringValue) ){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                            newFilters.put(column, true);
+                        } else if( "false".equals(stringValue) ){
+                            column.setEditorType(CellEditorType.BOOLEAN);
+                            newFilters.put(column, false);
+                        }
+                    } else {
+                        column.setEditorType(CellEditorType.STRING);
+                        newFilters.put(column, value);
+                    }
+                }
+                // mi faccio dare la lista "bianca"
+                whiteList = controller.createCriteriaStore(newFilters);
+            }
+
             try{
                 Object entity = controller.get(Long.parseLong(idx));
-                if( entity != null ){
+                if( entity != null && (filters == null || whiteList.contains(entity)) ){
                     List selection = new ArrayList();
                     selection.add(entity);
                     this.tableView.actionAdd(selection);
@@ -413,5 +468,5 @@ class QuickInsertFilter extends QObject {
             }
         }
     }
-    
+
 }

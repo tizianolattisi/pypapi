@@ -18,6 +18,7 @@ package com.axiastudio.pypapi;
 
 import com.trolltech.qt.core.QTranslator;
 import com.trolltech.qt.gui.QApplication;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -23,6 +23,7 @@ import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
 import com.trolltech.qt.gui.QWidget;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public final class Context extends QObject {
     private Context primaryDc;
     private IForm parent;
 
+    Controller controller;
+
     public Context(IForm parent, Class rootClass, String name, List columns){
         this(parent, rootClass, name, columns, null);
     }
@@ -58,6 +61,7 @@ public final class Context extends QObject {
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
+        initializeController(store);
 
         this.model = this.createModel(store);
         this.mapper = new QDataWidgetMapper(this.parent());
@@ -73,6 +77,22 @@ public final class Context extends QObject {
 
     public Class getRootClass() {
         return rootClass;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    private void initializeController(Store store) {
+        Database db = (Database) Register.queryUtility(IDatabase.class);
+        controller = db.createController(rootClass);
+        if( store != null ){
+            for( Object obj: store ){
+                if( obj.hashCode() != 0 ){
+                    controller.getEntityManager().merge(obj);
+                }
+            }
+        }
     }
 
     private void initializeContext(){
@@ -97,8 +117,6 @@ public final class Context extends QObject {
 
         /* resolve entity class */
         if(".".equals(this.name)){
-            //Database db = (Database) Register.queryUtility(IDatabase.class);
-            Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
             if( store == null ){
                 store = controller.createFullStore();
             }
@@ -215,8 +233,7 @@ public final class Context extends QObject {
 
     public void deleteElement(){
         QModelIndex idx=null;
-        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.delete(this.primaryDc.currentEntity);
+        controller.delete(this.primaryDc.currentEntity);
         int row = this.mapper.currentIndex();
         if( this.mapper.model().rowCount() > 1 ){
             if( !this.atBof ){
@@ -233,9 +250,15 @@ public final class Context extends QObject {
         }
     }
 
+    public void updateElement(Object entity, Integer row) {
+        this.model.replaceEntity(row, entity);
+        this.mapper.currentIndexChanged.emit(row);
+        this.isDirty = true;
+    }
+
+
     public void commitChanges(){
-        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        Validation val = c.commit(this.primaryDc.currentEntity);
+        Validation val = controller.commit(this.primaryDc.currentEntity);
         if( val.getResponse() == false ){
             Util.warningBox((QWidget) this.parent, "Error", val.getMessage());
             this.refreshElement();
@@ -262,8 +285,7 @@ public final class Context extends QObject {
     }
     
     public void refreshElement(){
-        Controller c = (Controller) Register.queryUtility(IController.class, this.primaryDc.currentEntity.getClass().getName());
-        c.refresh(this.primaryDc.currentEntity);
+        controller.refresh(this.primaryDc.currentEntity);
         this.model.refresh(this.primaryDc.currentEntity);
         this.isDirty = false;
         this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
@@ -271,7 +293,6 @@ public final class Context extends QObject {
     }
     
     public void search(){
-        Controller controller = (Controller) Register.queryUtility(IController.class, this.rootClass.getName());
         PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
         int res = pd.exec();
         if ( res == 1 ){
@@ -311,5 +332,5 @@ public final class Context extends QObject {
     public Boolean getIsDirty() {
         return isDirty;
     }
-    
+
 }

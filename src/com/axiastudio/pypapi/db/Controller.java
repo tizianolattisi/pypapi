@@ -21,28 +21,17 @@ import com.axiastudio.pypapi.Resolver;
 import com.axiastudio.pypapi.annotations.CallbackType;
 import com.axiastudio.pypapi.ui.CellEditorType;
 import com.axiastudio.pypapi.ui.Column;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 
 /**
@@ -52,24 +41,16 @@ import javax.persistence.criteria.Root;
 public class Controller implements IController {
     
     private Class entityClass;
-    private EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager=null;
+    private EntityManager entityManager;
 
     
-    public Controller(EntityManagerFactory emf){
-        this(emf, null);
-    }
-    
-    public Controller(EntityManagerFactory emf, Class entityClass){
-        this.entityClass = entityClass;
-        this.entityManagerFactory = emf;
+    public Controller(EntityManager em, Class klass){
+        entityClass = klass;
+        entityManager = em;
     }
 
     public EntityManager getEntityManager() {
-        if( this.entityManager == null ){
-            this.entityManager = this.entityManagerFactory.createEntityManager();
-        }
-        return this.entityManager;
+        return entityManager;
     }
     
     @Override
@@ -135,8 +116,13 @@ public class Controller implements IController {
                 gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
                 Integer d = (Integer) values.get(1);
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
-                predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
+                if ( d>=0 ) {
+                    predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
                         cb.lessThan(path, gcEnd.getTime()));
+                } else {
+                    predicate = cb.and(cb.greaterThanOrEqualTo(path, gcEnd.getTime()),
+                            cb.lessThan(path, gcStart.getTime()));
+                }
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP)){
                 Object value = criteria.get(column);
                 predicate = cb.equal(path, value);
@@ -232,14 +218,18 @@ public class Controller implements IController {
                         }
                         for (Iterator it = collection.iterator(); it.hasNext();) {
                             Object orphan = it.next();
-                            try {
-                                parentSetter.invoke(orphan, entity);
-                            } catch (IllegalAccessException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-                                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                            if( orphan != null ){
+                                try {
+                                    parentSetter.invoke(orphan, entity);
+                                } catch (IllegalAccessException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (IllegalArgumentException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (InvocationTargetException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (NullPointerException ex) {
+                                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
                         }
                     }
