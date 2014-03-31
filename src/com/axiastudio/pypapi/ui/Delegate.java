@@ -20,6 +20,10 @@ import com.trolltech.qt.core.*;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.gui.*;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
@@ -112,9 +116,16 @@ public class Delegate extends QItemDelegate {
     
     @Override
     public void paint(QPainter painter, QStyleOptionViewItem option, QModelIndex index) {
-        Column column = ((TableModel) index.model()).getColumns().get(index.column()); 
+        /*
+        TableModel model=null;
+        if( index.model() instanceof ProxyModel ){
+            model = (TableModel) ((ProxyModel) index.model()).sourceModel();
+        } else {
+            model = (TableModel) index.model();
+        }*/
+        ITableModel model = (ITableModel) index.model();
+        Column column = model.getColumns().get(index.column());
         if( column.getEditorType() == CellEditorType.DATE ){
-            QAbstractItemModel model = index.model();
             Object data = model.data(index, Qt.ItemDataRole.DisplayRole);
             String out=null;
             if( data instanceof QDate ){
@@ -140,7 +151,18 @@ public class Delegate extends QItemDelegate {
                 flags.set(Qt.AlignmentFlag.AlignCenter);
                 painter.drawText(option.rect(), flags.value(), out);
             }
-        } else {
+        } else if( column.getEditorType() == CellEditorType.DECIMAL ){
+            BigDecimal data = new BigDecimal((Float) model.data(index, Qt.ItemDataRole.DisplayRole));
+            NumberFormat itFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+            itFormat.setMinimumFractionDigits(2);
+            itFormat.setMaximumFractionDigits(2);
+            String out = itFormat.format(data.doubleValue());
+            Alignment flags = Qt.AlignmentFlag.createQFlags();
+            flags.set(Qt.AlignmentFlag.AlignVCenter);
+            flags.set(Qt.AlignmentFlag.AlignCenter);
+            painter.drawText(option.rect(), flags.value(), out);
+        }
+        else {
             super.paint(painter, option, index);
         }
     }
