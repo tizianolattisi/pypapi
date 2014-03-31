@@ -24,29 +24,29 @@ import java.lang.reflect.Method;
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
-public class IntegerItemField extends ItemField {
-    
-    public IntegerItemField(Column column, Object value, Method setterMethod,
-            Object entity){
+public class StringItemField extends ItemField {
+
+    public StringItemField(Column column, Object value, Method setterMethod,
+                           Object entity){
         super(column, value, setterMethod, entity);
     }
 
     @Override
-    public Integer getDisplay() {
-        Integer i = (Integer) this.get();
-        return i;
+    public String getDisplay() {
+        String s = (String) this.get();
+        return s;
     }
 
     @Override
-    public Integer getEdit(){
-        Integer i = (Integer) this.get();
-        return i;
+    public String getEdit(){
+        String s = (String) this.get();
+        return s;
     }
     
     @Override
     public boolean setEdit(Object objValue) {
-        Integer i = (Integer) objValue;
-        return this.set(i);
+        String s = (String) objValue;
+        return this.set(s);
     }
     
     @Override

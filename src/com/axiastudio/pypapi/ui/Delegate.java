@@ -152,11 +152,15 @@ public class Delegate extends QItemDelegate {
                 painter.drawText(option.rect(), flags.value(), out);
             }
         } else if( column.getEditorType() == CellEditorType.DECIMAL ){
-            BigDecimal data = new BigDecimal((Float) model.data(index, Qt.ItemDataRole.DisplayRole));
-            NumberFormat itFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            itFormat.setMinimumFractionDigits(2);
-            itFormat.setMaximumFractionDigits(2);
-            String out = itFormat.format(data.doubleValue());
+            Object o = model.data(index, Qt.ItemDataRole.DisplayRole);
+            String out = "";
+            if( o != null ) {
+                BigDecimal data = new BigDecimal((Double) o);
+                NumberFormat itFormat = NumberFormat.getCurrencyInstance(Locale.getDefault());
+                itFormat.setMinimumFractionDigits(2);
+                itFormat.setMaximumFractionDigits(2);
+                out = itFormat.format(data.doubleValue());
+            }
             Alignment flags = Qt.AlignmentFlag.createQFlags();
             flags.set(Qt.AlignmentFlag.AlignVCenter);
             flags.set(Qt.AlignmentFlag.AlignCenter);

@@ -79,7 +79,7 @@ public class Column {
         /* setter */
         Method setter = Resolver.setterFromFieldName(entity.getClass(), this.name, returnType);
         if( returnType == String.class ){
-            ItemField item = new ItemField(this, result, setter, entity);
+            StringItemField item = new StringItemField(this, result, setter, entity);
             this.editorType = CellEditorType.STRING;
             return item;
         } else if( returnType == Integer.class ){
