@@ -41,6 +41,9 @@ public class WikiDelegate extends QItemDelegate {
             flags.set(Qt.AlignmentFlag.AlignVCenter);
             flags.set(Qt.AlignmentFlag.AlignLeft);
             String out = (String) data;
+            if( out == null ){
+                out = "";
+            }
             if( out.startsWith("<del>") && out.endsWith("</del>")){
                 QFont font = painter.font();
                 font.setStrikeOut(true);
