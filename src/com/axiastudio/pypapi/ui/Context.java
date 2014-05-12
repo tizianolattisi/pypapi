@@ -47,6 +47,8 @@ public final class Context extends QObject {
     private Boolean isDirty;
     private Boolean atBof=true;
     private Boolean atEof=true;
+    private Boolean noDelete=false;
+    private Boolean readOnly =false;
     private Context primaryDc;
     private IForm parent;
 
@@ -331,6 +333,22 @@ public final class Context extends QObject {
 
     public Boolean getIsDirty() {
         return isDirty;
+    }
+
+    public Boolean getNoDelete() {
+        return noDelete;
+    }
+
+    public void setNoDelete(Boolean noDelete) {
+        this.noDelete = noDelete;
+    }
+
+    public Boolean getReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
 }

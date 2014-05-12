@@ -88,6 +88,8 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
         Boolean atBof = this.parentForm.getContext().getAtBof();
         Boolean atEof = this.parentForm.getContext().getAtEof();
         Boolean isDirty = this.parentForm.getContext().getIsDirty();
+        Boolean readOnbly = this.parentForm.getContext().getReadOnly();
+        Boolean noDelete = this.parentForm.getContext().getNoDelete();
         for (QAction action : this.actions()) {
             String objName = action.objectName();
             if ("firstElement".equals(objName)) {
@@ -99,15 +101,15 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
             } else if ("lastElement".equals(objName)) {
                 action.setEnabled(!isDirty && !atEof);
             } else if ("commitChanges".equals(objName)) {
-                action.setEnabled(isDirty);
+                action.setEnabled(isDirty && !readOnbly);
             } else if ("cancelChanges".equals(objName)) {
                 action.setEnabled(isDirty);
             } else if ("search".equals(objName)) {
                 action.setEnabled(!isDirty);
             } else if ("insertElement".equals(objName)) {
-                action.setEnabled(!isDirty);
+                action.setEnabled(!isDirty && !readOnbly);
             } else if ("deleteElement".equals(objName)) {
-                action.setEnabled(!isDirty);
+                action.setEnabled(!isDirty && !noDelete && !readOnbly);
             } else if ("refreshElement".equals(objName)) {
                 action.setEnabled(!isDirty);
             }
