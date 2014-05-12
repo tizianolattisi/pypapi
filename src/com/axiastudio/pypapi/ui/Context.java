@@ -261,7 +261,7 @@ public final class Context extends QObject {
         Validation val = controller.commit(this.primaryDc.currentEntity);
         if( val.getResponse() == false ){
             Util.warningBox((QWidget) this.parent, "Error", val.getMessage());
-            this.refreshElement();
+            //this.refreshElement();
         } else {
             this.isDirty = false;
             this.primaryDc.currentEntity = val.getEntity();

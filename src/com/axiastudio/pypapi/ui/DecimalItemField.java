@@ -32,9 +32,9 @@ public class DecimalItemField extends ItemField {
     }
     
     @Override
-    public Object getDisplay() {
+    public Double getDisplay() {
         BigDecimal d = (BigDecimal) this.get();
-        return d.floatValue();
+        return d.doubleValue();
     }
 
     @Override
