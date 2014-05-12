@@ -99,7 +99,7 @@ public class Window extends QMainWindow implements IForm {
         bar.refresh();
         storeInitialized.emit();
     }
-    
+
     private void loadUi(QFile uiFile){
         QMainWindow window = null;
         try {

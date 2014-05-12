@@ -42,6 +42,8 @@ public class EntityBehavior implements IEntityBehavior {
     private Integer sortOrder;
     private HashMap<String, String> joinCriteria;
     private HashMap<String, String> validators = new HashMap<String, String>();
+    private Boolean readOnly=false;
+    private Boolean noDelete=false;
     
     public EntityBehavior(String className){
         this.className = className;
@@ -162,5 +164,21 @@ public class EntityBehavior implements IEntityBehavior {
             }
         }
         return null;
+    }
+
+    public Boolean getReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public Boolean getNoDelete() {
+        return noDelete;
+    }
+
+    public void setNoDelete(Boolean noDelete) {
+        this.noDelete = noDelete;
     }
 }

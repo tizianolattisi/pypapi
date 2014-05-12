@@ -245,6 +245,10 @@ public class FormConfigurator {
         } else {
             dataContext = new Context(this.form, this.entityClass, path, contextColumns, store);
         }
+        // read-only and no-delete
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
+        dataContext.setNoDelete(behavior.getNoDelete());
+        dataContext.setReadOnly(behavior.getReadOnly());
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){
             QTableView qtv = (QTableView) this.form.getWidgets().get(path);
