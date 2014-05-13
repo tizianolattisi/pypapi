@@ -45,7 +45,12 @@ public class LongItemField extends ItemField {
     
     @Override
     public boolean setEdit(Object objValue) {
-        Long i = (Long) objValue;
+        Long i=null;
+        if( objValue instanceof Long ) {
+            i = (Long) objValue;
+        } else if( objValue instanceof Integer ) {
+            i = new Long((Integer) objValue);
+        }
         return this.set(i);
     }
     
