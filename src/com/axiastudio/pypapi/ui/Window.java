@@ -249,9 +249,16 @@ public class Window extends QMainWindow implements IForm {
         this.parentForm = parentForm;
     }
 
+    @Override
+    protected void showEvent(QShowEvent arg__1) {
+        super.showEvent(arg__1);
+        formShown.emit();
+    }
+
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();
+    public Signal0 formShown = new Signal0();
 
     
 }
