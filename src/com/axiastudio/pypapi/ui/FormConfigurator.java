@@ -248,6 +248,7 @@ public class FormConfigurator {
         // read-only and no-delete
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
         dataContext.setNoDelete(behavior.getNoDelete());
+        dataContext.setNoInsert(behavior.getNoInsert());
         dataContext.setReadOnly(behavior.getReadOnly());
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){

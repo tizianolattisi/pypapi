@@ -48,6 +48,7 @@ public final class Context extends QObject {
     private Boolean atBof=true;
     private Boolean atEof=true;
     private Boolean noDelete=false;
+    private Boolean noInsert=false;
     private Boolean readOnly =false;
     private Context primaryDc;
     private IForm parent;
@@ -351,4 +352,11 @@ public final class Context extends QObject {
         this.readOnly = readOnly;
     }
 
+    public Boolean getNoInsert() {
+        return noInsert;
+    }
+
+    public void setNoInsert(Boolean noInsert) {
+        this.noInsert = noInsert;
+    }
 }

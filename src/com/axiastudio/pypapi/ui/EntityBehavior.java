@@ -44,7 +44,8 @@ public class EntityBehavior implements IEntityBehavior {
     private HashMap<String, String> validators = new HashMap<String, String>();
     private Boolean readOnly=false;
     private Boolean noDelete=false;
-    
+    private Boolean noInsert=false;
+
     public EntityBehavior(String className){
         this.className = className;
     }
@@ -180,5 +181,13 @@ public class EntityBehavior implements IEntityBehavior {
 
     public void setNoDelete(Boolean noDelete) {
         this.noDelete = noDelete;
+    }
+
+    public Boolean getNoInsert() {
+        return noInsert;
+    }
+
+    public void setNoInsert(Boolean noInsert) {
+        this.noInsert = noInsert;
     }
 }
