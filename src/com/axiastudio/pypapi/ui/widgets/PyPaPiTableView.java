@@ -46,7 +46,7 @@ public class PyPaPiTableView extends QTableView{
     private final String STYLE="QTableView {"
             + "image: url(classpath:com/axiastudio/pypapi/ui/resources/cog.png);"
             + "image-position: right; border: 1px solid #999999; }";
-    private QAction actionAdd, actionDel, actionOpen, actionInfo, actionQuickInsert;
+    private QAction actionAdd, actionDel, actionOpen, actionInfo, actionQuickInsert, actionSaveRows;
     private QMenu menuPopup;
     private QToolBar toolBar;
     private Boolean refreshConnected=false;
@@ -119,6 +119,13 @@ public class PyPaPiTableView extends QTableView{
         this.toolBar.addAction(actionDel);
         this.actionDel.triggered.connect(this, "actionDel()");
 
+        this.actionSaveRows = new QAction(tr("SAVE_ROWS"), this);
+        QIcon iconSaveRows = new QIcon("classpath:com/axiastudio/pypapi/ui/resources/toolbar/disk.png");
+        this.actionSaveRows.setIcon(iconSaveRows);
+        this.menuPopup.addAction(actionSaveRows);
+        this.toolBar.addAction(actionSaveRows);
+        this.actionSaveRows.triggered.connect(this, "actionSaveRows()");
+
     }
     
 
@@ -147,14 +154,21 @@ public class PyPaPiTableView extends QTableView{
 
     
     private void refreshButtons(){
-        List<QModelIndex> rows = this.selectionModel().selectedRows();
+        List<QModelIndex> rows = selectionModel().selectedRows();
         Boolean selected = !rows.isEmpty();
         this.actionInfo.setEnabled(selected);
         this.actionOpen.setEnabled(selected);
-        this.actionDel.setEnabled(selected && !this.getReadOnly());
-        this.actionAdd.setEnabled(!this.getReadOnly());
-        String reference = (String) this.property("reference");
-        this.actionQuickInsert.setEnabled(!this.getReadOnly() && reference != null);
+        this.actionDel.setEnabled(selected && !getReadOnly());
+        this.actionAdd.setEnabled(!getReadOnly());
+        Boolean saverows = (Boolean) property("saverows");
+        if( saverows == null || !saverows ){
+            this.menuPopup.removeAction(this.actionSaveRows);
+            this.toolBar.removeAction(this.actionSaveRows);
+        } else {
+            this.actionSaveRows.setEnabled(!getReadOnly());
+        }
+        String reference = (String) property("reference");
+        this.actionQuickInsert.setEnabled(!getReadOnly() && reference != null);
 
     }
     
@@ -355,6 +369,31 @@ public class PyPaPiTableView extends QTableView{
         lineEditQuickInsert.installEventFilter(new QuickInsertFilter(this));
         lineEditQuickInsert.setWindowTitle("Ins. rapido...");
         lineEditQuickInsert.show();
+    }
+
+    private void actionSaveRows(){
+        Boolean res = Util.questionBox(this, tr("SAVE_ROWS_QUESTION"), tr("SAVE_ROWS_MESSAGE"));
+        if( !res ){
+            return;
+        }
+        ITableModel model = (ITableModel) this.model();
+        Object rootEntity = model.getContextHandle().getPrimaryContext().getCurrentEntity();
+        for( Integer row=0; row<model.rowCount(); row++ ){
+            Object entityByRow = model.getEntityByRow(row);
+            List<Method> setters = Resolver.settersFromEntityClass(entityByRow.getClass(), rootEntity.getClass());
+            if(setters.size()==1){
+                try {
+                    setters.get(0).invoke(entityByRow, rootEntity);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(entityByRow.getClass());
+            controller.commit(entityByRow);
+        }
     }
 
     public QLineEdit getLineEditQuickInsert() {
