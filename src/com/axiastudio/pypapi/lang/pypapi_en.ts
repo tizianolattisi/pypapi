@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>com.axiastudio.pypapi.ui.Context</name>
+    <message>
+        <location filename="../ui/Context.java" line="278"/>
+        <source>CANCEL_CHANGES_QUESTION</source>
+        <translation>Cancel changes</translation>
+    </message>
+    <message>
+        <location filename="../ui/Context.java" line="278"/>
+        <source>CANCEL_CHANGES_MESSAGE</source>
+        <translation>Do you want to cancel current changes?</translation>
+    </message>
+</context>
+<context>
     <name>com.axiastudio.pypapi.ui.PickerDialog</name>
     <message>
         <location filename="../ui/PickerDialog.java" line="178"/>

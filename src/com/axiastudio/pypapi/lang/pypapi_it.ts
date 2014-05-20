@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="it_IT">
 <context>
+    <name>com.axiastudio.pypapi.ui.Context</name>
+    <message>
+        <location filename="../ui/Context.java" line="278"/>
+        <source>CANCEL_CHANGES_QUESTION</source>
+        <translation>Annullamento modifiche</translation>
+    </message>
+    <message>
+        <location filename="../ui/Context.java" line="278"/>
+        <source>CANCEL_CHANGES_MESSAGE</source>
+        <translation>Vuoi eliminare le modifiche non salvate?</translation>
+    </message>
+</context>
+<context>
     <name>com.axiastudio.pypapi.ui.PickerDialog</name>
     <message>
         <location filename="../ui/PickerDialog.java" line="178"/>

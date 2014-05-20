@@ -275,15 +275,18 @@ public final class Context extends QObject {
     }
 
     public void cancelChanges(){
-        if( this.primaryDc.currentEntity.hashCode() == 0){
-            QModelIndex idx=null;
-            int row = this.mapper.currentIndex();
-            this.mapper.toPrevious();
-            this.model.removeRows(row, 1, idx);
-            this.isDirty = false;
-            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
-        } else {
-            this.refreshElement();
+        Boolean res = Util.questionBox((QWidget) this.parent, tr("CANCEL_CHANGES_QUESTION"), tr("CANCEL_CHANGES_MESSAGE"));
+        if( res ) {
+            if (this.primaryDc.currentEntity.hashCode() == 0) {
+                QModelIndex idx = null;
+                int row = this.mapper.currentIndex();
+                this.mapper.toPrevious(); // XXX: and if there's only one entity?
+                this.model.removeRows(row, 1, idx);
+                this.isDirty = false;
+                this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+            } else {
+                this.refreshElement();
+            }
         }
     }
     
