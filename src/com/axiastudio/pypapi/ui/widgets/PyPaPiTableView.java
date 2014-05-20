@@ -53,6 +53,7 @@ public class PyPaPiTableView extends QTableView{
     private Boolean readOnly=false;
     private QLineEdit lineEditQuickInsert = new QLineEdit();
     private Object infoEntity=null;
+    private List<Object> removed = new ArrayList<Object>();
 
     public PyPaPiTableView(){
         this(null);
@@ -247,6 +248,7 @@ public class PyPaPiTableView extends QTableView{
             Object toRemove = model.getEntityByRow(row);
             model.removeRows(row, 1, null);
             entityRemoved.emit(toRemove);
+            removed.add(toRemove);
         }
     }
     
@@ -378,6 +380,7 @@ public class PyPaPiTableView extends QTableView{
         }
         ITableModel model = (ITableModel) this.model();
         Object rootEntity = model.getContextHandle().getPrimaryContext().getCurrentEntity();
+        Database db = (Database) Register.queryUtility(IDatabase.class);
         for( Integer row=0; row<model.rowCount(); row++ ){
             Object entityByRow = model.getEntityByRow(row);
             List<Method> setters = Resolver.settersFromEntityClass(entityByRow.getClass(), rootEntity.getClass());
@@ -390,10 +393,14 @@ public class PyPaPiTableView extends QTableView{
                     e.printStackTrace();
                 }
             }
-            Database db = (Database) Register.queryUtility(IDatabase.class);
             Controller controller = db.createController(entityByRow.getClass());
             controller.commit(entityByRow);
         }
+        for( Object toDelete: removed){
+            Controller controller = db.createController(toDelete.getClass());
+            controller.delete(toDelete);
+        }
+        removed.clear();
     }
 
     public QLineEdit getLineEditQuickInsert() {
