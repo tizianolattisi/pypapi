@@ -22,6 +22,7 @@ import com.axiastudio.pypapi.db.*;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
+import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 
 import java.lang.reflect.InvocationTargetException;
@@ -280,9 +281,12 @@ public final class Context extends QObject {
             if (this.primaryDc.currentEntity.hashCode() == 0) {
                 QModelIndex idx = null;
                 int row = this.mapper.currentIndex();
-                this.mapper.toPrevious(); // XXX: and if there's only one entity?
+                this.mapper.toPrevious();
                 this.model.removeRows(row, 1, idx);
                 this.isDirty = false;
+                if( model.getStore().size() == 0 ){
+                    insertElement();
+                }
                 this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
             } else {
                 this.refreshElement();
