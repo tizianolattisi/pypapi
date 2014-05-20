@@ -359,4 +359,8 @@ public final class Context extends QObject {
     public void setNoInsert(Boolean noInsert) {
         this.noInsert = noInsert;
     }
+
+    public Context getPrimaryContext() {
+        return primaryDc;
+    }
 }
