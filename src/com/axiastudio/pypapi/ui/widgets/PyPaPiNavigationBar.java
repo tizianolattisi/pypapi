@@ -106,7 +106,8 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
             } else if ("cancelChanges".equals(objName)) {
                 action.setEnabled(isDirty);
             } else if ("search".equals(objName)) {
-                action.setEnabled(!isDirty);
+                //action.setEnabled(!isDirty);
+                action.setEnabled(true);
             } else if ("insertElement".equals(objName)) {
                 action.setEnabled(!isDirty && !readOnly && !noInsert);
             } else if ("deleteElement".equals(objName)) {

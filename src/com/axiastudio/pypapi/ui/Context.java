@@ -303,13 +303,20 @@ public final class Context extends QObject {
     }
     
     public void search(){
-        PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
-        int res = pd.exec();
-        if ( res == 1 ){
-            this.model.replaceRows(pd.getSelection());
-            this.firstElement();
+        Boolean doSearch=true;
+        if( isDirty ){
+            doSearch = Util.questionBox((QWidget) this.parent, tr("CANCEL_CHANGES_QUESTION"), tr("CANCEL_CHANGES_MESSAGE"));
         }
-        pd.dispose();
+        if( doSearch ) {
+            PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
+            int res = pd.exec();
+            if (res == 1) {
+                this.model.replaceRows(pd.getSelection());
+                isDirty = false;
+                this.firstElement();
+            }
+            pd.dispose();
+        }
     }
     
     public void getDirty(){
