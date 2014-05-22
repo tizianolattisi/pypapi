@@ -65,7 +65,7 @@ public final class Context extends QObject {
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
-        initializeController(store);
+        store = initializeController(store);
 
         this.model = this.createModel(store);
         this.mapper = new QDataWidgetMapper(this.parent());
@@ -87,16 +87,26 @@ public final class Context extends QObject {
         return controller;
     }
 
-    private void initializeController(Store store) {
+    private Store initializeController(Store store) {
         Database db = (Database) Register.queryUtility(IDatabase.class);
         controller = db.createController(rootClass);
         if( store != null ){
+            if( store.size() == 1 ){
+                Object entity = store.get(0);
+                Long id = controller.getId(entity);
+                if( id != null && !controller.getEntityManager().contains(entity) ) {
+                    Object newEntity = controller.get(id);
+                    store = new Store(new ArrayList());
+                    store.add(newEntity);
+                }
+            }
             for( Object obj: store ){
                 if( obj.hashCode() != 0 ){
                     controller.getEntityManager().merge(obj);
                 }
             }
         }
+        return store;
     }
 
     private void initializeContext(){
