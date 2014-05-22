@@ -4,12 +4,14 @@
 <context>
     <name>com.axiastudio.pypapi.ui.Context</name>
     <message>
-        <location filename="../ui/Context.java" line="278"/>
+        <location filename="../ui/Context.java" line="279"/>
+        <location filename="../ui/Context.java" line="308"/>
         <source>CANCEL_CHANGES_QUESTION</source>
         <translation>Cancel changes</translation>
     </message>
     <message>
-        <location filename="../ui/Context.java" line="278"/>
+        <location filename="../ui/Context.java" line="279"/>
+        <location filename="../ui/Context.java" line="308"/>
         <source>CANCEL_CHANGES_MESSAGE</source>
         <translation>Do you want to cancel current changes?</translation>
     </message>
@@ -88,6 +90,16 @@
         <location filename="../ui/Window.java" line="168"/>
         <source>DELETE_ELEMENT_REQUEST_DESCRIPTION</source>
         <translation>Do you want to delete the current element?</translation>
+    </message>
+    <message>
+        <location filename="../ui/Window.java" line="261"/>
+        <source>CLOSE_CONFIRM</source>
+        <translation>Confirmation of quit</translation>
+    </message>
+    <message>
+        <location filename="../ui/Window.java" line="261"/>
+        <source>CLOSE_CONFIRM_MESSAGE</source>
+        <translation>Do you want to quit?\n(unsaved data will be lost)</translation>
     </message>
 </context>
 <context>

@@ -250,12 +250,24 @@ public class Window extends QMainWindow implements IForm {
     }
 
     @Override
-    protected void showEvent(QShowEvent arg__1) {
-        super.showEvent(arg__1);
+    protected void showEvent(QShowEvent event) {
+        super.showEvent(event);
         formShown.emit();
     }
 
-    /* SIGNALS */
+    @Override
+    protected void closeEvent(QCloseEvent event) {
+        if( getContext().getIsDirty() ) {
+            Boolean res = Util.questionBox(this, tr("CLOSE_CONFIRM"), tr("CLOSE_CONFIRM_MESSAGE"));
+            //Boolean res = Util.questionBox(this, tr("Conferma chiusura"), "Vuoi procedere alla chiusura della finestra?\n(i dati non salvati verranno persi)");
+            if( !res ){
+                event.ignore();
+                return;
+            }
+        }
+        super.closeEvent(event);
+    }
+/* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();
     public Signal0 formShown = new Signal0();
