@@ -32,8 +32,6 @@ public interface IForm {
 
     void init(Store store);
 
-    void select(Long id);
-
     public void show();
     
     public Context getContext();

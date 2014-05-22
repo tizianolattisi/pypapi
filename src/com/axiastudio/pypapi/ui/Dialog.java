@@ -24,7 +24,6 @@ import com.trolltech.qt.designer.QUiLoader;
 import com.trolltech.qt.designer.QUiLoaderException;
 import com.trolltech.qt.gui.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -109,14 +108,6 @@ public class Dialog extends QDialog implements IForm {
         configurator.configure(store);
         this.getContext().getMapper().toFirst();
         storeInitialized.emit();
-    }
-
-    @Override
-    public void select(Long id) {
-        Object entity = getContext().getController().get(id);
-        List list = new ArrayList();
-        list.add(entity);
-        getContext().replaceStore(new Store(list));
     }
 
     @Override

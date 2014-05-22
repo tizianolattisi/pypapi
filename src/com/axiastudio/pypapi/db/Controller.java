@@ -347,8 +347,7 @@ public class Controller implements IController {
         return entity;
     }
 
-    @Override
-    public Long getId(Object entity){
+    private Long getId(Object entity){
         Long id=null;
         Method getId;
         try {

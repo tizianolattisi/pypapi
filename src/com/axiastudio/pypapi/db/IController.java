@@ -43,7 +43,5 @@ public interface IController {
     Object refresh(Object entity);
     
     Object get(Long id);
-
-    Long getId(Object entity);
-
+    
 }

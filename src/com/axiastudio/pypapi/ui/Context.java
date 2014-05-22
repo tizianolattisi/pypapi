@@ -318,12 +318,6 @@ public final class Context extends QObject {
             pd.dispose();
         }
     }
-
-    public void replaceStore(Store store){
-        this.model.replaceRows(store);
-        isDirty = false;
-        this.firstElement();
-    }
     
     public void getDirty(){
         int idx = this.mapper.currentIndex();

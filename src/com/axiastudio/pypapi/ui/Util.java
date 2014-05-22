@@ -46,12 +46,8 @@ import java.util.logging.Logger;
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
  */
 public class Util {
-
+    
     public static Window formFromName(String formName){
-        return formFromNameAndId(formName, null);
-    }
-
-    public static Window formFromNameAndId(String formName, Long id){
         Window form=null;
         Class<? extends Window> formClass = (Class) Register.queryUtility(IForm.class, formName);
         String uiFile = (String) Register.queryUtility(IUIFile.class, formName);
@@ -74,12 +70,7 @@ public class Util {
         } catch (SecurityException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if( id != null && id != 0){
-            form.init();
-            form.select(id);
-        } else {
-            form.init(); // XXX: full store
-        }
+        form.init(); // XXX: full store
         return form;
     }
     
