@@ -99,7 +99,7 @@
     <message>
         <location filename="../ui/Window.java" line="261"/>
         <source>CLOSE_CONFIRM_MESSAGE</source>
-        <translation>Vuoi procedere alla chiusura della finestra?\n(i dati non salvati verranno persi)</translation>
+        <translation type="unfinished">Vuoi procedere alla chiusura della finestra? (i dati non salvati verranno persi)</translation>
     </message>
 </context>
 <context>
