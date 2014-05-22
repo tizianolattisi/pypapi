@@ -99,7 +99,7 @@
     <message>
         <location filename="../ui/Window.java" line="261"/>
         <source>CLOSE_CONFIRM_MESSAGE</source>
-        <translation type="unfinished">Do you want to quit? (unsaved data will be lost)</translation>
+        <translation>Do you want to quit?\n(unsaved data will be lost)</translation>
     </message>
 </context>
 <context>
