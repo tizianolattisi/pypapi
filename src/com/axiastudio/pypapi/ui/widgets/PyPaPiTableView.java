@@ -185,7 +185,9 @@ public class PyPaPiTableView extends QTableView{
             if ( reference != null ){
                 entity = Resolver.entityFromReference(entity, (String) reference);
             }
-            IForm form = Util.formFromEntity(entity);
+            Database db = (Database) Register.queryUtility(IDatabase.class);
+            Controller controller = db.createController(entity.getClass());
+            IForm form = Util.formFromNameAndId(entity.getClass().getName(), controller.getId(entity));
             if( form == null ){
                 return;
             }

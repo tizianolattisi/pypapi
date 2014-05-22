@@ -32,6 +32,7 @@ import com.trolltech.qt.gui.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -73,6 +74,14 @@ public class Window extends QMainWindow implements IForm {
         } else {
             this.autoLayout();
         }
+    }
+
+    @Override
+    public void select(Long id) {
+        Object entity = getContext().getController().get(id);
+        List list = new ArrayList();
+        list.add(entity);
+        getContext().replaceStore(new Store(list));
     }
 
     @Override
@@ -259,7 +268,6 @@ public class Window extends QMainWindow implements IForm {
     protected void closeEvent(QCloseEvent event) {
         if( getContext().getIsDirty() ) {
             Boolean res = Util.questionBox(this, tr("CLOSE_CONFIRM"), tr("CLOSE_CONFIRM_MESSAGE"));
-            //Boolean res = Util.questionBox(this, tr("Conferma chiusura"), "Vuoi procedere alla chiusura della finestra?\n(i dati non salvati verranno persi)");
             if( !res ){
                 event.ignore();
                 return;
