@@ -56,9 +56,13 @@ public class FormConfigurator {
     }
 
     public void configure(Store store){
+        configure(store, false);
+    }
+
+    public void configure(Store store, Boolean newEm){
         this.resolveColumns();
         this.addValidators();
-        Context context = this.createContext(".", store);
+        Context context = this.createContext(".", store, newEm);
         this.form.setContext(context);
         this.addMappers();
         this.initModels();
@@ -229,10 +233,10 @@ public class FormConfigurator {
     }    
     
     private Context createContext(String path){
-        return this.createContext(path, null);
+        return this.createContext(path, null, false);
     }
 
-    private Context createContext(String path, Store store){
+    private Context createContext(String path, Store store, Boolean newEm){
         List contextColumns;
         Context dataContext;
         if(".".equals(path)){
@@ -243,7 +247,7 @@ public class FormConfigurator {
         if( store == null){
             dataContext = new Context(this.form, this.entityClass, path, contextColumns);
         } else {
-            dataContext = new Context(this.form, this.entityClass, path, contextColumns, store);
+            dataContext = new Context(this.form, this.entityClass, path, contextColumns, store, newEm);
         }
         // read-only and no-delete
         EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());

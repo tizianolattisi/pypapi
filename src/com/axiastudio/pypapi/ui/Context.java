@@ -57,15 +57,16 @@ public final class Context extends QObject {
     Controller controller;
 
     public Context(IForm parent, Class rootClass, String name, List columns){
-        this(parent, rootClass, name, columns, null);
+        this(parent, rootClass, name, columns, null, false);
     }
 
-    public Context(IForm parent, Class rootClass, String name, List columns, Store store){
+    public Context(IForm parent, Class rootClass, String name, List columns, Store store, Boolean newEm){
         //Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
-        store = initializeController(store);
+        
+        store = initializeController(store, newEm);
 
         this.model = this.createModel(store);
         this.mapper = new QDataWidgetMapper(this.parent());
@@ -87,11 +88,11 @@ public final class Context extends QObject {
         return controller;
     }
 
-    private Store initializeController(Store store) {
+    private Store initializeController(Store store, Boolean newEm) {
         Database db = (Database) Register.queryUtility(IDatabase.class);
         controller = db.createController(rootClass);
         if( store != null ){
-            if( store.size() == 1 ){
+            if( newEm ){
                 Object entity = store.get(0);
                 Long id = controller.getId(entity);
                 if( id != null && !controller.getEntityManager().contains(entity) ) {

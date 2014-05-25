@@ -83,7 +83,7 @@ public class Window extends QMainWindow implements IForm {
     @Override
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
-        configurator.configure(store);
+        configurator.configure(store, true);
         // standard navigation bar
         PyPaPiNavigationBar bar = new PyPaPiNavigationBar(tr("NAVIGATION"), this);
         bar.setMovable(true);

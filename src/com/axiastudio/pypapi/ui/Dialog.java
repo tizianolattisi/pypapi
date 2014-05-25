@@ -105,7 +105,7 @@ public class Dialog extends QDialog implements IForm {
     @Override
     public void init(Store store) {
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
-        configurator.configure(store);
+        configurator.configure(store, false);
         this.getContext().getMapper().toFirst();
         storeInitialized.emit();
     }
