@@ -128,6 +128,15 @@ public class PyPaPiTableView extends QTableView{
         this.actionSaveRows.triggered.connect(this, "actionSaveRows()");
 
     }
+
+    private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
+        ITableModel model = (ITableModel) this.model();
+        if( this.model() instanceof ProxyModel ){
+            topLeft = ((ProxyModel) this.model()).mapToSource(topLeft);
+        }
+        infoEntity = model.getEntityByRow(topLeft.row());
+        entityUpdated.emit(infoEntity);
+    }
     
 
     private void contextMenu(QPoint point){
@@ -425,6 +434,7 @@ public class PyPaPiTableView extends QTableView{
                 ((TableModel) model).setEditable(false);
             }
         }
+        model.dataChanged.connect(this, "modelDataChanged(QModelIndex, QModelIndex)");
         super.setModel(model);
     }
 
