@@ -153,7 +153,13 @@ public class FormConfigurator {
                 if ( nullableProperty != null){
                     notnull = (Boolean) nullableProperty;
                 }
-                ((PyPaPiComboBox) child).setLookupStore(lookupStore, notnull);
+                // is sorted by toString?
+                Boolean sortByToString = false;
+                Object sortedbytostringProperty = child.property("sortbytostring");
+                if ( sortedbytostringProperty != null){
+                    sortByToString = (Boolean) sortedbytostringProperty;
+                }
+                ((PyPaPiComboBox) child).setLookupStore(lookupStore, notnull, sortByToString);
             }
             // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
