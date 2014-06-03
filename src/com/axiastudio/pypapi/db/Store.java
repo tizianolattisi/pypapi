@@ -151,5 +151,18 @@ public class Store<T> implements List {
     public List subList(int i, int i1) {
         return this.list.subList(i, i1);
     }
+
+    /*
+     *  Order by toString()
+     */
+    public void sortByToString(){
+
+        Collections.sort(this, new Comparator<Object>() {
+            public int compare(Object o1, Object o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+
+    }
     
 }

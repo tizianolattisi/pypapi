@@ -56,9 +56,13 @@ public class FormConfigurator {
     }
 
     public void configure(Store store){
+        configure(store, false);
+    }
+
+    public void configure(Store store, Boolean newEm){
         this.resolveColumns();
         this.addValidators();
-        Context context = this.createContext(".", store);
+        Context context = this.createContext(".", store, newEm);
         this.form.setContext(context);
         this.addMappers();
         this.initModels();
@@ -149,7 +153,13 @@ public class FormConfigurator {
                 if ( nullableProperty != null){
                     notnull = (Boolean) nullableProperty;
                 }
-                ((PyPaPiComboBox) child).setLookupStore(lookupStore, notnull);
+                // is sorted by toString?
+                Boolean sortByToString = false;
+                Object sortedbytostringProperty = child.property("sortbytostring");
+                if ( sortedbytostringProperty != null){
+                    sortByToString = (Boolean) sortedbytostringProperty;
+                }
+                ((PyPaPiComboBox) child).setLookupStore(lookupStore, notnull, sortByToString);
             }
             // columns and reference for list value widget
             if (child.getClass().equals(PyPaPiTableView.class)){
@@ -229,10 +239,10 @@ public class FormConfigurator {
     }    
     
     private Context createContext(String path){
-        return this.createContext(path, null);
+        return this.createContext(path, null, false);
     }
 
-    private Context createContext(String path, Store store){
+    private Context createContext(String path, Store store, Boolean newEm){
         List contextColumns;
         Context dataContext;
         if(".".equals(path)){
@@ -243,8 +253,13 @@ public class FormConfigurator {
         if( store == null){
             dataContext = new Context(this.form, this.entityClass, path, contextColumns);
         } else {
-            dataContext = new Context(this.form, this.entityClass, path, contextColumns, store);
+            dataContext = new Context(this.form, this.entityClass, path, contextColumns, store, newEm);
         }
+        // read-only and no-delete
+        EntityBehavior behavior = (EntityBehavior) Register.queryUtility(IEntityBehavior.class, this.entityClass.getName());
+        dataContext.setNoDelete(behavior.getNoDelete());
+        dataContext.setNoInsert(behavior.getNoInsert());
+        dataContext.setReadOnly(behavior.getReadOnly());
         Register.registerRelation(dataContext, this.form, path);
         if(! ".".equals(path)){
             QTableView qtv = (QTableView) this.form.getWidgets().get(path);

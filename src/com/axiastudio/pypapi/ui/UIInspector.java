@@ -208,6 +208,15 @@ public class UIInspector {
                 }
             }
         }
+        if( win.property("readonly") != null ){
+            behavior.setReadOnly((Boolean) win.property("readonly"));
+        }
+        if( win.property("nodelete") != null ){
+            behavior.setNoDelete((Boolean) win.property("nodelete"));
+        }
+        if( win.property("noinsert") != null ){
+            behavior.setNoInsert((Boolean) win.property("nodelete"));
+        }
         Object sortOrderProperty = win.property("sortorder");
         if( sortOrderProperty != null ){
             String sortOrder = (String) sortOrderProperty;

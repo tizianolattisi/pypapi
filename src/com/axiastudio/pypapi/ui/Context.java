@@ -22,6 +22,7 @@ import com.axiastudio.pypapi.db.*;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
+import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,21 +48,25 @@ public final class Context extends QObject {
     private Boolean isDirty;
     private Boolean atBof=true;
     private Boolean atEof=true;
+    private Boolean noDelete=false;
+    private Boolean noInsert=false;
+    private Boolean readOnly =false;
     private Context primaryDc;
     private IForm parent;
 
     Controller controller;
 
     public Context(IForm parent, Class rootClass, String name, List columns){
-        this(parent, rootClass, name, columns, null);
+        this(parent, rootClass, name, columns, null, false);
     }
 
-    public Context(IForm parent, Class rootClass, String name, List columns, Store store){
+    public Context(IForm parent, Class rootClass, String name, List columns, Store store, Boolean newEm){
         //Logger.getLogger(Context.class.getName()).log(Level.INFO, "Create {0} context", rootClass.toString()+name);
         this.parent = parent;
         this.rootClass = rootClass;
         this.name = name;
-        initializeController(store);
+        
+        store = initializeController(store, newEm);
 
         this.model = this.createModel(store);
         this.mapper = new QDataWidgetMapper(this.parent());
@@ -83,16 +88,26 @@ public final class Context extends QObject {
         return controller;
     }
 
-    private void initializeController(Store store) {
+    private Store initializeController(Store store, Boolean newEm) {
         Database db = (Database) Register.queryUtility(IDatabase.class);
         controller = db.createController(rootClass);
         if( store != null ){
+            if( newEm ){
+                Object entity = store.get(0);
+                Long id = controller.getId(entity);
+                if( id != null && !controller.getEntityManager().contains(entity) ) {
+                    Object newEntity = controller.get(id);
+                    store = new Store(new ArrayList());
+                    store.add(newEntity);
+                }
+            }
             for( Object obj: store ){
                 if( obj.hashCode() != 0 ){
                     controller.getEntityManager().merge(obj);
                 }
             }
         }
+        return store;
     }
 
     private void initializeContext(){
@@ -272,15 +287,21 @@ public final class Context extends QObject {
     }
 
     public void cancelChanges(){
-        if( this.primaryDc.currentEntity.hashCode() == 0){
-            QModelIndex idx=null;
-            int row = this.mapper.currentIndex();
-            this.mapper.toPrevious();
-            this.model.removeRows(row, 1, idx);
-            this.isDirty = false;
-            this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
-        } else {
-            this.refreshElement();
+        Boolean res = Util.questionBox((QWidget) this.parent, tr("CANCEL_CHANGES_QUESTION"), tr("CANCEL_CHANGES_MESSAGE"));
+        if( res ) {
+            if (this.primaryDc.currentEntity.hashCode() == 0) {
+                QModelIndex idx = null;
+                int row = this.mapper.currentIndex();
+                this.mapper.toPrevious();
+                this.model.removeRows(row, 1, idx);
+                this.isDirty = false;
+                if( model.getStore().size() == 0 ){
+                    insertElement();
+                }
+                this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
+            } else {
+                this.refreshElement();
+            }
         }
     }
     
@@ -293,13 +314,20 @@ public final class Context extends QObject {
     }
     
     public void search(){
-        PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
-        int res = pd.exec();
-        if ( res == 1 ){
-            this.model.replaceRows(pd.getSelection());
-            this.firstElement();
+        Boolean doSearch=true;
+        if( isDirty ){
+            doSearch = Util.questionBox((QWidget) this.parent, tr("CANCEL_CHANGES_QUESTION"), tr("CANCEL_CHANGES_MESSAGE"));
         }
-        pd.dispose();
+        if( doSearch ) {
+            PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
+            int res = pd.exec();
+            if (res == 1) {
+                this.model.replaceRows(pd.getSelection());
+                isDirty = false;
+                this.firstElement();
+            }
+            pd.dispose();
+        }
     }
     
     public void getDirty(){
@@ -333,4 +361,31 @@ public final class Context extends QObject {
         return isDirty;
     }
 
+    public Boolean getNoDelete() {
+        return noDelete;
+    }
+
+    public void setNoDelete(Boolean noDelete) {
+        this.noDelete = noDelete;
+    }
+
+    public Boolean getReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(Boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public Boolean getNoInsert() {
+        return noInsert;
+    }
+
+    public void setNoInsert(Boolean noInsert) {
+        this.noInsert = noInsert;
+    }
+
+    public Context getPrimaryContext() {
+        return primaryDc;
+    }
 }

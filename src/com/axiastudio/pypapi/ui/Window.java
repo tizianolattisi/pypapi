@@ -83,7 +83,7 @@ public class Window extends QMainWindow implements IForm {
     @Override
     public void init(Store store){
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
-        configurator.configure(store);
+        configurator.configure(store, true);
         // standard navigation bar
         PyPaPiNavigationBar bar = new PyPaPiNavigationBar(tr("NAVIGATION"), this);
         bar.setMovable(true);
@@ -99,7 +99,7 @@ public class Window extends QMainWindow implements IForm {
         bar.refresh();
         storeInitialized.emit();
     }
-    
+
     private void loadUi(QFile uiFile){
         QMainWindow window = null;
         try {
@@ -249,9 +249,28 @@ public class Window extends QMainWindow implements IForm {
         this.parentForm = parentForm;
     }
 
-    /* SIGNALS */
+    @Override
+    protected void showEvent(QShowEvent event) {
+        super.showEvent(event);
+        formShown.emit();
+    }
+
+    @Override
+    protected void closeEvent(QCloseEvent event) {
+        if( getContext().getIsDirty() ) {
+            Boolean res = Util.questionBox(this, tr("CLOSE_CONFIRM"), tr("CLOSE_CONFIRM_MESSAGE"));
+            //Boolean res = Util.questionBox(this, tr("Conferma chiusura"), "Vuoi procedere alla chiusura della finestra?\n(i dati non salvati verranno persi)");
+            if( !res ){
+                event.ignore();
+                return;
+            }
+        }
+        super.closeEvent(event);
+    }
+/* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();
+    public Signal0 formShown = new Signal0();
 
     
 }

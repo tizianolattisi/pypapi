@@ -23,6 +23,9 @@ import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QComboBox;
 import com.trolltech.qt.gui.QWidget;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 /**
  *
  * @author Tiziano Lattisi <tiziano at axiastudio.it>
@@ -47,10 +50,16 @@ public class PyPaPiComboBox extends QComboBox {
     }
 
     public void setLookupStore(Store lookupStore) {
-        this.setLookupStore(lookupStore, Boolean.FALSE);
+        this.setLookupStore(lookupStore, Boolean.FALSE, Boolean.FALSE);
     }
 
-    public void setLookupStore(Store lookupStore, Boolean notnull) {
+    public void setLookupStore(Store lookupStore, Boolean notnull, Boolean sortByToString) {
+
+        // sort by toString
+        if( sortByToString ) {
+            lookupStore.sortByToString();
+        }
+
         this.clear();
 
         this.lookupStore = lookupStore;

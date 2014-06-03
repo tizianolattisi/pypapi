@@ -105,7 +105,7 @@ public class Dialog extends QDialog implements IForm {
     @Override
     public void init(Store store) {
         FormConfigurator configurator = new FormConfigurator(this, this.entityClass);
-        configurator.configure(store);
+        configurator.configure(store, false);
         this.getContext().getMapper().toFirst();
         storeInitialized.emit();
     }
@@ -170,10 +170,16 @@ public class Dialog extends QDialog implements IForm {
         this.parentForm = parentForm;
     }
 
+    @Override
+    protected void showEvent(QShowEvent arg__1) {
+        super.showEvent(arg__1);
+        formShown.emit();
+    }
 
     /* SIGNALS */
     
     public Signal0 storeInitialized = new Signal0();
+    public Signal0 formShown = new Signal0();
 
     
 }
