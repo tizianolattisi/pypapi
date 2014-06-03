@@ -271,6 +271,7 @@ public class PyPaPiTableView extends QTableView{
         String entityName = (String) this.property("entity");
         Class collectionClass = Resolver.collectionClassFromReference(rootClass, entityName.substring(1));
         Object reference = Register.queryRelation(this, "reference");
+        Boolean openInfo = Boolean.FALSE;
         if ( reference != null ){
             Class referenceClass = Resolver.entityClassFromReference(collectionClass, (String) reference);
             Database db = (Database) Register.queryUtility(IDatabase.class);
@@ -348,6 +349,7 @@ public class PyPaPiTableView extends QTableView{
                     if( adapted != null ){
                         model.getContextHandle().insertElement(adapted);
                         entityInserted.emit(adapted);
+                        openInfo = Boolean.TRUE;
                     } else {
                         String title = "Adapter warning";
                         String description = "Unable to find an adapter from "+classFrom+" to "+classTo+".";
@@ -360,6 +362,7 @@ public class PyPaPiTableView extends QTableView{
                 Object notAdapted = collectionClass.newInstance();
                 model.getContextHandle().insertElement(notAdapted);
                 entityInserted.emit(notAdapted);
+                openInfo = Boolean.TRUE;
             } catch (InstantiationException ex) {
                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -367,9 +370,11 @@ public class PyPaPiTableView extends QTableView{
             }
 
         }
+        if( openInfo ) {
         /* select and open info for the last row */
-        this.selectRow(this.model().rowCount()-1);
-        this.actionInfo();
+            this.selectRow(this.model().rowCount() - 1);
+            this.actionInfo();
+        }
     }
     
     private void actionQuickInsert(){
