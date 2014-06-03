@@ -348,8 +348,9 @@ public class PyPaPiTableView extends QTableView{
 
                     if( adapted != null ){
                         model.getContextHandle().insertElement(adapted);
-                        entityInserted.emit(adapted);
+                        this.selectRow(this.model().rowCount() - 1);
                         openInfo = Boolean.TRUE;
+                        entityInserted.emit(adapted);
                     } else {
                         String title = "Adapter warning";
                         String description = "Unable to find an adapter from "+classFrom+" to "+classTo+".";
@@ -361,8 +362,9 @@ public class PyPaPiTableView extends QTableView{
             try {
                 Object notAdapted = collectionClass.newInstance();
                 model.getContextHandle().insertElement(notAdapted);
-                entityInserted.emit(notAdapted);
+                this.selectRow(this.model().rowCount() - 1);
                 openInfo = Boolean.TRUE;
+                entityInserted.emit(notAdapted);
             } catch (InstantiationException ex) {
                 Logger.getLogger(PyPaPiTableView.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -370,9 +372,8 @@ public class PyPaPiTableView extends QTableView{
             }
 
         }
-        if( openInfo ) {
-        /* select and open info for the last row */
-            this.selectRow(this.model().rowCount() - 1);
+        if( openInfo && this.selectionModel().selectedRows().size()==1 ) {
+            /* open info for the selected row */
             this.actionInfo();
         }
     }
@@ -444,7 +445,7 @@ public class PyPaPiTableView extends QTableView{
     }
 
     /* SIGNALS */
-    
+
     public Signal1<Object> entityInserted = new Signal1<Object>();
     
     public Signal1<Object> entityRemoved = new Signal1<Object>();
