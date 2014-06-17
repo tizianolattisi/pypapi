@@ -190,6 +190,9 @@ public final class Context extends QObject {
     }
 
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
+        if( !isDirty && currentEntity instanceof ISnapshot ){
+            ((ISnapshot) currentEntity).takeSnapshot();
+        }
         this.isDirty = true;
     }
 
