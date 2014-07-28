@@ -22,6 +22,7 @@ import com.axiastudio.pypapi.Register;
 import com.axiastudio.pypapi.db.Store;
 import com.axiastudio.pypapi.plugins.IPlugin;
 import com.axiastudio.pypapi.ui.widgets.PyPaPiNavigationBar;
+import com.axiastudio.pypapi.ui.widgets.PyPaPiTableView;
 import com.trolltech.qt.core.QByteArray;
 import com.trolltech.qt.core.QFile;
 import com.trolltech.qt.core.QObject;
@@ -265,10 +266,26 @@ public class Window extends QMainWindow implements IForm {
                 return;
             }
         }
+        // unbind context from models
+        for( QObject widget: widgets.values() ){
+            if( widget instanceof PyPaPiTableView ){
+                PyPaPiTableView pyPaPiTableView = (PyPaPiTableView) widget;
+                ((ITableModel) pyPaPiTableView.model()).unbindContext();
+            }
+        }
+        // remove relations
+        Register.removeRelations(this);
+        // uninstal plugins
+        List<IPlugin> plugins = (List<IPlugin>) Register.queryPlugins(this.getClass());
+        for( IPlugin plugin: plugins ){
+            plugin.uninstall();
+        }
+        this.disposeLater();
         super.closeEvent(event);
     }
-/* SIGNALS */
-    
+
+
+    /* SIGNALS */
     public Signal0 storeInitialized = new Signal0();
     public Signal0 formShown = new Signal0();
 
