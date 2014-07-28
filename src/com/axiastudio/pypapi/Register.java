@@ -311,6 +311,15 @@ public class Register {
         hm.put(name, related);
         Register.relations.put(object, hm);
     }
+    /**
+     * Remove the registered relations for an object.
+     *
+     * @param object The object that we want to remove the relations
+     *
+     */
+    public static void removeRelations(Object object){
+            Register.relations.remove(object);
+    }
 
     /**
      * Query a related object.
@@ -363,7 +372,7 @@ public class Register {
         }
         return get;
     }
-    
+
         /**
      * Query the plugin on the given form, for the given pluginName.
      * 
