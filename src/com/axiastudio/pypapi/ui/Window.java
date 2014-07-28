@@ -74,6 +74,7 @@ public class Window extends QMainWindow implements IForm {
         } else {
             this.autoLayout();
         }
+        this.disableGarbageCollection();
     }
 
     @Override
