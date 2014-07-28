@@ -30,6 +30,8 @@ public interface ITableModel {
 
     public Context getContextHandle();
 
+    public void unbindContext();
+
     public Object getEntityByRow(int row);
 
     public boolean removeRows(int row, int i, QModelIndex object);

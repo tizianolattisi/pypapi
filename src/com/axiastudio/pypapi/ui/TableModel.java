@@ -61,6 +61,11 @@ public class TableModel extends QAbstractTableModel implements ITableModel {
         return contextHandle;
     }
 
+    @Override
+    public void unbindContext() {
+        contextHandle = null;
+    }
+
     public void setContextHandle(Context context) {
         this.contextHandle = context;
     }

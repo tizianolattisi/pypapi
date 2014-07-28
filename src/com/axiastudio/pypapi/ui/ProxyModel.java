@@ -37,6 +37,11 @@ public class ProxyModel extends QSortFilterProxyModel implements ITableModel {
     }
 
     @Override
+    public void unbindContext() {
+        ((TableModel) this.sourceModel()).unbindContext();
+    }
+
+    @Override
     public Object getEntityByRow(int row) {
         return ((TableModel) this.sourceModel()).getEntityByRow(row);
     }
