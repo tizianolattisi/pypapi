@@ -267,6 +267,8 @@ public class Window extends QMainWindow implements IForm {
                 return;
             }
         }
+        getContext().clear();
+        context = null;
         // remove relations
         Register.removeRelations(this);
         // unbind context from models
