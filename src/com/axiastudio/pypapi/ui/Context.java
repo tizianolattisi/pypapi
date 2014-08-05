@@ -54,7 +54,7 @@ public final class Context extends QObject {
     private Context primaryDc;
     private IForm parent;
 
-    Controller controller;
+    private Controller controller;
 
     public Context(IForm parent, Class rootClass, String name, List columns){
         this(parent, rootClass, name, columns, null, false);
@@ -391,4 +391,10 @@ public final class Context extends QObject {
     public Context getPrimaryContext() {
         return primaryDc;
     }
+
+    public void clear(){
+        controller.getEntityManager().clear();
+    }
+
+
 }
