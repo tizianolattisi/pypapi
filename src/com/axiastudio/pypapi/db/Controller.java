@@ -366,7 +366,13 @@ public class Controller implements IController {
         }
         return id;
     }
-    
-    
+
+    @Override
+    protected void finalize() throws Throwable {
+        entityManager.clear();
+        entityManager.close();
+        entityManager = null;
+        super.finalize();
+    }
 }
     
