@@ -431,15 +431,17 @@ public class PyPaPiTableView extends QTableView{
 
     @Override
     public void setModel(QAbstractItemModel model) {
-        if( getReadOnly() ){
-            if( model instanceof ProxyModel ){
-                model = ((ProxyModel) model).sourceModel();
+        if( model != null ) {
+            if (getReadOnly()) {
+                if (model instanceof ProxyModel) {
+                    model = ((ProxyModel) model).sourceModel();
+                }
+                if (model instanceof TableModel) {
+                    ((TableModel) model).setEditable(false);
+                }
             }
-            if( model instanceof TableModel ){
-                ((TableModel) model).setEditable(false);
-            }
+            model.dataChanged.connect(this, "modelDataChanged(QModelIndex, QModelIndex)");
         }
-        model.dataChanged.connect(this, "modelDataChanged(QModelIndex, QModelIndex)");
         super.setModel(model);
     }
 

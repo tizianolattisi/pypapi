@@ -267,15 +267,19 @@ public class Window extends QMainWindow implements IForm {
                 return;
             }
         }
+        getContext().clear();
+        context = null;
+        // remove relations
+        Register.removeRelations(this);
         // unbind context from models
         for( QObject widget: widgets.values() ){
             if( widget instanceof PyPaPiTableView ){
                 PyPaPiTableView pyPaPiTableView = (PyPaPiTableView) widget;
+                Register.removeRelations(pyPaPiTableView);
                 ((ITableModel) pyPaPiTableView.model()).unbindContext();
+                pyPaPiTableView.setModel(null);
             }
         }
-        // remove relations
-        Register.removeRelations(this);
         // uninstal plugins
         List<IPlugin> plugins = (List<IPlugin>) Register.queryPlugins(this.getClass());
         for( IPlugin plugin: plugins ){
