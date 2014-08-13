@@ -93,12 +93,14 @@ public final class Context extends QObject {
         controller = db.createController(rootClass);
         if( store != null ){
             if( newEm ){
-                Object entity = store.get(0);
-                Long id = controller.getId(entity);
-                if( id != null && !controller.getEntityManager().contains(entity) ) {
-                    Object newEntity = controller.get(id);
-                    store = new Store(new ArrayList());
-                    store.add(newEntity);
+                Object firstEntity = store.get(0);
+                Long id = controller.getId(firstEntity);
+                if( id != null && !controller.getEntityManager().contains(firstEntity) ) {
+                    Store newStore = new Store(new ArrayList());
+                    for( Object entity: store ){
+                        newStore.add(entity);
+                    }
+                    store = newStore;
                 }
             }
             for( Object obj: store ){
