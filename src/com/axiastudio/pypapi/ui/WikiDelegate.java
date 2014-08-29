@@ -45,19 +45,23 @@ public class WikiDelegate extends QItemDelegate {
                 out = "";
             }
             if( out.startsWith("<del>") && out.endsWith("</del>")){
+                QFont originalFont = painter.font();
                 QFont font = painter.font();
                 font.setStrikeOut(true);
                 painter.setFont(font);
                 out = out.substring(5, out.length()-6);
                 // XXX: left margin!
                 painter.drawText(option.rect(), flags.value(), " "+out);
+                painter.setFont(originalFont);
             } else if( out.startsWith("'''") && out.endsWith("'''")){
+                QFont originalFont = painter.font();
                 QFont font = painter.font();
                 font.setBold(true);
                 painter.setFont(font);
                 out = out.substring(3, out.length()-3);
                 // XXX: left margin!
                 painter.drawText(option.rect(), flags.value(), " "+out);
+                painter.setFont(originalFont);
             } else {
                 super.paint(painter, option, index);
             }
