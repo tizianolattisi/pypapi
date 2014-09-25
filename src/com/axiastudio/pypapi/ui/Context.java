@@ -25,6 +25,7 @@ import com.trolltech.qt.gui.QDataWidgetMapper;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 
+import javax.persistence.RollbackException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -253,7 +254,12 @@ public final class Context extends QObject {
 
     public void deleteElement(){
         QModelIndex idx=null;
-        controller.delete(this.primaryDc.currentEntity);
+        try {
+            controller.delete(this.primaryDc.currentEntity);
+        } catch (RollbackException ex) {
+            Util.errorBox((QWidget) this.parent, "Error", ex.getLocalizedMessage());
+            return;
+        }
         int row = this.mapper.currentIndex();
         if( this.mapper.model().rowCount() > 1 ){
             if( !this.atBof ){
@@ -278,7 +284,13 @@ public final class Context extends QObject {
 
 
     public void commitChanges(){
-        Validation val = controller.commit(this.primaryDc.currentEntity);
+        Validation val=null;
+        try {
+            val = controller.commit(this.primaryDc.currentEntity);
+        } catch (RollbackException ex) {
+            Util.errorBox((QWidget) this.parent, "Error", ex.getLocalizedMessage());
+            return;
+        }
         if( val.getResponse() == false ){
             Util.warningBox((QWidget) this.parent, "Error", val.getMessage());
             //this.refreshElement();

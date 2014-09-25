@@ -23,6 +23,7 @@ import com.axiastudio.pypapi.ui.CellEditorType;
 import com.axiastudio.pypapi.ui.Column;
 
 import javax.persistence.EntityManager;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.lang.annotation.Annotation;
@@ -239,7 +240,7 @@ public class Controller implements IController {
     }
     
     @Override
-    public Validation commit(Object entity){
+    public Validation commit(Object entity) throws RollbackException {
         // XXX: if no CascadeType.ALL?
         //this.parentize(entity);
         
@@ -297,7 +298,7 @@ public class Controller implements IController {
     }
     
     @Override
-    public void delete(Object entity) {
+    public void delete(Object entity) throws RollbackException{
         EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
         Object merged = em.merge(entity);
