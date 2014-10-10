@@ -112,9 +112,7 @@ public class Controller implements IController {
                 List values = (List) criteria.get(column);
                 GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
                 GregorianCalendar gcEnd = new GregorianCalendar();
-                gcEnd.set(Calendar.YEAR, gcStart.get(Calendar.YEAR));
-                gcEnd.set(Calendar.MONTH, gcStart.get(Calendar.MONTH));
-                gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
+                gcEnd.setTime(gcStart.getTime());
                 Integer d = (Integer) values.get(1);
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
                 if ( d>=0 ) {
