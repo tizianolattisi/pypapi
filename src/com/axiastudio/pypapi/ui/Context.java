@@ -320,7 +320,7 @@ public final class Context extends QObject {
     }
     
     public void refreshElement(){
-        controller.refresh(this.primaryDc.currentEntity);
+        this.primaryDc.currentEntity = controller.refresh(this.primaryDc.currentEntity);
         this.model.refresh(this.primaryDc.currentEntity);
         this.isDirty = false;
         this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
