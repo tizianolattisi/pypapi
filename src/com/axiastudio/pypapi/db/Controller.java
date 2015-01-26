@@ -259,16 +259,23 @@ public class Controller implements IController {
         if( beforeValidation.getResponse() == true ){
             this.parentize(entity);
             EntityManager em = this.getEntityManager();
-            Object merged;
-            if( this.getId(entity) == null ){
-                em.getTransaction().begin();
-                em.persist(entity);
-                em.getTransaction().commit();
-                merged = entity;
-            } else {
-                em.getTransaction().begin();
-                merged = em.merge(entity);
-                em.getTransaction().commit();                
+            Object merged=null;
+            try {
+                if (this.getId(entity) == null) {
+                    em.getTransaction().begin();
+                    em.persist(entity);
+                    em.getTransaction().commit();
+                    merged = entity;
+                } else {
+                    em.getTransaction().begin();
+                    merged = em.merge(entity);
+                    em.getTransaction().commit();
+                }
+            } catch (RollbackException ex){
+                Validation val = new Validation();
+                val.setResponse(false);
+                val.setMessage(ex.getLocalizedMessage());
+                return val;
             }
             em.refresh(merged);
 

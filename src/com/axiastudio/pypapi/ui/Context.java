@@ -289,7 +289,7 @@ public final class Context extends QObject {
             return;
         }
         if( val.getResponse() == false ){
-            Util.warningBox((QWidget) this.parent, "Error", val.getMessage());
+            Util.errorBox((QWidget) this.parent, "Error", val.getMessage());
             //this.refreshElement();
         } else {
             this.isDirty = false;
@@ -321,8 +321,9 @@ public final class Context extends QObject {
     
     public void refreshElement(){
         this.primaryDc.currentEntity = controller.refresh(this.primaryDc.currentEntity);
-        this.model.refresh(this.primaryDc.currentEntity);
         this.isDirty = false;
+        this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);
+        this.model.refresh(this.primaryDc.currentEntity);
         this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
         this.mapper.revert();
     }
