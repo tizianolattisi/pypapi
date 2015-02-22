@@ -217,7 +217,7 @@ public class Controller implements IController {
                         }
                         for (Iterator it = collection.iterator(); it.hasNext();) {
                             Object orphan = it.next();
-                            if( orphan != null ){
+                            if( orphan != null && parentSetter != null ){
                                 try {
                                     parentSetter.invoke(orphan, entity);
                                 } catch (IllegalAccessException ex) {

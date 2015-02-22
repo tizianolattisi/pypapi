@@ -184,6 +184,9 @@ public class Resolver {
      * 
      */    
     public static Method setterFromFieldName(Class entityClass, String name, Class<?> valueType){
+        if( "".equals(name) ){
+            return null;
+        }
         String setterName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
         Method setter = null;
         if( valueType == null ){
