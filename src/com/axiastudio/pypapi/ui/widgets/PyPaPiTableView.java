@@ -235,7 +235,11 @@ public class PyPaPiTableView extends QTableView{
     }
 
     private void refreshInfoEntity(){
-        int row = this.selectionModel().selectedRows().get(0).row();
+        QModelIndex idx = this.selectionModel().selectedRows().get(0);
+        if( this.model() instanceof ProxyModel ){
+            idx = ((ProxyModel) this.model()).mapToSource(idx);
+        }
+        int row = idx.row();
         ITableModel model = (ITableModel) model();
         model.getContextHandle().updateElement(infoEntity, row);
         entityUpdated.emit(infoEntity);
