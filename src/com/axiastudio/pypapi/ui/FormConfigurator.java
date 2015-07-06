@@ -291,6 +291,9 @@ public class FormConfigurator {
             } else if( widget.getClass().equals(QCheckBox.class) ){
                 this.form.getContext().getMapper().addMapping((QCheckBox) widget, i, new QByteArray("checked"));
                 ((QCheckBox) widget).clicked.connect(this.form.getContext().getMapper(), "submit()", Qt.ConnectionType.AutoConnection);
+            } else if( widget.getClass().equals(QRadioButton.class) ){
+                this.form.getContext().getMapper().addMapping((QRadioButton) widget, i, new QByteArray("checked"));
+                ((QRadioButton) widget).clicked.connect(this.form.getContext().getMapper(), "submit()", Qt.ConnectionType.AutoConnection);
             } else if( widget.getClass().equals(QComboBox.class) ){
                 this.form.getContext().getMapper().addMapping((QComboBox) widget, i, new QByteArray("currentIndex"));
             } else if( widget.getClass().equals(PyPaPiComboBox.class) ){
