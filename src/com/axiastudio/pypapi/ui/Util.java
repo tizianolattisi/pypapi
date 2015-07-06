@@ -294,7 +294,7 @@ public class Util {
             ((QTextEdit) widget).setReadOnly(readOnly);
         } else if( widget instanceof QLineEdit ){
             ((QLineEdit) widget).setReadOnly(readOnly);
-        } else if( widget instanceof QComboBox || widget instanceof QCheckBox ||
+        } else if( widget instanceof QComboBox || widget instanceof QAbstractButton ||
                    widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
                    widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
             widget.setEnabled(!readOnly);
