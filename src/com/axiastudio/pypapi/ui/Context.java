@@ -25,6 +25,7 @@ import com.trolltech.qt.gui.QDataWidgetMapper;
 import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 
+import javax.persistence.RollbackException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -93,12 +94,14 @@ public final class Context extends QObject {
         controller = db.createController(rootClass);
         if( store != null ){
             if( newEm ){
-                Object entity = store.get(0);
-                Long id = controller.getId(entity);
-                if( id != null && !controller.getEntityManager().contains(entity) ) {
-                    Object newEntity = controller.get(id);
-                    store = new Store(new ArrayList());
-                    store.add(newEntity);
+                Object firstEntity = store.get(0);
+                Long id = controller.getId(firstEntity);
+                if( id != null && !controller.getEntityManager().contains(firstEntity) ) {
+                    Store newStore = new Store(new ArrayList());
+                    for( Object entity: store ){
+                        newStore.add(entity);
+                    }
+                    store = newStore;
                 }
             }
             for( Object obj: store ){
@@ -190,9 +193,6 @@ public final class Context extends QObject {
     }
 
     private void modelDataChanged(QModelIndex topLeft, QModelIndex bottomRight){
-        if( !isDirty && currentEntity instanceof ISnapshot ){
-            ((ISnapshot) currentEntity).takeSnapshot();
-        }
         this.isDirty = true;
     }
 
@@ -251,7 +251,12 @@ public final class Context extends QObject {
 
     public void deleteElement(){
         QModelIndex idx=null;
-        controller.delete(this.primaryDc.currentEntity);
+        try {
+            controller.delete(this.primaryDc.currentEntity);
+        } catch (RollbackException ex) {
+            Util.errorBox((QWidget) this.parent, "Error", ex.getLocalizedMessage());
+            return;
+        }
         int row = this.mapper.currentIndex();
         if( this.mapper.model().rowCount() > 1 ){
             if( !this.atBof ){
@@ -276,7 +281,13 @@ public final class Context extends QObject {
 
 
     public void commitChanges(){
-        Validation val = controller.commit(this.primaryDc.currentEntity);
+        Validation val=null;
+        try {
+            val = controller.commit(this.primaryDc.currentEntity);
+        } catch (RollbackException ex) {
+            Util.errorBox((QWidget) this.parent, "Error", ex.getLocalizedMessage());
+            return;
+        }
         if( val.getResponse() == false ){
             Util.errorBox((QWidget) this.parent, "Error", val.getMessage());
             //this.refreshElement();

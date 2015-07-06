@@ -158,6 +158,10 @@ public class Util {
         StandardButton res = QMessageBox.warning(parent, title, description);
     }
 
+    public static void errorBox(QWidget parent, String title, String description){
+        StandardButton res = QMessageBox.critical(parent, title, description);
+    }
+
     public static void informationBox(QWidget parent, String title, String description){
         StandardButton res = QMessageBox.information(parent, title, description);
     }
@@ -290,7 +294,7 @@ public class Util {
             ((QTextEdit) widget).setReadOnly(readOnly);
         } else if( widget instanceof QLineEdit ){
             ((QLineEdit) widget).setReadOnly(readOnly);
-        } else if( widget instanceof QComboBox || widget instanceof QCheckBox ||
+        } else if( widget instanceof QComboBox || widget instanceof QAbstractButton ||
                    widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
                    widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
             widget.setEnabled(!readOnly);

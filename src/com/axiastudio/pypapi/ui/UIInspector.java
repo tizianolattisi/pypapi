@@ -148,7 +148,7 @@ public class UIInspector {
                     } else {
                         if(QLineEdit.class.isInstance(child)||QTextEdit.class.isInstance(child)){
                             column.setEditorType(CellEditorType.STRING);
-                        } else if(QCheckBox.class.isInstance(child)){
+                        } else if(QAbstractButton.class.isInstance(child)){
                             column.setEditorType(CellEditorType.BOOLEAN);
                         } else if(QSpinBox.class.isInstance(child)){
                             column.setEditorType(CellEditorType.LONG); // XXX: and INTEGER?

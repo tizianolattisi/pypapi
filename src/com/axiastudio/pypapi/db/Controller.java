@@ -112,9 +112,7 @@ public class Controller implements IController {
                 List values = (List) criteria.get(column);
                 GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
                 GregorianCalendar gcEnd = new GregorianCalendar();
-                gcEnd.set(Calendar.YEAR, gcStart.get(Calendar.YEAR));
-                gcEnd.set(Calendar.MONTH, gcStart.get(Calendar.MONTH));
-                gcEnd.set(Calendar.DAY_OF_MONTH, gcStart.get(Calendar.DAY_OF_MONTH));
+                gcEnd.setTime(gcStart.getTime());
                 Integer d = (Integer) values.get(1);
                 gcEnd.add(Calendar.DAY_OF_MONTH, d);
                 if ( d>=0 ) {
@@ -219,7 +217,7 @@ public class Controller implements IController {
                         }
                         for (Iterator it = collection.iterator(); it.hasNext();) {
                             Object orphan = it.next();
-                            if( orphan != null ){
+                            if( orphan != null && parentSetter != null ){
                                 try {
                                     parentSetter.invoke(orphan, entity);
                                 } catch (IllegalAccessException ex) {
@@ -240,7 +238,7 @@ public class Controller implements IController {
     }
     
     @Override
-    public Validation commit(Object entity){
+    public Validation commit(Object entity) throws RollbackException {
         // XXX: if no CascadeType.ALL?
         //this.parentize(entity);
         
@@ -305,7 +303,7 @@ public class Controller implements IController {
     }
     
     @Override
-    public void delete(Object entity) {
+    public void delete(Object entity) throws RollbackException{
         EntityManager em = this.getEntityManager();
         em.getTransaction().begin();
         Object merged = em.merge(entity);
