@@ -205,6 +205,32 @@ public class FormConfigurator {
                     }
                     Register.registerRelation(filters, child, "filters");
                 }
+                Object warningsProperty = child.property("warnings");
+                if( warningsProperty != null ){
+                    String[] operators = {">=", "<=", "=", ">", "<", "is null", "is not null"};
+                    String[] warningsPredicates = ((String) warningsProperty).split(",");
+                    Map<Column, Object> warnings = new HashMap();
+                    for( String predicate: warningsPredicates ){
+                        String[] warning = predicate.split("@");
+                        String description = warning[0];
+                        if ( warning.length>1 ) {
+                            description = warning[1];
+                        }
+                        for ( String op: operators ) {
+                            if ( warning[0].contains(op) ) {
+                                String[] fieldAndValue = warning[0].split(op);
+                                String name = fieldAndValue[0].trim();
+                                String valueString = "";
+                                if ( fieldAndValue.length>1) {
+                                    valueString=fieldAndValue[1];
+                                }
+                                Column warningColumn = new Column(name, op, description, null);
+                                warnings.put(warningColumn, valueString);
+                            }
+                        }
+                    }
+                    Register.registerRelation(warnings, child, "warnings");
+                }
                 // sorting
                 Object sortOrderProperty = child.property("sortorder");
                 SortOrder sortOrder=Qt.SortOrder.AscendingOrder;

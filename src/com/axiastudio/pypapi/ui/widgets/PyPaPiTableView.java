@@ -207,7 +207,7 @@ public class PyPaPiTableView extends QTableView{
             form.show();
         }
     }
-    
+
     private void actionInfo(){
         ITableModel model = (ITableModel) this.model();
         List<QModelIndex> rows = this.selectionModel().selectedRows();
@@ -296,7 +296,23 @@ public class PyPaPiTableView extends QTableView{
                 res = pd.exec();
                 selection = pd.getSelection();
             }
-            
+
+            Map<Column, Object> warnings = (Map) Register.queryRelation(this, "warnings");
+            if( warnings != null ){
+                for( Column column: warnings.keySet() ){
+                    Map<Column, Object> warning = new HashMap<Column, Object>();
+                    warning.put(column, warnings.get(column));
+                    List warningSelection = Util.filterList(selection, warning, referenceClass);
+                    for ( Object obj: warningSelection) {
+                        String msg = column.getDescription() + "\n\nper l'oggetto selezionato \n" + obj.toString() +
+                                "\n\nSi desidera inserire ugualmente?";
+                        if ( !Util.questionBox(this, "Attenzione sull'oggetto selezionato!!", msg) ){
+                            selection.remove(obj);
+                        }
+                    }
+                }
+            }
+
             if ( res == 1 ){
                 for( int i=0; i<selection.size(); i++ ){
                     Object entity = selection.get(i);

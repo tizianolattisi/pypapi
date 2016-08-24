@@ -33,11 +33,11 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -313,5 +313,92 @@ public class Util {
         }
 
     }
+
+    public static List filterList(List initList, Map criteria, Class klass){
+
+        List listResult = new ArrayList();
+
+        for( Object k: criteria.keySet() ){
+            Column column = (Column) k;
+            if( !column.getName().contains(".") ){
+                Method method = Resolver.getterFromFieldName(klass, column.getName());
+                Class objClass = method.getReturnType();
+                String op = column.getLabel();
+                if ( op == null ) {
+                    System.out.println("Operatore mancante!");
+                    continue;
+                }
+                for ( Object obj: initList ) {
+                    Object objValue = Resolver.valueFromFieldName(klass.cast(obj), column.getName());
+                    if ( op.equals("is null") ) {
+                        if ( objValue == null ){
+                            listResult.add(obj);
+                        }
+                    } else if ( op.equals("is not null") ) {
+                        if ( objValue != null ){
+                            listResult.add(obj);
+                        }
+                    } else {
+                        int compResult=Integer.MIN_VALUE;
+
+                        if ( objClass.equals(Date.class) ) {
+                            Date value = (Date) objValue;
+                            Date condition = new Date();
+                            String strCondition = (String) criteria.get(column);
+                            if ( strCondition.trim().length()==10 ) {
+                                strCondition += " 00:00";
+                            }
+                            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ITALIAN);
+                            try {
+                                condition = df.parse(strCondition);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            compResult = value.compareTo(condition);
+                        } else if ( objClass.equals(Long.class) || objClass.equals(Integer.class) ) {
+                            Long value = (Long) objValue;
+                            Long condition = Long.parseLong((String) criteria.get(column));
+                            compResult = value.compareTo(condition);
+                        } else if ( objClass.equals(String.class) ) {
+                            String value = (String) objValue;
+                            compResult = value.compareTo((String) criteria.get(column));
+                        }
+
+                        if ( compResult==Integer.MIN_VALUE ) {
+                            System.out.println("Errore nel compareTo()????");
+                        }
+
+                        if (op.equals("=")) {
+                            if ( compResult==0 ) {
+                                listResult.add(obj);
+                            }
+                        } else if (op.equals(">")) {
+                            if ( compResult > 0 ) {
+                                listResult.add(obj);
+                            }
+                        } else if (op.equals(">=")) {
+                            if ( compResult >= 0 ) {
+                                listResult.add(obj);
+                            }
+                        } else if (op.equals("<")) {
+                            if ( compResult < 0 ) {
+                                listResult.add(obj);
+                            }
+                        } else if (op.equals("<=")) {
+                            if ( compResult <= 0 ) {
+                                listResult.add(obj);
+                            }
+                        }
+                    }
+                }
+            } else {
+                // TODO: da gestire
+                System.out.println("Indirezione con '.' non ancora gestita...");
+            }
+        }
+
+        return listResult;
+    }
+
     
 } 
