@@ -276,7 +276,7 @@ public class Util {
                     } else if( Date.class == returnType ) {
                         SimpleDateFormat sdf = new SimpleDateFormat();
                         sdf.applyPattern("yyyy-MM-dd");
-                        row += ",\"" + sdf.format(value) + "\"";
+                        row += "," + sdf.format(value);
                     } else if( Serializable.class.isAssignableFrom(returnType) ) {
                         row += ",\"" + value.toString() + "\"";
                     } else {
