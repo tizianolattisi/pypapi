@@ -365,6 +365,11 @@ public class PickerDialog extends QDialog {
                 comboBox2.addItem(tr("MONTHS"));
                 comboBox2.addItem(tr("YEARS"));
                 hbox.addWidget(comboBox2);
+                QCheckBox cbox = new QCheckBox();
+//                cbox.setTristate(true);
+                cbox.setCheckState(CheckState.Unchecked);
+                cbox.setText("non inserita");
+                hbox.addWidget(cbox);
                 widget.setLayout(hbox);
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP) ){
                 Class entityClass=null;
@@ -460,33 +465,35 @@ public class PickerDialog extends QDialog {
                         criteriaMap.put(column, value);
                     }
                 } else if ( column.getEditorType().equals(CellEditorType.DATE) ){
-                    PyPaPiDateEdit dateEdit = (PyPaPiDateEdit) widget.layout().itemAt(0).widget();
-                    QComboBox comboBox1 = (QComboBox) widget.layout().itemAt(1).widget();
-                    QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
-                    QDate date = dateEdit.date();
-                    if( !date.equals(dateEdit.minimumDate()) ){
+                    QCheckBox checkBox = (QCheckBox) widget.layout().itemAt(3).widget();
+                    if ( checkBox.checkState()==CheckState.Checked ) {
+                        criteriaMap.put(column, null);
+                    } else {
+                        PyPaPiDateEdit dateEdit = (PyPaPiDateEdit) widget.layout().itemAt(0).widget();
+                        QComboBox comboBox1 = (QComboBox) widget.layout().itemAt(1).widget();
+                        QComboBox comboBox2 = (QComboBox) widget.layout().itemAt(2).widget();
+                        QDate date = dateEdit.date();
+                        if (!date.equals(dateEdit.minimumDate())) {
 //                        Integer n = comboBox1.currentIndex() + 1;
-                        Integer n = Integer.parseInt(comboBox1.currentText());
-                        Integer idx = comboBox2.currentIndex();
-                        Integer days = null;
-                        if( idx == 0 ) {
-                            days = n;
-                        } else if( idx == 1 ) {
-                            days = 7 * n;
-                        } else if( idx == 2 ) {
-                            days = 30 * n; // XXX
-                        } else if( idx == 3 ) {
-                            days = 365 * n; // XXX
+                            Integer n = Integer.parseInt(comboBox1.currentText());
+                            Integer idx = comboBox2.currentIndex();
+                            Integer days = null;
+                            if (idx == 0) {
+                                days = n;
+                            } else if (idx == 1) {
+                                days = 7 * n;
+                            } else if (idx == 2) {
+                                days = 30 * n; // XXX
+                            } else if (idx == 3) {
+                                days = 365 * n; // XXX
+                            }
+                            GregorianCalendar gc = new GregorianCalendar(date.year(),
+                                    date.month() - 1, date.day());
+                            List values = new ArrayList();
+                            values.add(gc);
+                            values.add(days);
+                            criteriaMap.put(column, values);
                         }
-                        int year = date.year();
-                        int month = date.month();
-                        int day = date.day();
-                        GregorianCalendar gc = new GregorianCalendar(date.year(),
-                                                        date.month()-1, date.day());
-                        List values = new ArrayList();
-                        values.add(gc);
-                        values.add(days);
-                        criteriaMap.put(column, values);
                     }
                 } else if ( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP) ){
                     Object data;

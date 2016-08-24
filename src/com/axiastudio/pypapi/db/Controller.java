@@ -108,19 +108,23 @@ public class Controller implements IController {
             } else if( column.getEditorType().equals(CellEditorType.BOOLEAN) ){
                 Boolean value = (Boolean) criteria.get(column);
                 predicate = cb.equal(path, value);
-            } else if( column.getEditorType().equals(CellEditorType.DATE) ){
+            } else if( column.getEditorType().equals(CellEditorType.DATE) ) {
                 List values = (List) criteria.get(column);
-                GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
-                GregorianCalendar gcEnd = new GregorianCalendar();
-                gcEnd.setTime(gcStart.getTime());
-                Integer d = (Integer) values.get(1);
-                gcEnd.add(Calendar.DAY_OF_MONTH, d);
-                if ( d>=0 ) {
-                    predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
-                        cb.lessThan(path, gcEnd.getTime()));
+                if (values == null) {
+                    predicate = cb.isNull(path);
                 } else {
-                    predicate = cb.and(cb.greaterThanOrEqualTo(path, gcEnd.getTime()),
-                            cb.lessThan(path, gcStart.getTime()));
+                    GregorianCalendar gcStart = (GregorianCalendar) values.get(0);
+                    GregorianCalendar gcEnd = new GregorianCalendar();
+                    gcEnd.setTime(gcStart.getTime());
+                    Integer d = (Integer) values.get(1);
+                    gcEnd.add(Calendar.DAY_OF_MONTH, d);
+                    if (d >= 0) {
+                        predicate = cb.and(cb.greaterThanOrEqualTo(path, gcStart.getTime()),
+                                cb.lessThan(path, gcEnd.getTime()));
+                    } else {
+                        predicate = cb.and(cb.greaterThanOrEqualTo(path, gcEnd.getTime()),
+                                cb.lessThan(path, gcStart.getTime()));
+                    }
                 }
             } else if( column.getEditorType().equals(CellEditorType.CHOICE) || column.getEditorType().equals(CellEditorType.LOOKUP)){
                 Object value = criteria.get(column);
@@ -236,7 +240,7 @@ public class Controller implements IController {
             }
         }
     }
-    
+
     @Override
     public void detach(Object entity) {
         getEntityManager().detach(entity);

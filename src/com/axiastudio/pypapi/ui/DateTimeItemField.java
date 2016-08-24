@@ -42,7 +42,10 @@ public class DateTimeItemField extends ItemField {
 
     @Override
     public Object getDisplay() {
-        return this.getEdit();
+        if( this.value != null ) {
+            return this.getEdit();
+        }
+        return super.getDisplay();
     }
     
     
