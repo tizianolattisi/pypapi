@@ -231,6 +231,10 @@ public class UIInspector {
             Integer sortColumn = (Integer) sortColumnProperty;
             behavior.setSortColumn(sortColumn);
         }
+        if( win.property("searchfocus") != null ){
+            behavior.setSearchFocus((String) win.property("searchfocus"));
+        }
+
         behavior.setColumns(columns);
         behavior.setCriteria(criteria);
         behavior.setPrivates(privates);

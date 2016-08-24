@@ -45,6 +45,7 @@ public class EntityBehavior implements IEntityBehavior {
     private Boolean readOnly=false;
     private Boolean noDelete=false;
     private Boolean noInsert=false;
+    private String searchFocus;
 
     public EntityBehavior(String className){
         this.className = className;
@@ -189,5 +190,13 @@ public class EntityBehavior implements IEntityBehavior {
 
     public void setNoInsert(Boolean noInsert) {
         this.noInsert = noInsert;
+    }
+
+    public String getSearchFocus() {
+        return searchFocus;
+    }
+
+    public void setSearchFocus(String searchFocus) {
+        this.searchFocus = searchFocus;
     }
 }

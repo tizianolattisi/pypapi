@@ -138,6 +138,15 @@ public class PickerDialog extends QDialog {
             this.buttonExport.setEnabled(false);
             this.isCriteria = true;            
         }
+        if ( behavior.getSearchFocus()!=null ){
+            for ( Column column: mergedCriteria ) {
+                if ( column.getName().equalsIgnoreCase(behavior.getSearchFocus()) ) {
+                    QWidget child = (QWidget) this.criteriaWidgets.get(column);
+                    child.setFocus();
+                    break;
+                }
+            }
+        }
         this.tableView.horizontalHeader().setResizeMode(QHeaderView.ResizeMode.ResizeToContents);
         this.tableView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
         this.tableView.setSortingEnabled(true);
