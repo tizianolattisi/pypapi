@@ -238,6 +238,11 @@ public class Controller implements IController {
     }
     
     @Override
+    public void detach(Object entity) {
+        getEntityManager().detach(entity);
+    }
+    
+    @Override
     public Validation commit(Object entity) throws RollbackException {
         // XXX: if no CascadeType.ALL?
         //this.parentize(entity);

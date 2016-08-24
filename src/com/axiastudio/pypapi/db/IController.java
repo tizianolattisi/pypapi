@@ -40,6 +40,8 @@ public interface IController {
     
     void delete(Object entity);
 
+    void detach(Object entity);
+
     Object refresh(Object entity);
     
     Object get(Long id);
