@@ -33,7 +33,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -169,10 +168,7 @@ public class Util {
     public static Boolean questionBox(QWidget parent, String title, String description){
         int res = QMessageBox.question(parent, title, description, 
                 QMessageBox.StandardButton.Yes, QMessageBox.StandardButton.No);
-        if( res == QMessageBox.StandardButton.Yes.value() ){
-            return true;
-        }
-        return false;
+        return res == StandardButton.Yes.value();
     }
     
     /*
@@ -296,7 +292,7 @@ public class Util {
             ((QLineEdit) widget).setReadOnly(readOnly);
         } else if( widget instanceof QComboBox || widget instanceof QAbstractButton || widget instanceof QCheckBox ||
                    widget instanceof QDateEdit || widget instanceof QDateTimeEdit ||
-                   widget instanceof QSpinBox || widget instanceof QDoubleSpinBox){
+                   widget instanceof QSpinBox || widget instanceof QDoubleSpinBox || widget instanceof QGroupBox){
             widget.setEnabled(!readOnly);
         } else if( widget instanceof PyPaPiTableView ){
             ((PyPaPiTableView) widget).setReadOnly(readOnly);

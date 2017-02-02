@@ -537,8 +537,10 @@ public class PickerDialog extends QDialog {
         refreshResizeMode();
         this.selection.clear();
         this.buttonQuickInsert.setEnabled(true);
-        this.buttonExport.setEnabled(true);
         this.totRecordLabel.setText(" Tot record: " + String.valueOf(supersetStore.size()));
+
+// Export to csv??
+        this.buttonExport.setEnabled(!behavior.getExports().isEmpty());
     }
     
     public final void export(){

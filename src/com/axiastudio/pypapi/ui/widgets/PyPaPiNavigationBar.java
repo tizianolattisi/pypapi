@@ -76,7 +76,8 @@ public class PyPaPiNavigationBar extends PyPaPiToolBar {
                 new QKeySequence(QKeySequence.StandardKey.Find));
         this.insertButton("information", tr("INFORMATION"),
                 "classpath:com/axiastudio/pypapi/ui/resources/toolbar/information.png",
-                tr("INFORMATION_DESCRIPTION"), this.parentForm);
+                tr("INFORMATION_DESCRIPTION"), this.parentForm,
+                new QKeySequence(QKeySequence.StandardKey.HelpContents));
         this.insertSeparator(this.actionByName("information"));
     }
 

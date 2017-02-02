@@ -215,7 +215,7 @@ public class UIInspector {
             behavior.setNoDelete((Boolean) win.property("nodelete"));
         }
         if( win.property("noinsert") != null ){
-            behavior.setNoInsert((Boolean) win.property("nodelete"));
+            behavior.setNoInsert((Boolean) win.property("noinsert"));
         }
         Object sortOrderProperty = win.property("sortorder");
         if( sortOrderProperty != null ){
