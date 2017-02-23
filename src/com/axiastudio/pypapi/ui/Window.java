@@ -195,7 +195,11 @@ public class Window extends QMainWindow implements IForm {
         layout.addWidget(text);
         info.show();
     }
-    
+
+    public PyPaPiNavigationBar getNavigationBar() {
+        return navigationBar;
+    }
+
     @Override
     public void setColumns(List<Column> columns) {
         this.columns = columns;
@@ -260,8 +264,8 @@ public class Window extends QMainWindow implements IForm {
     @Override
     protected void closeEvent(QCloseEvent event) {
         if( getContext().getIsDirty() ) {
-            Boolean res = Util.questionBox(this, tr("CLOSE_CONFIRM"), tr("CLOSE_CONFIRM_MESSAGE"));
-            //Boolean res = Util.questionBox(this, tr("Conferma chiusura"), "Vuoi procedere alla chiusura della finestra?\n(i dati non salvati verranno persi)");
+            //Boolean res = Util.questionBox(this, tr("CLOSE_CONFIRM"), tr("CLOSE_CONFIRM_MESSAGE"));
+            Boolean res = Util.questionBox(this, "Conferma chiusura", "Vuoi procedere alla chiusura della finestra?  (i dati non salvati verranno persi)");
             if( !res ){
                 event.ignore();
                 return;
