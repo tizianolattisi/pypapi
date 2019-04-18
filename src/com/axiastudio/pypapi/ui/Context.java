@@ -338,13 +338,6 @@ public final class Context extends QObject {
         }
         if( doSearch ) {
             PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
-            // TODO ???
-//            Map<Column, Object> filters = (Map) Register.queryRelation(this.parent, "filters");
-//            if( filters != null ){
-//                for( Column column: filters.keySet() ){
-//                    pd.addFilter(column, filters.get(column));
-//                }
-//            }
             int res = pd.exec();
             if (res == 1) {
                 this.model.replaceRows(pd.getSelection());
