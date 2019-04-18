@@ -22,7 +22,6 @@ import com.axiastudio.pypapi.db.*;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QDataWidgetMapper;
-import com.trolltech.qt.gui.QMainWindow;
 import com.trolltech.qt.gui.QWidget;
 
 import javax.persistence.RollbackException;
@@ -280,24 +279,28 @@ public final class Context extends QObject {
     }
 
 
-    public void commitChanges(){
+    public Boolean commitChanges(){
         Validation val=null;
         try {
             val = controller.commit(this.primaryDc.currentEntity);
         } catch (RollbackException ex) {
             Util.errorBox((QWidget) this.parent, "Error", ex.getLocalizedMessage());
-            return;
+            return Boolean.FALSE;
         }
-        if( val.getResponse() == false ){
+        if(!val.getResponse()){
             Util.errorBox((QWidget) this.parent, "Error", val.getMessage());
             //this.refreshElement();
         } else {
+            if(val.getMessage()!=null) {
+                Util.warningBox((QWidget) this.parent, "Warning", val.getMessage());
+            }
             this.isDirty = false;
             this.primaryDc.currentEntity = val.getEntity();
             this.model.replaceEntity(this.mapper.currentIndex(), this.primaryDc.currentEntity);
             this.mapper.currentIndexChanged.emit(this.mapper.currentIndex());
             this.mapper.revert();
         }
+        return val.getResponse();
     }
 
     public void cancelChanges(){
@@ -335,6 +338,13 @@ public final class Context extends QObject {
         }
         if( doSearch ) {
             PickerDialog pd = new PickerDialog((QWidget) this.parent, controller);
+            // TODO ???
+//            Map<Column, Object> filters = (Map) Register.queryRelation(this.parent, "filters");
+//            if( filters != null ){
+//                for( Column column: filters.keySet() ){
+//                    pd.addFilter(column, filters.get(column));
+//                }
+//            }
             int res = pd.exec();
             if (res == 1) {
                 this.model.replaceRows(pd.getSelection());
@@ -374,6 +384,10 @@ public final class Context extends QObject {
 
     public Boolean getIsDirty() {
         return isDirty;
+    }
+
+    public void setIsDirty(Boolean isDirty) {
+        this.isDirty = isDirty;
     }
 
     public Boolean getNoDelete() {
