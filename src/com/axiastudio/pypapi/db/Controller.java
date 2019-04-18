@@ -149,7 +149,7 @@ public class Controller implements IController {
                 Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        cq.select(from);
+        cq.select(from).distinct(true);
         if( predicates.size()>0 ){
             cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
         }
@@ -158,7 +158,13 @@ public class Controller implements IController {
             tq.setMaxResults(limit);
         }
         List<Object> result = tq.getResultList();
-        store = new Store(result);
+        List<Object> storelist = new ArrayList<>();
+        for ( Object obj: result) {
+            if (obj.getClass().equals(returnType)) {
+                storelist.add(obj);
+            }
+        }
+        store = new Store(storelist);
         return store;
     }
 
@@ -248,24 +254,35 @@ public class Controller implements IController {
     
     @Override
     public Validation commit(Object entity) throws RollbackException {
+        return commit(entity, Boolean.TRUE);
+    }
+
+    public Validation commit(Object entity, Boolean callback) throws RollbackException {
         // XXX: if no CascadeType.ALL?
         //this.parentize(entity);
-        
-        // BEFORECOMMIT
-        Method beforeCommit = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
+
         Validation beforeValidation = new Validation(true);
-        if( beforeCommit != null ){
-            try {
-                beforeValidation = (Validation) beforeCommit.invoke(null, entity);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+        if (callback) {
+            // BEFORECOMMIT
+            Method beforeCommit = Register.queryCallback(entity.getClass(), CallbackType.BEFORECOMMIT);
+            if (beforeCommit != null) {
+                try {
+                    beforeValidation = (Validation) beforeCommit.invoke(null, entity);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    beforeValidation.setResponse(false);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    beforeValidation.setResponse(false);
+                } catch (InvocationTargetException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    beforeValidation.setResponse(false);
+                }
             }
+        }  else {
+            beforeValidation.setResponse(true);
         }
-        if( beforeValidation.getResponse() == true ){
+        if (beforeValidation.getResponse() == true) {
             this.parentize(entity);
             EntityManager em = this.getEntityManager();
             Object merged=null;
@@ -289,24 +306,24 @@ public class Controller implements IController {
             em.refresh(merged);
 
             beforeValidation.setEntity(merged);
-            
-            // AFTER COMMIT
 
-            Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
-            if( afterCommit != null ){
-                try {
-                    Validation afterValidation = (Validation) afterCommit.invoke(null, merged);
-                    afterValidation.setEntity(merged);
-                    return afterValidation;
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+            if (callback) {
+                // AFTER COMMIT
+                Method afterCommit = Register.queryCallback(entity.getClass(), CallbackType.AFTERCOMMIT);
+                if (afterCommit != null) {
+                    try {
+                        Validation afterValidation = (Validation) afterCommit.invoke(null, merged);
+                        afterValidation.setEntity(merged);
+                        return afterValidation;
+                    } catch (IllegalAccessException ex) {
+                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IllegalArgumentException ex) {
+                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvocationTargetException ex) {
+                        Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-            
         }
         return beforeValidation;
     }
